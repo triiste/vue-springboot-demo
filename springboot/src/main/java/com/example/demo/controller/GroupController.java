@@ -10,6 +10,7 @@ import com.example.demo.entity.Group;
 import com.example.demo.entity.Project;
 import com.example.demo.entity.User;
 import com.example.demo.mapper.GroupMapper;
+import com.example.demo.mapper.ProjectMapper;
 import com.example.demo.mapper.UserMapper;
 import org.springframework.web.bind.annotation.*;
 import sun.security.acl.GroupImpl;
@@ -24,15 +25,23 @@ public class GroupController {
     GroupMapper groupMapper;
     @Resource//引入mapper 但不规范 一般controller引入service service引入mapper
             UserMapper userMapper;
-
+    @Resource//引入mapper 但不规范 一般controller引入service service引入mapper
+            ProjectMapper projectMapper;
 
     @PostMapping  //新增
     public Result<?> save(@RequestBody Group group){//把前台json转换为java对象
 //
+        Project res1 = projectMapper.selectOne(Wrappers.<Project>lambdaQuery().eq(Project::getProjectId,group.getProjectid()));
+        if (res1 == null) {
+            return Result.error("-1", "该项目不存在!!!");
+        }
         User res = userMapper.selectOne(Wrappers.<User>lambdaQuery().eq(User::getUserid,group.getUserid()));
         if (res == null) {
             return Result.error("-1", "该用户不存在!!!");
         }
+
+        group.setOfficeDirector(0);
+        group.setScientific(0);
         groupMapper.insert(group);
         return Result.success();
     }
@@ -45,6 +54,10 @@ public class GroupController {
 //        }
         //对字段进行了修改&& user.getRole() == 5
         //    System.out.println(param.getProject().getProjectId());
+        Project res1 = projectMapper.selectOne(Wrappers.<Project>lambdaQuery().eq(Project::getProjectId,group.getProjectid()));
+        if (res1 == null) {
+            return Result.error("-1", "该项目不存在!!!");
+        }
         User res = userMapper.selectOne(Wrappers.<User>lambdaQuery().eq(User::getUserid,group.getUserid()));
         if (res == null) {
             return Result.error("-1", "该用户不存在!!!");
