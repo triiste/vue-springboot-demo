@@ -30,6 +30,13 @@ public class ProjectController {
 
     @PostMapping //新增
     public Result<?> save(@RequestBody Project project){//把前台json转换为java对象
+        User res = userMapper.selectOne(Wrappers.<User>lambdaQuery().eq(User::getUserid,project.getProjectgroupId()));
+
+        if (res == null) {
+            return Result.error("-1", "该用户不存在!!!");
+        }else if(res.getRole()!= 2){
+            return Result.error("-2", "该用户不是组长!!!");
+        }
         projectMapper.insert(project);
         return Result.success();
     }

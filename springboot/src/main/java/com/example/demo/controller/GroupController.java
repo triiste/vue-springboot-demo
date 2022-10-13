@@ -10,6 +10,7 @@ import com.example.demo.entity.Group;
 import com.example.demo.entity.Project;
 import com.example.demo.entity.User;
 import com.example.demo.mapper.GroupMapper;
+import com.example.demo.mapper.UserMapper;
 import org.springframework.web.bind.annotation.*;
 import sun.security.acl.GroupImpl;
 
@@ -21,12 +22,17 @@ public class GroupController {
 
     @Resource//引入mapper 但不规范 一般controller引入service service引入mapper
     GroupMapper groupMapper;
+    @Resource//引入mapper 但不规范 一般controller引入service service引入mapper
+            UserMapper userMapper;
 
 
     @PostMapping  //新增
     public Result<?> save(@RequestBody Group group){//把前台json转换为java对象
 //
-
+        User res = userMapper.selectOne(Wrappers.<User>lambdaQuery().eq(User::getUserid,group.getUserid()));
+        if (res == null) {
+            return Result.error("-1", "该用户不存在!!!");
+        }
         groupMapper.insert(group);
         return Result.success();
     }
@@ -39,6 +45,10 @@ public class GroupController {
 //        }
         //对字段进行了修改&& user.getRole() == 5
         //    System.out.println(param.getProject().getProjectId());
+        User res = userMapper.selectOne(Wrappers.<User>lambdaQuery().eq(User::getUserid,group.getUserid()));
+        if (res == null) {
+            return Result.error("-1", "该用户不存在!!!");
+        }
         if(group.getOfficeDirector() == 1){  //1是属于正常
             group.setOfficeDirector(0);
         }

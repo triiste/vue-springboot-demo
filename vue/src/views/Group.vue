@@ -2,10 +2,10 @@
   <div style="padding: 10px">
     <!--    功能区域-->
     <div style="margin: 10px 0">
-      <el-button type="primary" @click="add" v-if="this.user.role != 1">新增</el-button>
+      <el-button type="primary" @click="add" v-if="this.user.role !== 1">新增</el-button>
     </div>
     <!--    搜索区域-->
-    <div style="margin: 10px 0" v-if="this.user.role != 1 && this.user.role != 2">
+    <div style="margin: 10px 0" v-if="this.user.role !== 1 && this.user.role !== 2">
       <el-input
           style="width: 20%"
           v-model="search"
@@ -71,8 +71,11 @@
           width="30%"
       >
         <el-form :model="form" label-width="120px">
-          <el-form-item label="项目ID" >
-            <el-input v-model="form.projectid" style="width: 70%"  />
+          <el-form-item label="项目ID" v-if="this.user.role ===2">
+          <el-input v-model="form.projectid" style="width: 70%"  disabled/>
+        </el-form-item>
+          <el-form-item label="项目ID" v-if="this.user.role !==2">
+            <el-input v-model="form.projectid" style="width: 70%" />
           </el-form-item>
           <el-form-item label="工号">
             <el-input v-model="form.userid" style="width: 70%" />
@@ -179,7 +182,8 @@ export default {
     },
     add(){
       this.dialogVisible = true;
-      this.form = {}
+      this.form = {};
+      this.form.projectid =this.search;
     },
     save(){
       if(this.form.id){//更新
