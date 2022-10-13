@@ -88,7 +88,17 @@
                         </el-radio-group>
                     </el-form-item>
                     <el-form-item label="地址">
-                        <el-input type="textarea" v-model="form.address" style="width: 70%"/>
+                    <el-input type="textarea" v-model="form.address" style="width: 70%"/>
+                </el-form-item>
+                    <el-form-item label="角色">
+                    <el-form-item :model="form">
+                        <!--lable标签是表示值的-->
+                        <el-radio v-model="form.role" :label="1" style="color: black">普通员工</el-radio>
+                        <el-radio v-model="form.role" :label="2" style="color: black">项目组长</el-radio>
+                        <el-radio v-model="form.role" :label="3" style="color: black">室主任</el-radio>
+                        <el-radio v-model="form.role" :label="4" style="color: black">科研处</el-radio>
+                        <el-radio v-model="form.role" :label="5" style="color: black">总后台管理员</el-radio>
+                    </el-form-item>
                     </el-form-item>
                     <el-form-item label="职位">
                         <el-input v-model="form.position" style="width: 70%"/>

@@ -83,8 +83,23 @@
                     <el-form-item label="项目组长ID">
                         <el-input v-model="form.projectgroupId" style="width: 70%"/>
                     </el-form-item>
-                    <el-form-item label="项目进程">
+                    <el-form-item label="研究内容">
+                        <el-input v-model="form.projectDetial" style="width: 70%"/>
+                    </el-form-item>
+                    <el-form-item label="研究周期">
+                        <el-input v-model="form.projectCycle" style="width: 70%"/>
+                    </el-form-item>
+                    <el-form-item label="项目进度">
                         <el-input v-model="form.projectProgress" style="width: 70%"/>
+                    </el-form-item>
+                    <el-form-item label="成果形式">
+                        <el-input v-model="form.projectProduct" style="width: 70%"/>
+                    </el-form-item>
+                    <el-form-item label="研究类别">
+                        <el-input v-model="form.projectType" style="width: 70%"/>
+                    </el-form-item>
+                    <el-form-item label="研究级别">
+                        <el-input v-model="form.projectLevel" style="width: 70%"/>
                     </el-form-item>
                     <el-form-item label="项目积分">
                         <el-input v-model="form.projectMark" style="width: 70%"/>

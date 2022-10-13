@@ -26,8 +26,20 @@
                 <el-form-item label="地址">
                     <el-input v-model="form.address" disabled></el-input>
                 </el-form-item>
-                <el-form-item label="角色">
-                    <el-input v-model="form.role" disabled></el-input>
+                <el-form-item label="角色" v-if="form.role === 1">
+                    <el-input v-model="role1" disabled></el-input>
+                </el-form-item>
+                <el-form-item label="角色" v-if="form.role === 2">
+                    <el-input v-model="role2" disabled></el-input>
+                </el-form-item>
+                <el-form-item label="角色" v-if="form.role === 3">
+                    <el-input v-model="role3" disabled></el-input>
+                </el-form-item>
+                <el-form-item label="角色" v-if="form.role === 4">
+                <el-input v-model="role4" disabled></el-input>
+            </el-form-item>
+                <el-form-item label="角色" v-if="form.role === 5">
+                    <el-input v-model="role5" disabled></el-input>
                 </el-form-item>
                 <el-form-item label="职位">
                     <el-input v-model="form.position" disabled></el-input>
@@ -51,7 +63,11 @@
         data() {
             return {
                 form: {},
-                project:'哈喽',
+                role1:"普通员工",
+                role2:"项目组长",
+                role3:"室主任",
+                role4:"科研处",
+                role5:"总管理员",
             }
         },
         created() {

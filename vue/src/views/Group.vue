@@ -77,7 +77,7 @@
           <el-form-item label="项目ID" v-if="this.user.role !==2">
             <el-input v-model="form.projectid" style="width: 70%" />
           </el-form-item>
-          <el-form-item label="工号">
+          <el-form-item label="用户ID">
             <el-input v-model="form.userid" style="width: 70%" />
           </el-form-item>
           <el-form-item label="个人积分">
