@@ -1,19 +1,7 @@
 # springboot-vue-demo2
 
-## Project setup
-```
-npm install
-```
+###  IntelliJ IDEA 2018.2.5 (Ultimate Edition)
+###  jdk 1.8
+###  mysql 8.0
 
-### Compiles and hot-reloads for development
-```
-npm run serve
-```
 
-### Compiles and minifies for production
-```
-npm run build
-```
-
-### Customize configuration
-See [Configuration Reference](https://cli.vuejs.org/config/).
