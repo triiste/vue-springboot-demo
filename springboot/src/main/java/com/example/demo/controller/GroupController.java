@@ -123,11 +123,6 @@ public class GroupController {
 
     }
 
-
-
-
-
-
     @DeleteMapping("/{id}")
     public Result<?> delete(@PathVariable long id){//把前台json转换为java对象
         groupMapper.deleteById(id);
@@ -139,6 +134,7 @@ public class GroupController {
                               @RequestParam(defaultValue = "10") Integer pageSize,
                               @RequestParam(defaultValue = "") String search){
         //Page<Group> groupPage = groupMapper.selectPage(new Page<>(pageNum,pageSize),Wrappers.<Group>lambdaQuery().like(Group::getNickName,search));
+//        如果项目ID和userid都在group表中就打印！！！
         LambdaQueryWrapper<Group> wrapper = Wrappers.<Group>lambdaQuery();
         if (StrUtil.isNotBlank(search)) {
             wrapper.like(Group::getUserid, search).or().like(Group::getProjectid,search);

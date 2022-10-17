@@ -7,7 +7,7 @@
         </div>
         <!--    搜索区域-->
         <!--<div style="margin: 10px 0" v-if="this.user.role != 2 && this.user.role != 1">-->
-            <div style="margin: 10px 0">
+        <div style="margin: 10px 0">
             <el-input
                     style="width: 20%"
                     v-model="search"
@@ -15,7 +15,7 @@
                     placeholder="请输入项目ID或者组长工号"
                     clearable
             />
-            <el-button type="primary" style="margin-left: 5px" @click="load" >
+            <el-button type="primary" style="margin-left: 5px" @click="load">
                 <span>查询</span>
                 <!--<el-icon><Search /></el-icon>-->
             </el-button>
@@ -35,23 +35,27 @@
             <el-table-column prop="projectType" label="研究类别"/>
             <el-table-column prop="projectLevel" label="研究级别"/>
             <el-table-column prop="projectMark" label="项目积分"/>
+            <el-table-column prop="firstMark" label="第一阶段积分"></el-table-column>
+            <el-table-column prop="secondMark" label="第二阶段积分"></el-table-column>
+            <el-table-column prop="threeMark" label="第三阶段积分"></el-table-column>
             <el-table-column prop="projectReward" label="奖励积分"/>
 
-            <el-table-column fixed="right" label="操作" width="120" v-if="this.user.role != 1" >
+            <el-table-column fixed="right" label="操作" width="120" v-if="this.user.role != 1">
                 <template #default="scope">
                     <!--v-if="this.user.userid === JSON.parse(JSON.stringify(row)).ProjectgroupId"-->
                     <!--v-if="this.user.userid === form.projectgroupId"-->
-                    <el-button  type="primary" size="small"   @click="details(scope.row)"
+                    <el-button type="primary" size="small" @click="details(scope.row)"
                     >成员详情
                     </el-button>
                     <el-button link type="primary" size="small" @click="handleEdit(scope.row)"
                     >编辑
                     </el-button>
-                    <el-popconfirm title="确认删除吗？" @confirm="handleDelete(scope.row.projectId)" >
+                    <el-popconfirm title="确认删除吗？" @confirm="handleDelete(scope.row.projectId)">
                         <template #reference>
                             <el-button link type="danger" size="small"
 
-                            >删除</el-button>
+                            >删除
+                            </el-button>
                         </template>
                     </el-popconfirm>
 
@@ -105,10 +109,24 @@
                         <el-input v-model="form.projectProduct" style="width: 70%"/>
                     </el-form-item>
                     <el-form-item label="研究类别">
-                        <el-input v-model="form.projectType" style="width: 70%"/>
+                        <!--                        <el-input v-model="form.projectType" style="width: 70%"></el-input>-->
+                        <el-select v-model="form.projectType" style="width: 70%" placeholder="请选择">
+                            <el-option
+                                    v-for="item in type"
+                                    :key="item.value"
+                                    :label="item.label"
+                                    :value="item.label"></el-option>
+                        </el-select>
                     </el-form-item>
                     <el-form-item label="研究级别">
-                        <el-input v-model="form.projectLevel" style="width: 70%"/>
+                        <!--                        <el-input v-model="form.projectLevel" style="width: 70%"></el-input>-->
+                        <el-select v-model="form.projectLevel" style="width: 70%" placeholder="请选择">
+                            <el-option
+                                    v-for="item in level"
+                                    :key="item.value"
+                                    :label="item.label"
+                                    :value="item.label"></el-option>
+                        </el-select>
                     </el-form-item>
                     <el-form-item label="项目积分">
                         <el-input v-model="form.projectMark" style="width: 70%"/>
@@ -119,11 +137,63 @@
 
                 </el-form>
 
+
                 <template #footer>
       <span class="dialog-footer">
         <el-button type="primary" @click="save">确定</el-button>
         <el-button @click="dialogVisible = false">取消</el-button>
       </span>
+                </template>
+            </el-dialog>
+            <!--      编辑弹窗-->
+            <el-dialog
+                    v-model="dialog"
+                    title="提示"
+                    width="30%"
+            >
+                <el-form :model="form" label-width="120px">
+                    <el-form-item label="项目编号">
+                        <el-input v-model="form.projectItemid" disabled="true" style="width: 70%"></el-input>
+                    </el-form-item>
+                    <el-form-item label="项目名称">
+                        <el-input v-model="form.projectName" disabled="true" style="width: 70%"></el-input>
+                    </el-form-item>
+                    <el-form-item label="项目组长ID">
+                        <el-input v-model="form.projectgroupId" disabled="true" style="width: 70%"></el-input>
+                    </el-form-item>
+                    <el-form-item label="项目进度">
+                        <el-input v-model="form.projectProgress" style="width: 70%"></el-input>
+                    </el-form-item>
+                    <el-form-item label="研究类别">
+                        <el-input v-model="form.projectType" disabled="true" style="width: 70%"></el-input>
+                    </el-form-item>
+                    <el-form-item label="研究级别">
+                        <el-input v-model="form.projectLevel" disabled="true" style="width: 70%"></el-input>
+                    </el-form-item>
+                    <el-form-item label="项目总积分">
+                        <el-input v-model="form.projectMark" disabled="true" style="width: 70%"></el-input>
+                    </el-form-item>
+                    <el-form-item label="第一阶段积分比">
+                        <el-input v-model="form.first" style="width: 70%"></el-input>%
+                    </el-form-item>
+                    <!--                    <el-form-item label="第一阶段积分">-->
+                    <!--                        <el-input v-model="form.firstMark" style="width: 70%"></el-input>-->
+                    <!--                    </el-form-item>-->
+                    <el-form-item label="第二阶段积分比">
+                        <el-input v-model="form.second" style="width: 70%"></el-input>%
+                    </el-form-item>
+                    <el-form-item label="第三阶段积分比">
+                        <el-input v-model="form.three" style="width: 70%"></el-input>%
+                    </el-form-item>
+                    <el-form-item label="附加分">
+                        <el-input v-model="form.projectReward" style="width: 70%"></el-input>
+                    </el-form-item>
+                </el-form>
+                <template #footer>
+<span class="dialog-footer">
+  <el-button type="primary" @click="save">确定</el-button>
+  <el-button @click="dialog = false">取消</el-button>
+</span>
                 </template>
             </el-dialog>
         </div>
@@ -132,25 +202,36 @@
 
 <script>
 
-    import {Location, Setting, Menu ,Document,User,Search} from '@element-plus/icons'
+    import {Location, Setting, Menu, Document, User, Search} from '@element-plus/icons'
     import request from "@/utils/request";
 
     export default {
         name: 'Project',
         components: {
-            Location, Setting, Menu ,Document,User,Search
+            Location, Setting, Menu, Document, User, Search
         },
         data() {
             return {
                 form: {},
                 dialogVisible: false,
+                dialog: false,
                 search: '',
                 user: {},
-              //  project:{},
+                //  project:{},
                 currentPage: 1,
                 pageSize: 10,
                 total: 0,
-                tableData: []
+                tableData: [],
+                type: [{  //项目类别
+                    label: '计划科研项目'
+                }, {
+                    label: '专项任务'
+                }],
+                level: [{  //项目级别
+                    label: '重大'
+                }, {
+                    label: '重点'
+                }],
             }
         },
         created() {
@@ -166,8 +247,7 @@
                     this.user = res.data
                 }
             });
-                this.load()
-
+            this.load()
 
 
         },
@@ -191,7 +271,8 @@
                 this.form = {}
             },
             save() {
-                if (this.form.projectId) {//更新
+                if (this.form.projectId) {
+                    this.form.firstMark=this.form.first*this.form.projectMark*0.01;
                     request.put("/project", this.form).then(res => {//.then是es6里的语法
                         console.log(res);
                         if (res.code === '0') {
@@ -205,8 +286,10 @@
                                 message:res.msg
                             })
                         }
+                        this.dialog = false;//关闭编辑弹窗
                         this.load();//刷新表格数据
-                        this.dialogVisible = false;//关闭弹窗
+                        // this.dialogVisible = false;//关闭新增弹窗
+
                     })
                 } else {//插入
                     request.post("/project", this.form).then(res => {//.then是es6里的语法
@@ -223,7 +306,7 @@
                             })
                         }
                         this.load();//刷新表格数据
-                        this.dialogVisible = false;//关闭弹窗
+                        this.dialogVisible = false;//关闭新增弹窗
                     })
                 }
 
@@ -232,13 +315,13 @@
             handleEdit(row) {
                 this.form = JSON.parse(JSON.stringify(row));
 
-                    this.dialogVisible = true
+                this.dialog = true
 
 
             },
             details(row) {
                 this.$router.push({
-                    path:'/oneitemgroup',
+                    path: '/oneitemgroup',
                     query: {
                         message: row.projectId,
                     }

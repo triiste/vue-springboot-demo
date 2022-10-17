@@ -30,6 +30,9 @@
             <el-table-column prop="projectType" label="研究类别"/>
             <el-table-column prop="projectLevel" label="研究级别"/>
             <el-table-column prop="projectMark" label="项目积分"/>
+            <el-table-column prop="firstMark" label="第一阶段积分"></el-table-column>
+            <el-table-column prop="secondMark" label="第二阶段积分"></el-table-column>
+            <el-table-column prop="threeMark" label="第三阶段积分"></el-table-column>
             <el-table-column prop="projectReward" label="奖励积分"/>
 
             <el-table-column fixed="right" label="操作" width="120" >
@@ -136,6 +139,11 @@
                     this.user = res.data
                 }
             });
+            console.log("啦啦啦");
+            console.log(this.user.userid);//找到id2082
+            console.log("啦啦啦");
+            //this.search=this.user.userid;
+            //能找到id
             // this.search=this.user.userid;
             //找到项目ID
 
@@ -151,6 +159,7 @@
                 //     console.log(res);
                 //     this.load()
                 // });
+            // this.search=自己参与的项目的编号 -->查找group表找到自己参与的项目ID，然后拿自己参与的ID取搜索取到自己参与的项目
             this.load();
 
         },
@@ -179,21 +188,19 @@
             //编辑权限
             handleEdit(row) {
 
-
            //     row.projectLevel="傻逼啦啦啦啦";
                 //用id请求后台数据
                 this.search =this.user.userid;
                 //在用项目组id和本人id请求group，找到所在的这一行
-                console.log("傻逼1");
                 request.get("/group/finddata",{
                     params: {
                         userid:this.user.userid,
                         projectId:row.projectId,
                     }
                 }).then(res => {
-                    console.log("傻逼2");
-                    console.log(res);
-                          console.log("傻逼3");
+
+                    // console.log(res);
+
                     if (res.code === '0') {
                         this.form=res.data;
                         this.dialogVisible = true
