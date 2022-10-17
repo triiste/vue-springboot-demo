@@ -37,7 +37,7 @@
             <el-table-column prop="position" label="职位"/>
             <el-table-column prop="permission" label="部门"/>
             <el-table-column prop="mark" label="积分"/>
-            <el-table-column fixed="right" label="操作" width="120" v-if="this.user.role != 2">
+            <el-table-column fixed="right" label="操作" width="120">
                 <template #default="scope">
                     <el-button link type="primary" size="small" @click="handleEdit(scope.row)">编辑</el-button>
                     <el-popconfirm title="确认删除吗？" @confirm="handleDelete(scope.row.userid)">
@@ -90,16 +90,16 @@
                     <el-form-item label="地址">
                     <el-input type="textarea" v-model="form.address" style="width: 70%"/>
                 </el-form-item>
-                    <el-form-item label="角色">
-                    <el-form-item :model="form">
-                        <!--lable标签是表示值的-->
-                        <el-radio v-model="form.role" :label="1" style="color: black">普通员工</el-radio>
-                        <el-radio v-model="form.role" :label="2" style="color: black">项目组长</el-radio>
-                        <el-radio v-model="form.role" :label="3" style="color: black">室主任</el-radio>
-                        <el-radio v-model="form.role" :label="4" style="color: black">科研处</el-radio>
-                        <el-radio v-model="form.role" :label="5" style="color: black">总后台管理员</el-radio>
-                    </el-form-item>
-                    </el-form-item>
+                    <!--<el-form-item label="角色">-->
+                    <!--<el-form-item :model="form">-->
+                        <!--&lt;!&ndash;lable标签是表示值的&ndash;&gt;-->
+                        <!--<el-radio v-model="form.role" :label="1" style="color: black">普通员工</el-radio>-->
+                        <!--<el-radio v-model="form.role" :label="2" style="color: black">项目组长</el-radio>-->
+                        <!--<el-radio v-model="form.role" :label="3" style="color: black">室主任</el-radio>-->
+                        <!--<el-radio v-model="form.role" :label="4" style="color: black">科研处</el-radio>-->
+                        <!--<el-radio v-model="form.role" :label="5" style="color: black">总后台管理员</el-radio>-->
+                    <!--</el-form-item>-->
+                    <!--</el-form-item>-->
                     <el-form-item label="职位">
                         <el-input v-model="form.position" style="width: 70%"/>
                     </el-form-item>
@@ -219,9 +219,9 @@
                 this.dialogVisible = true
             },
             handleDelete(id) {
-                console.log(id)
+                console.log(id);
                 request.delete("/user/" + id).then(res => {
-                    if (res.code == '0') {
+                    if (res.code === '0') {
                         this.$message({
                             type: "success",
                             message: "删除成功！"

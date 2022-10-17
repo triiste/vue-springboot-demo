@@ -6,7 +6,7 @@ const routes = [
     path: '/',
     name: 'Layout',
     component: Layout,
-    redirect: '/group',
+    redirect: '/login',
     children:[
       {
         path: 'user',
@@ -37,6 +37,21 @@ const routes = [
             path: '/person',
             name: 'Person',
             component: () => import("@/views/Person")
+        },
+        {
+            path: 'joinproject',
+            name: 'joinproject',
+            component: () => import("@/views/Joinproject")
+        },
+        {
+            path: 'hostproject',
+            name: 'hostproject',
+            component: () => import("@/views/Hostproject")
+        },
+        {
+            path: 'oneitemgroup',
+            name: 'oneitemgroup',
+            component: () => import("@/views/Oneitemgroup")
         },
     ]
   },

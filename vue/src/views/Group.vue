@@ -25,10 +25,10 @@
       <el-table-column prop="projectProgress" label="项目进程"  />
       <el-table-column prop="officeDirector" label="室主任确认情况"  >
         <!--prop是该变量显示的内容-->
-        <template #default="scope">
-          <span v-if="scope.row.officeDirector === 0" style="color: red">室主任未确认</span>
-          <span v-if="scope.row.officeDirector === 1" style="color: blue">室主任已确认</span>
-        </template>
+        <!--<template #default="scope">-->
+      <!--<span v-if="scope.row.officeDirector === 0" style="color: red">室主任未确认</span>-->
+      <!--<span v-if="scope.row.officeDirector === 1" style="color: blue">室主任已确认</span>-->
+    <!--</template>-->
       </el-table-column>
       <el-table-column prop="scientific" label="科研处确认情况">
         <!--prop是该变量显示的内容-->
@@ -137,29 +137,7 @@ export default {
               this.user = res.data
           }
       });
-
-      if(this.user.role === 2  ){
-          //查找当前project中存在的项目ID  put是放过去 get是请求过来
-          request.get("/project/find",{
-              params: {
-                  userid:this.user.userid,
-              }
-          }).then(res => {
-              if (res !== -1) {
-                  this.search = res;
-              }
-              console.log(res);
-              this.load();
-          });
-      }
-      else if(this.user.role === 1){
-          this.search =this.user.userid;  this.load();
-      }
-      else{
           this.load();
-      }
-
-
   },
   methods:{
     load(){

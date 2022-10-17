@@ -110,6 +110,22 @@ public class GroupController {
     }
 
 
+    @GetMapping("/finddata")
+    public Result<?> finddata(@RequestParam Integer userid,@RequestParam Integer projectId ){//把前台json转换为java对象
+        //在group表中查找本项目ID
+        Group res = groupMapper.selectOne(Wrappers.<Group>lambdaQuery().eq(Group::getUserid,userid).eq(Group::getProjectid,projectId));
+        System.out.println(res);
+        if(res == null){
+            return Result.error("-1", "你不是该项目的成员!!!");
+        }
+        return  Result.success(res);
+        //       System.out.println(res.getProjectid());
+
+    }
+
+
+
+
 
 
     @DeleteMapping("/{id}")

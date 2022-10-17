@@ -34,8 +34,6 @@ public class ProjectController {
 
         if (res == null) {
             return Result.error("-1", "该用户不存在!!!");
-        }else if(res.getRole()!= 2){
-            return Result.error("-2", "该用户不是组长!!!");
         }
         projectMapper.insert(project);
         return Result.success();
@@ -48,10 +46,7 @@ public class ProjectController {
 
         if (res == null) {
             return Result.error("-1", "该用户不存在!!!");
-        }else if(res.getRole()!= 2){
-            return Result.error("-2", "该用户不是组长!!!");
-            }
-
+        }
         projectMapper.updateById(project);
         return Result.success();
     }

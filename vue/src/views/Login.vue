@@ -13,10 +13,10 @@
                 <el-form-item :model="form">
                     <!--lable标签是表示值的-->
                     <el-radio v-model="form.role" :label="1" style="color: white">普通员工</el-radio>
-                    <el-radio v-model="form.role" :label="2" style="color: white">项目组长</el-radio>
-                    <el-radio v-model="form.role" :label="3" style="color: white">室主任</el-radio>
-                    <el-radio v-model="form.role" :label="4" style="color: white">科研处</el-radio>
-                    <el-radio v-model="form.role" :label="5" style="color: white">总后台管理员</el-radio>
+                    <el-radio v-model="form.role" :label="2" style="color: white">总管理</el-radio>
+                    <!--<el-radio v-model="form.role" :label="3" style="color: white">室主任</el-radio>-->
+                    <!--<el-radio v-model="form.role" :label="4" style="color: white">科研处</el-radio>-->
+                    <!--<el-radio v-model="form.role" :label="5" style="color: white">总后台管理员</el-radio>-->
                 </el-form-item>
                 <el-form-item>
                     <el-button type="primary" @click="login">登 录</el-button>
@@ -69,7 +69,7 @@
                         //  if(this.form.role === 1)
                         //     this.$router.push("/person");  //登录成功之后进行页面的跳转，跳转到主页
                         // else
-                            this.$router.push("/") ; //登录成功之后进行页面的跳转，跳转到主页
+                            this.$router.push("/project") ; //登录成功之后进行页面的跳转，跳转到主页
                     } else {
                         this.$message({
                             type: "error",

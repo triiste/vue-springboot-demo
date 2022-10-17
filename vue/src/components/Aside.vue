@@ -13,11 +13,22 @@
         <!--v-if="this.user.role != 1 && this.user.role != 2"-->
         <!--v-if="this.user.role != 1"-->
         <!--v-if="this.user.role != 1"-->
-        <el-menu-item index="/user"  v-if="this.user.role != 1 && this.user.role != 2" >用户管理</el-menu-item>
-        <el-menu-item index="/project" >项目管理</el-menu-item>
-        <el-menu-item index="/group" >项目组管理</el-menu-item>
-        <el-menu-item index="/manager"  v-if="this.user.role === 3 || this.user.role === 5">室主任管理</el-menu-item>
-        <el-menu-item index="/science"  v-if="this.user.role === 4 || this.user.role === 5">科研处管理</el-menu-item>
+        <el-menu-item index="/user" v-if="this.user.role !== 1"  >
+          <span>所有用户</span>
+          <el-icon><User /></el-icon>
+        </el-menu-item>
+        <el-menu-item index="/project" v-if="this.user.role !== 1">
+          <span>所有项目</span>
+          <el-icon><Document /></el-icon>
+        </el-menu-item>
+        <!--<el-menu-item index="/group" >项目组管理</el-menu-item>-->
+        <el-sub-menu index="/group" v-if="this.user.role === 1">
+          <template #title>项目管理</template>
+          <el-menu-item index="/joinproject" >参与项目</el-menu-item>
+          <el-menu-item index="/hostproject">主持项目</el-menu-item>
+        </el-sub-menu>
+        <!--<el-menu-item index="/manager"  v-if="this.user.role === 3 || this.user.role === 5">室主任管理</el-menu-item>-->
+        <!--<el-menu-item index="/science"  v-if="this.user.role === 4 || this.user.role === 5">科研处管理</el-menu-item>-->
     </el-sub-menu>
 <!--    <el-menu-item index="2">-->
 <!--      <el-icon><icon-menu /></el-icon>-->
@@ -28,8 +39,13 @@
 
 <script>
     import request from "@/utils/request";
+    import {Location, Setting, Menu ,Document,User} from '@element-plus/icons'
 export default {
+
   name: "Aside",
+    components: {
+        Location, Setting, Menu ,Document,User
+    },
     data(){
       return{
           user:{},

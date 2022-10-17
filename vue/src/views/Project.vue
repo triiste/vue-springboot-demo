@@ -1,11 +1,13 @@
 <template>
     <div style="padding: 10px">
         <!--    功能区域-->
-        <div style="margin: 10px 0" v-if="this.user.role != 1 && this.user.role != 2">
+        <!--<div style="margin: 10px 0" v-if="this.user.role != 1 && this.user.role != 2">-->
+        <div style="margin: 10px 0">
             <el-button type="primary" @click="add">新增</el-button>
         </div>
         <!--    搜索区域-->
-        <div style="margin: 10px 0" v-if="this.user.role != 2 && this.user.role != 1">
+        <!--<div style="margin: 10px 0" v-if="this.user.role != 2 && this.user.role != 1">-->
+            <div style="margin: 10px 0">
             <el-input
                     style="width: 20%"
                     v-model="search"
@@ -13,7 +15,10 @@
                     placeholder="请输入项目ID或者组长工号"
                     clearable
             />
-            <el-button type="primary" style="margin-left: 5px" @click="load" >查询</el-button>
+            <el-button type="primary" style="margin-left: 5px" @click="load" >
+                <span>查询</span>
+                <!--<el-icon><Search /></el-icon>-->
+            </el-button>
         </div>
         <el-table :data="tableData" stripe border style="width: 100%">
             <!--<template>-->
@@ -36,6 +41,9 @@
                 <template #default="scope">
                     <!--v-if="this.user.userid === JSON.parse(JSON.stringify(row)).ProjectgroupId"-->
                     <!--v-if="this.user.userid === form.projectgroupId"-->
+                    <el-button  type="primary" size="small"   @click="details(scope.row)"
+                    >成员详情
+                    </el-button>
                     <el-button link type="primary" size="small" @click="handleEdit(scope.row)"
                     >编辑
                     </el-button>
@@ -46,6 +54,7 @@
                             >删除</el-button>
                         </template>
                     </el-popconfirm>
+
 
                 </template>
             </el-table-column>
@@ -123,12 +132,14 @@
 
 <script>
 
-
+    import {Location, Setting, Menu ,Document,User,Search} from '@element-plus/icons'
     import request from "@/utils/request";
 
     export default {
         name: 'Project',
-        components: {},
+        components: {
+            Location, Setting, Menu ,Document,User,Search
+        },
         data() {
             return {
                 form: {},
@@ -155,24 +166,8 @@
                     this.user = res.data
                 }
             });
-
-            if(this.user.role === 1 ||this.user.role === 2  ){
-                //查找当前group中存在的项目ID  put是放过去 get是请求过来
-                request.get("/group/find",{
-                    params: {
-                        userid:this.user.userid,
-                    }
-                }).then(res => {
-                    if (res !== -1) {
-                        this.search = res;
-                    }
-                    console.log(res);
-                    this.load()
-                });
-            }
-            else{
                 this.load()
-            }
+
 
 
         },
@@ -241,6 +236,15 @@
 
 
             },
+            details(row) {
+                this.$router.push({
+                    path:'/oneitemgroup',
+                    query: {
+                        message: row.projectId,
+                    }
+                })
+            },
+
             handleDelete(id) {
                 console.log(id)
                 request.delete("/project/" + id).then(res => {
