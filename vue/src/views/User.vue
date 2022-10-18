@@ -24,16 +24,16 @@
             <el-table-column prop="age" label="年龄"/>
             <el-table-column prop="sex" label="性别"/>
             <el-table-column prop="address" label="地址"/>
-            <el-table-column prop="role" label="角色">
-                <!--prop是该变量显示的内容-->
-                <template #default="scope">
-                    <span v-if="scope.row.role === 1">普通员工</span>
-                    <span v-if="scope.row.role === 2">项目组长</span>
-                    <span v-if="scope.row.role === 3">室主任</span>
-                    <span v-if="scope.row.role === 4">科研处</span>
-                    <span v-if="scope.row.role === 5">总后台管理员</span>
-                </template>
-            </el-table-column>
+            <!--&lt;!&ndash;<el-table-column prop="role" label="角色">&ndash;&gt;-->
+                <!--&lt;!&ndash;prop是该变量显示的内容&ndash;&gt;-->
+                <!--<template #default="scope">-->
+                    <!--<span v-if="scope.row.role === 1">普通员工</span>-->
+                    <!--<span v-if="scope.row.role === 2">项目组长</span>-->
+                    <!--<span v-if="scope.row.role === 3">室主任</span>-->
+                    <!--<span v-if="scope.row.role === 4">科研处</span>-->
+                    <!--<span v-if="scope.row.role === 5">总后台管理员</span>-->
+                <!--</template>-->
+            <!--</el-table-column>-->
             <el-table-column prop="position" label="职位"/>
             <el-table-column prop="permission" label="部门"/>
             <el-table-column prop="mark" label="积分"/>
@@ -68,7 +68,7 @@
                     title="提示"
                     width="30%"
             >
-                <el-form :model="form" label-width="120px">
+                <el-form :model="form" label-width="120px" >
                     <el-form-item label="工号">
                         <el-input v-model="form.userjobid" style="width: 70%" />
                     </el-form-item>
@@ -106,9 +106,9 @@
                     <el-form-item label="部门">
                         <el-input type="textarea" v-model="form.permission" style="width: 70%"/>
                     </el-form-item>
-                    <el-form-item label="积分">
-                        <el-input type="number" v-model="form.mark" style="width: 70%"/>
-                    </el-form-item>
+                    <!--<el-form-item label="积分">-->
+                        <!--<el-input type="number" v-model="form.mark" style="width: 70%"/>-->
+                    <!--</el-form-item>-->
 
                 </el-form>
 

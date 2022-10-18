@@ -1,58 +1,107 @@
 <template>
     <div>
         <el-card style="width: 40%; margin: 10px">
-            <el-form ref="form" :model="form" label-width="80px">
-                <el-form-item style="text-align: center" label-width="0">
+
+            <el-form ref="form" :model="form" label-width="80px"  disabled>
+                <el-form-item style="text-align: center" label-width="0"  >
 
                 </el-form-item>
                 <el-form-item label="ID">
-                    <el-input v-model="form.userid" disabled></el-input>
+                    <el-input v-model="form.userid" ></el-input>
                 </el-form-item>
                 <el-form-item label="工号">
-                    <el-input v-model="form.userjobid" disabled></el-input>
+                    <el-input v-model="form.userjobid" ></el-input>
                 </el-form-item>
                 <el-form-item label="用户名">
-                    <el-input v-model="form.username" disabled></el-input>
+                    <el-input v-model="form.username" ></el-input>
                 </el-form-item>
                 <el-form-item label="电话" >
-                    <el-input v-model="form.telephone" disabled></el-input>
+                    <el-input v-model="form.telephone" ></el-input>
                 </el-form-item>
                 <el-form-item label="年龄">
-                    <el-input v-model="form.age" disabled></el-input>
+                    <el-input v-model="form.age" ></el-input>
                 </el-form-item>
                 <el-form-item label="性别">
-                <el-input v-model="form.sex" disabled></el-input>
+                <el-input v-model="form.sex" ></el-input>
             </el-form-item>
                 <el-form-item label="地址">
-                    <el-input v-model="form.address" disabled></el-input>
-                </el-form-item>
-                <el-form-item label="角色" v-if="form.role === 1">
-                    <el-input v-model="role1" disabled></el-input>
-                </el-form-item>
-                <el-form-item label="角色" v-if="form.role === 2">
-                    <el-input v-model="role2" disabled></el-input>
-                </el-form-item>
-                <el-form-item label="角色" v-if="form.role === 3">
-                    <el-input v-model="role3" disabled></el-input>
-                </el-form-item>
-                <el-form-item label="角色" v-if="form.role === 4">
-                <el-input v-model="role4" disabled></el-input>
-            </el-form-item>
-                <el-form-item label="角色" v-if="form.role === 5">
-                    <el-input v-model="role5" disabled></el-input>
+                    <el-input v-model="form.address" ></el-input>
                 </el-form-item>
                 <el-form-item label="职位">
-                    <el-input v-model="form.position" disabled></el-input>
+                    <el-input v-model="form.position" ></el-input>
                 </el-form-item>
                 <el-form-item label="部门">
-                    <el-input v-model="form.permission" disabled></el-input>
+                    <el-input v-model="form.permission" ></el-input>
                 </el-form-item>
-                <el-form-item label="积分">
-                <el-input v-model="form.mark" disabled></el-input>
-            </el-form-item>
+                <!--<el-form-item label="积分">-->
+                <!--<el-input v-model="form.mark" ></el-input>-->
+            <!--</el-form-item>-->
+
             </el-form>
+            <el-button type="primary" @click="Edit" style="margin-left: 550px">修改密码</el-button>
         </el-card>
 
+        <el-dialog
+                v-model="dialogVisible"
+                title="提示"
+                width="30%"
+        >
+            <el-form :model="form1" label-width="120px" >
+                <!--<el-form-item label="用户名">-->
+                    <!--<el-input v-model="form.username" style="width: 70%"/>-->
+                <!--</el-form-item>-->
+                <!--<el-form-item label="电话">-->
+                    <!--<el-input v-model="form.telephone" style="width: 70%"/>-->
+                <!--</el-form-item>-->
+                <!--<el-form-item label="年龄">-->
+                    <!--<el-input v-model="form.age" style="width: 70%"/>-->
+                <!--</el-form-item>-->
+                <!--<el-form-item label="性别">-->
+                    <!--<el-radio-group v-model="form.sex">-->
+                        <!--<el-radio label="男" size="large">男</el-radio>-->
+                        <!--<el-radio label="女" size="large">女</el-radio>-->
+                    <!--</el-radio-group>-->
+                <!--</el-form-item>-->
+                <!--<el-form-item label="地址">-->
+                    <!--<el-input type="textarea" v-model="form.address" style="width: 70%"/>-->
+                <!--</el-form-item>-->
+                <el-form-item label="请输入原密码">
+                    <el-input type="password" v-model="form1.password0" style="width: 70%" show-password/>
+                </el-form-item>
+                <el-form-item label="新密码">
+                    <el-input type="password" v-model="form1.password1" style="width: 70%" show-password/>
+                </el-form-item>
+                <el-form-item label="请确认密码">
+                    <el-input type="password" v-model="form1.password2" style="width: 70%" show-password/>
+                </el-form-item>
+                <!--<el-form-item label="角色">-->
+                <!--<el-form-item :model="form">-->
+                <!--&lt;!&ndash;lable标签是表示值的&ndash;&gt;-->
+                <!--<el-radio v-model="form.role" :label="1" style="color: black">普通员工</el-radio>-->
+                <!--<el-radio v-model="form.role" :label="2" style="color: black">项目组长</el-radio>-->
+                <!--<el-radio v-model="form.role" :label="3" style="color: black">室主任</el-radio>-->
+                <!--<el-radio v-model="form.role" :label="4" style="color: black">科研处</el-radio>-->
+                <!--<el-radio v-model="form.role" :label="5" style="color: black">总后台管理员</el-radio>-->
+                <!--</el-form-item>-->
+                <!--</el-form-item>-->
+                <!--<el-form-item label="职位">-->
+                    <!--<el-input v-model="form.position" style="width: 70%"/>-->
+                <!--</el-form-item>-->
+                <!--<el-form-item label="部门">-->
+                    <!--<el-input type="textarea" v-model="form.permission" style="width: 70%"/>-->
+                <!--</el-form-item>-->
+                <!--<el-form-item label="积分">-->
+                <!--<el-input type="number" v-model="form.mark" style="width: 70%"/>-->
+                <!--</el-form-item>-->
+            </el-form>
+
+            <template #footer>
+      <span class="dialog-footer">
+        <el-button type="primary" @click="save">保存</el-button>
+        <el-button @click="dialogVisible = false">取消</el-button>
+      </span>
+            </template>
+        </el-dialog>
     </div>
 </template>
 
@@ -63,11 +112,15 @@
         data() {
             return {
                 form: {},
-                role1:"普通员工",
-                role2:"项目组长",
-                role3:"室主任",
-                role4:"科研处",
-                role5:"总管理员",
+                form1:{},
+
+                dialogVisible: false,
+
+                // role1:"普通员工",
+                // role2:"项目组长",
+                // role3:"室主任",
+                // role4:"科研处",
+                // role5:"总管理员",
             }
         },
         created() {
@@ -90,8 +143,46 @@
             // })
         },
         methods: {
+            Edit(){
+                    this.dialogVisible = true;
+            },
+            save(){
 
-        }
+                if(this.form1.password1 !==this.form1.password2)
+                {
+                    this.$message({
+                        type: "error",
+                        message: "两次输入密码不一致！！！"
+                    })
+                }
+
+                else{
+                    request.get("/user/edit",{
+                        params: {
+                            userjobid:this.form.userjobid,
+                            password0:this.form1.password0,
+                            password1:this.form1.password1,
+
+                        }
+                    }).then(res => {
+                        if (res.code === '0') {
+                            this.$message({
+                                type: "success",
+                                message: "修改成功！！！"
+                            });
+                        }else{
+                            this.$message({
+                                type: "error",
+                                message: res.msg
+                            })
+                        }
+                    });
+
+                    }
+                this.dialogVisible = false;
+                }
+            }
+
     }
 </script>
 <style>

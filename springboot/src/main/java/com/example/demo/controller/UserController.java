@@ -11,6 +11,7 @@ import com.example.demo.entity.Group;
 import com.example.demo.entity.User;
 import com.example.demo.mapper.GroupMapper;
 import com.example.demo.mapper.UserMapper;
+import jdk.nashorn.internal.ir.RuntimeNode;
 import org.springframework.web.bind.annotation.*;
 
 import javax.annotation.Resource;
@@ -34,6 +35,23 @@ public class UserController {
 
         return Result.success(res);
     }
+    /////////////////////////////////////////////////////////
+    @GetMapping("/edit")  //登录
+    public Result<?> find(@RequestParam String userjobid,@RequestParam String password0,@RequestParam String password1) {//把前台json转换为java对象
+        //在Project表中查找本项目ID
+        User res = userMapper.selectOne(Wrappers.<User>lambdaQuery().eq(User::getUserjobid,userjobid).eq(User::getPassword,password0));
+        if (res == null) {
+            return Result.error("-1", "原密码错误！！！");
+        }
+        else{
+            res.setPassword(password1);
+
+            System.out.println(res.getPassword());
+            userMapper.updateById(res);
+            return Result.success();
+        }
+    }
+    ///////////////////////////////////////////////////////////
 
     @PostMapping //新增，赋初始密码
     public Result<?> save(@RequestBody User user){//把前台json转换为java对象

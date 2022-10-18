@@ -35,7 +35,7 @@
             <el-table-column prop="projectType" label="研究类别"/>
             <el-table-column prop="projectLevel" label="研究级别"/>
             <el-table-column prop="projectMark" label="项目积分"/>
-            <el-table-column prop="firstMark" label="第一阶段积分"></el-table-column>
+            <el-table-column prop="firstMark" label="第一阶段积分" ></el-table-column>
             <el-table-column prop="secondMark" label="第二阶段积分"></el-table-column>
             <el-table-column prop="threeMark" label="第三阶段积分"></el-table-column>
             <el-table-column prop="projectReward" label="奖励积分"/>
