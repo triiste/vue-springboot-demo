@@ -13,7 +13,7 @@ import com.example.demo.mapper.GroupMapper;
 import com.example.demo.mapper.ProjectMapper;
 import com.example.demo.mapper.UserMapper;
 import org.springframework.web.bind.annotation.*;
-import sun.security.acl.GroupImpl;
+//import sun.security.acl.GroupImpl;
 
 import javax.annotation.Resource;
 
@@ -22,7 +22,7 @@ import javax.annotation.Resource;
 public class GroupController {
 
     @Resource//引入mapper 但不规范 一般controller引入service service引入mapper
-    GroupMapper groupMapper;
+            GroupMapper groupMapper;
     @Resource//引入mapper 但不规范 一般controller引入service service引入mapper
             UserMapper userMapper;
     @Resource//引入mapper 但不规范 一般controller引入service service引入mapper
@@ -39,14 +39,23 @@ public class GroupController {
         if (res == null) {
             return Result.error("-1", "该用户不存在!!!");
         }
+        System.out.println(group.getUserid());
+        System.out.println(group.getProjectid());
+        Group res2 = groupMapper.selectOne(Wrappers.<Group>lambdaQuery().eq(Group::getUserid, group.getUserid()).eq(Group::getProjectid,group.getProjectid()));
+        System.out.println(res2);
+        if (res2 != null) {
+            return Result.error("-1", "该成员已存在于项目中!!!");
+        }
 
-        group.setOfficeDirector(0);
-        group.setScientific(0);
         groupMapper.insert(group);
         return Result.success();
+
+////        group.setOfficeDirector(0);
+//        group.setScientific(0);
+
     }
 
-    @PutMapping//新增,@RequestBody User user //这是组长调用的
+    @PutMapping//新增,@RequestBody User user //这是编辑调用的
     public Result<?> update(@RequestBody Group group){//把前台json转换为java对象
 //        Group res = groupMapper.selectOne(Wrappers.<Group>lambdaQuery().eq(Group::getProjectid,group.getProjectid()).eq(Group::getUserid,group.getUserid()));
 //        if (res == null) {
@@ -54,32 +63,38 @@ public class GroupController {
 //        }
         //对字段进行了修改&& user.getRole() == 5
         //    System.out.println(param.getProject().getProjectId());
-        Project res1 = projectMapper.selectOne(Wrappers.<Project>lambdaQuery().eq(Project::getProjectId,group.getProjectid()));
-        if (res1 == null) {
-            return Result.error("-1", "该项目不存在!!!");
-        }
-        User res = userMapper.selectOne(Wrappers.<User>lambdaQuery().eq(User::getUserid,group.getUserid()));
-        if (res == null) {
-            return Result.error("-1", "该用户不存在!!!");
-        }
-        if(group.getOfficeDirector() == 1){  //1是属于正常
-            group.setOfficeDirector(0);
-        }
-        if(group.getScientific() == 1){  //1是属于正常，
-            group.setScientific(0);
-        }
-        //   System.out.println(group.getScientific());
-        groupMapper.updateById(group);//写进数据库中
+//        Project res1 = projectMapper.selectOne(Wrappers.<Project>lambdaQuery().eq(Project::getProjectId,group.getProjectid()));
+//        if (res1 == null) {
+//            return Result.error("-1", "该项目不存在!!!");
+//        }
+//        User res = userMapper.selectOne(Wrappers.<User>lambdaQuery().eq(User::getUserid,group.getUserid()));
+//        if (res == null) {
+//            return Result.error("-1", "该用户不存在!!!");
+//        }
+////        if(group.getOfficeDirector() == 1){  //1是属于正常
+////            group.setOfficeDirector(0);
+////        }
+//        if(group.getScientific() == 1){  //1是属于正常，
+//            group.setScientific(0);
+//        };
+
+
+//        float res = group.getFirst() + group.getSecond() + group.getThree();
+//        if(res >100 || res < 0){
+//            return  Result.error("-1","分配比例总和不能超过100%");
+//        }
+        groupMapper.updateById(group);
         return Result.success();
+
     }
 
     @PutMapping("/confirm")//新增,@RequestBody User user //这是组长调用的
     public Result<?> confirm(@RequestBody Group group){//把前台json转换为java对象
-        if(group.getOfficeDirector() == 0){  //1是属于正常
-            group.setOfficeDirector(1);
-        }else{
-            group.setOfficeDirector(0);
-        }
+//        if(group.getOfficeDirector() == 0){  //1是属于正常
+//            group.setOfficeDirector(1);
+//        }else{
+//            group.setOfficeDirector(0);
+//        }
         //   System.out.println(group.getScientific());
         groupMapper.updateById(group);//写进数据库中
         return Result.success();

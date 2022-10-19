@@ -1,12 +1,14 @@
 C:\Users\12569\Desktop\springboot-vue-demo2\springboot\src\main\java\com\example\demo\mapper\ProjectMapper.java
 C:\Users\12569\Desktop\springboot-vue-demo2\springboot\src\main\java\com\example\demo\common\MybatisPlusConfig.java
+C:\Users\12569\Desktop\springboot-vue-demo2\springboot\src\main\java\com\example\demo\entity\Group.java
+C:\Users\12569\Desktop\springboot-vue-demo2\springboot\src\main\java\com\example\demo\entity\Mark.java
+C:\Users\12569\Desktop\springboot-vue-demo2\springboot\src\main\java\com\example\demo\mapper\UserMapper.java
+C:\Users\12569\Desktop\springboot-vue-demo2\springboot\src\main\java\com\example\demo\entity\User.java
 C:\Users\12569\Desktop\springboot-vue-demo2\springboot\src\main\java\com\example\demo\DemoApplication.java
 C:\Users\12569\Desktop\springboot-vue-demo2\springboot\src\main\java\com\example\demo\entity\Project.java
+C:\Users\12569\Desktop\springboot-vue-demo2\springboot\src\main\java\com\example\demo\mapper\MarkMapper.java
 C:\Users\12569\Desktop\springboot-vue-demo2\springboot\src\main\java\com\example\demo\controller\UserController.java
-C:\Users\12569\Desktop\springboot-vue-demo2\springboot\src\main\java\com\example\demo\entity\Group.java
-C:\Users\12569\Desktop\springboot-vue-demo2\springboot\src\main\java\com\example\demo\mapper\UserMapper.java
 C:\Users\12569\Desktop\springboot-vue-demo2\springboot\src\main\java\com\example\demo\controller\GroupController.java
 C:\Users\12569\Desktop\springboot-vue-demo2\springboot\src\main\java\com\example\demo\controller\ProjectController.java
 C:\Users\12569\Desktop\springboot-vue-demo2\springboot\src\main\java\com\example\demo\common\Result.java
 C:\Users\12569\Desktop\springboot-vue-demo2\springboot\src\main\java\com\example\demo\mapper\GroupMapper.java
-C:\Users\12569\Desktop\springboot-vue-demo2\springboot\src\main\java\com\example\demo\entity\User.java

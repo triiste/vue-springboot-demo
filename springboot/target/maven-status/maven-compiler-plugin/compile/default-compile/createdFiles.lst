@@ -1,8 +1,10 @@
 com\example\demo\DemoApplication.class
 com\example\demo\entity\User.class
 com\example\demo\common\MybatisPlusConfig.class
+com\example\demo\entity\Mark.class
 com\example\demo\common\Result.class
 com\example\demo\entity\Project.class
+com\example\demo\mapper\MarkMapper.class
 com\example\demo\controller\ProjectController.class
 com\example\demo\controller\UserController.class
 com\example\demo\mapper\UserMapper.class

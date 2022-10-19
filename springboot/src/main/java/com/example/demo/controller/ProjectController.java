@@ -54,7 +54,7 @@ public class ProjectController {
 //        if (res == null) {
 //            return Result.error("-1", "该用户不存在!!!");
 //        }
-        float res = project.getFirstMark() + project.getSecondMark() + project.getThreeMark();
+        float res = project.getFirst() + project.getSecond() + project.getThree();
         if(res >100 || res < 0){
             return  Result.error("-1","分配比例总和不能超过100%");
         }

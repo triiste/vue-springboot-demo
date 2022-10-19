@@ -66,7 +66,7 @@
                     title="个人积分情况"
                     width="30%"
             >
-                <el-form :model="form" label-width="120px">
+                <el-form :model="form" label-width="120px" disabled>
                     <el-form-item label="ID">
                         <el-input v-model="form.id" style="width: 70%" disabled/>
                     </el-form-item>
@@ -83,8 +83,22 @@
                         <el-input v-model="form.handler" style="width: 70%" disabled/>
                     </el-form-item>
                     <el-form-item label="项目进度">
-                        <el-input v-model="form.projectProgress" style="width: 70%" disabled/>
+                    <el-input v-model="form.projectProgress" style="width: 70%" disabled/>
+                </el-form-item>
+                    <el-form-item label="第一阶段积分">
+                        <el-input v-model="form.firstMark" style="width: 70%"></el-input>
                     </el-form-item>
+                    <el-form-item label="第二阶段积分">
+                        <el-input v-model="form.secondMark" style="width: 70%"></el-input>
+                    </el-form-item>
+                    <el-form-item label="第三阶段积分">
+                        <el-input v-model="form.threeMark" style="width: 70%"></el-input>
+                    </el-form-item>
+                    <el-form-item label="附加分">
+                        <el-input v-model="form.groupReward" style="width: 70%"></el-input>
+                    </el-form-item>
+
+
                     <!--<el-form-item label="室主任确认情况">-->
                         <!--<el-input v-model="form.officeDirector" style="width: 70%" disabled/>-->
                     <!--</el-form-item>-->
@@ -123,7 +137,10 @@
                 currentPage: 1,
                 pageSize: 10,
                 total: 0,
-                tableData: []
+                tableData: [],
+                totaltableData:[],
+                i:0,
+                j:0,
             }
         },
         created() {
@@ -139,9 +156,9 @@
                     this.user = res.data
                 }
             });
-            console.log("啦啦啦");
+
             console.log(this.user.userid);//找到id2082
-            console.log("啦啦啦");
+
             //this.search=this.user.userid;
             //能找到id
             // this.search=this.user.userid;
@@ -162,7 +179,9 @@
             // this.search=自己参与的项目的编号 -->查找group表找到自己参与的项目ID，然后拿自己参与的ID取搜索取到自己参与的项目
             this.load();
 
+
         },
+
         methods: {
             load() {
                 request.get("/project", {
@@ -173,11 +192,39 @@
                     }
                 }).then(res => {
                     console.log(res);
-                    this.tableData = res.data.records;
-                    this.total = res.data.total;
+
+
+                    this.totaltableData = res.data.records;
+                    this.tableData=this.totaltableData;
+                    // for(this.i=0;this.i<this.totaltableData.length;this.i++){
+                    //
+                    //     // var projectid =this.totaltableData[this.i].projectId;
+                    //     // console.log("看看此时的projectid11111111"+projectid);
+                    //     // // var userid=this.user.userid;
+                    //     // console.log("看看此时的projectid2222222"+userid);
+                    //     // // request.get("/group/finddata",{
+                    //     //     params: {
+                    //     //         userid:userid,
+                    //     //         projectId:projectid,
+                    //     //     }
+                    //     // }).then(res => {
+                    //     //     if (res.code === '0') {
+                    //     //         // 说明就是,把这行给j
+                    //     //         this.tableData[this.j]=this.totaltableData[this.i];
+                    //     //         this.j=this.j+1;
+                    //     //         console.log("输出成功的的的333333333333"+this.i);
+                    //     //     } else {
+                    //     //         //说明不是什么也不做
+                    //     //         console.log("输出失败的的333333333333"+this.i);
+                    //     //     }
+                    //     // });
+                    //  }
+                    //  console.log("看看此时的j是多少"+this.j);
+                    // this.tableData.length=this.totaltableData.length-this.j;
+                    // this.total = res.data.total-this.j;
+                    this.total=res.data.total;
                 })
             },
-
             add() {
                 this.dialogVisible = true;
                 this.form = {}

@@ -12,9 +12,16 @@ public class Group {
     private Integer id;
     private Integer projectid;
     private Integer userid;
-    private Integer mark;
-    private String handler;
+    private float mark;
+        private String handler;
     private String ProjectProgress;
-    private Integer officeDirector;
+        private Integer officeDirector;
     private Integer scientific;
+    private float FirstMark;
+    private float SecondMark;
+    private float ThreeMark;
+    private float first;
+    private float second;
+    private float three;
+    private float GroupReward;
 }

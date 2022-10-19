@@ -24,5 +24,8 @@ public class Project {
     private float FirstMark;
     private float SecondMark;
     private float ThreeMark;
+    private float first;
+    private float second;
+    private float three;
     private Integer ProjectReward;
 }

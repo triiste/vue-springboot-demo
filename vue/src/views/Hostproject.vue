@@ -11,45 +11,36 @@
                     v-model="search"
                     size="large"
                     placeholder="请输入项目ID或者组长工号"
-                    clearable
-            />
+                    clearable></el-input>
             <el-button type="primary" style="margin-left: 5px" @click="load" >查询</el-button>
         </div>
         <el-table :data="tableData" stripe border style="width: 100%">
             <!--<template>-->
-            <el-table-column prop="projectId" label="ID" sortable/>
-            <el-table-column prop="projectItemid" label="项目编号" sortable/>
-            <el-table-column prop="projectName" label="项目名"/>
+            <el-table-column prop="projectId" label="ID" sortable></el-table-column>
+            <!--            <el-table-column prop="projectItemid" label="项目编号" sortable/>-->
+            <el-table-column prop="projectName" label="项目名"></el-table-column>
             <!--      数据库里是下划线 对应前台代码会转成驼峰 mybatisplus这个框架帮做的-->
-            <el-table-column prop="groupId" label="组号"/>
-            <el-table-column prop="projectgroupId" label="项目组长ID"/>
-            <el-table-column prop="projectDetial" label="研究内容"/>
-            <el-table-column prop="projectCycle" label="研究周期"/>
-            <el-table-column prop="projectProgress" label="项目进度"/>
-            <el-table-column prop="projectProduct" label="成果形式"/>
-            <el-table-column prop="projectType" label="研究类别"/>
-            <el-table-column prop="projectLevel" label="研究级别"/>
-            <el-table-column prop="projectMark" label="项目积分"/>
+            <!--            <el-table-column prop="groupId" label="组号"/>-->
+            <el-table-column prop="projectgroupId" label="项目组长ID"></el-table-column>
+            <!--            <el-table-column prop="projectDetial" label="研究内容"/>-->
+            <!--            <el-table-column prop="projectCycle" label="研究周期"/>-->
+            <el-table-column prop="projectProgress" label="项目进度"></el-table-column>
+            <!--            <el-table-column prop="projectProduct" label="成果形式"/>-->
+            <el-table-column prop="projectType" label="研究类别"></el-table-column>
+            <el-table-column prop="projectLevel" label="研究级别"></el-table-column>
+            <el-table-column prop="projectMark" label="项目积分"></el-table-column>
             <el-table-column prop="firstMark" label="第一阶段积分"></el-table-column>
             <el-table-column prop="secondMark" label="第二阶段积分"></el-table-column>
             <el-table-column prop="threeMark" label="第三阶段积分"></el-table-column>
-            <el-table-column prop="projectReward" label="奖励积分"/>
-
+            <el-table-column prop="projectReward" label="附加分"></el-table-column>
             <el-table-column fixed="right" label="操作" width="120" >
                 <template #default="scope">
                     <!--v-if="this.user.userid === JSON.parse(JSON.stringify(row)).ProjectgroupId"-->
                     <!--v-if="this.user.userid === form.projectgroupId"-->
-                    <el-button  type="primary" size="small"   @click="details(scope.row)"
-                    >成员详情
-                    </el-button>
-                    <el-button link type="primary" size="small" @click="handleEdit(scope.row)"
-                    >编辑
-                    </el-button>
-
-
+                    <el-button  type="primary" size="small"   @click="details(scope.row)">成员详情</el-button>
+                    <el-button link type="primary" size="small" @click="handleEdit(scope.row)">编辑</el-button>
                 </template>
             </el-table-column>
-            <!--</template>-->
         </el-table>
 
         <div style="margin: 10px 0">
@@ -61,55 +52,40 @@
                     layout="total, sizes, prev, pager, next, jumper"
                     :total="total"
                     @size-change="handleSizeChange"
-                    @current-change="handleCurrentChange"
-            />
+                    @current-change="handleCurrentChange"></el-pagination>
 
-            <!--      弹窗-->
+            <!--      编辑弹窗-->
             <el-dialog
                     v-model="dialogVisible"
                     title="提示"
                     width="30%"
             >
                 <el-form :model="form" label-width="120px">
-                    <el-form-item label="项目编号">
-                        <el-input v-model="form.projectItemid" style="width: 70%"/>
+                    <el-form-item label="项目ID">
+                        <el-input v-model="form.projectId" style="width: 70%" disabled></el-input>
                     </el-form-item>
                     <el-form-item label="项目名称">
-                        <el-input v-model="form.projectName" style="width: 70%"/>
+                        <el-input v-model="form.projectName" style="width: 70%" disabled></el-input>
                     </el-form-item>
-                    <el-form-item label="项目组号">
-                        <el-input v-model="form.groupId" style="width: 70%"/>
-                    </el-form-item>
+                    <!--                    <el-form-item label="项目组号">-->
+                    <!--                        <el-input v-model="form.groupId" style="width: 70%"/>-->
+                    <!--                    </el-form-item>-->
                     <el-form-item label="项目组长ID">
-                        <el-input v-model="form.projectgroupId" style="width: 70%"/>
-                    </el-form-item>
-                    <el-form-item label="研究内容">
-                        <el-input v-model="form.projectDetial" style="width: 70%"/>
-                    </el-form-item>
-                    <el-form-item label="研究周期">
-                        <el-input v-model="form.projectCycle" style="width: 70%"/>
+                        <el-input v-model="form.projectgroupId" style="width: 70%" disabled></el-input>
                     </el-form-item>
                     <el-form-item label="项目进度">
-                        <el-input v-model="form.projectProgress" style="width: 70%"/>
-                    </el-form-item>
-                    <el-form-item label="成果形式">
-                        <el-input v-model="form.projectProduct" style="width: 70%"/>
+                        <el-input v-model="form.projectProgress" style="width: 70%"></el-input>
                     </el-form-item>
                     <el-form-item label="研究类别">
-                        <el-input v-model="form.projectType" style="width: 70%"/>
+                        <el-input v-model="form.projectType" style="width: 70%" disabled></el-input>
                     </el-form-item>
                     <el-form-item label="研究级别">
-                        <el-input v-model="form.projectLevel" style="width: 70%"/>
+                        <el-input v-model="form.projectLevel" style="width: 70%" disabled></el-input>
                     </el-form-item>
                     <el-form-item label="项目积分">
-                        <el-input v-model="form.projectMark" style="width: 70%"/>
+                        <el-input v-model="form.projectMark" style="width: 70%" disabled></el-input>
                     </el-form-item>
-                    <el-form-item label="奖励积分">
-                        <el-input v-model="form.projectReward" style="width: 70%"/>
-                    </el-form-item>
-
                 </el-form>
-
                 <template #footer>
       <span class="dialog-footer">
         <el-button type="primary" @click="save">确定</el-button>
@@ -120,7 +96,6 @@
         </div>
     </div>
 </template>
-
 <script>
 
 
@@ -143,8 +118,6 @@
             }
         },
         created() {
-
-
             let userStr = localStorage.getItem("user") || "{}";
             this.user = JSON.parse(userStr);
             //this.role = JSON.parse(localStorage.getItem("user")).role;  //取缓存里面的值
@@ -174,9 +147,9 @@
             // else{
             //     this.load()
             // }
-
-
         },
+
+
         methods: {
             load() {
                 request.get("/project", {
@@ -243,13 +216,17 @@
 
             },
             details(row) {
+                // console.log(row.firstMark)
                 //先得拿到id号，拿到id号后查找他的所有成员
-          //      console.log(row.projectId);
-          //       this.$router.push('/oneitemgroup');
+                //      console.log(row.projectId);
+                //       this.$router.push('/oneitemgroup');
                 this.$router.push({
                     path:'/oneitemgroup',
                     query: {
                         message: row.projectId,
+                        asd1:row.firstMark,
+                        asd2:row.secondMark,
+                        asd3:row.threeMark
                     }
                 })
 

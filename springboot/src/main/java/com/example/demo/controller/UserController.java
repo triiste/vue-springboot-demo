@@ -11,7 +11,6 @@ import com.example.demo.entity.Group;
 import com.example.demo.entity.User;
 import com.example.demo.mapper.GroupMapper;
 import com.example.demo.mapper.UserMapper;
-import jdk.nashorn.internal.ir.RuntimeNode;
 import org.springframework.web.bind.annotation.*;
 
 import javax.annotation.Resource;
@@ -35,7 +34,7 @@ public class UserController {
 
         return Result.success(res);
     }
-    /////////////////////////////////////////////////////////
+
     @GetMapping("/edit")  //登录
     public Result<?> find(@RequestParam String userjobid,@RequestParam String password0,@RequestParam String password1) {//把前台json转换为java对象
         //在Project表中查找本项目ID
@@ -51,7 +50,7 @@ public class UserController {
             return Result.success();
         }
     }
-    ///////////////////////////////////////////////////////////
+
 
     @PostMapping //新增，赋初始密码
     public Result<?> save(@RequestBody User user){//把前台json转换为java对象
@@ -71,7 +70,7 @@ public class UserController {
     @DeleteMapping("/{id}") //通过id查询的接口
     public Result<?> delete(@PathVariable long id) {//把前台json转换为java对象
 
-             userMapper.deleteById(id);
+        userMapper.deleteById(id);
         return Result.success();
 
     }
