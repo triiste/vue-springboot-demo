@@ -38,7 +38,7 @@ public class ProjectController {
         }
         Mark reb = markMapper.selectOne(Wrappers.<Mark>lambdaQuery().eq(Mark::getProjectType,project.getProjectType()).eq(Mark::getProjectLevel,project.getProjectLevel()));
         if(reb == null){
-            return Result.error("-3","啊啊啊啊");
+            return Result.error("-3","未选择项目类别/项目级别");
         }
 //        System.out.println(reb);
         project.setProjectMark(reb.getProjectMark());

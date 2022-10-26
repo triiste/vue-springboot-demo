@@ -141,6 +141,8 @@
                 totaltableData:[],
                 i:0,
                 j:0,
+                record:[],
+                k:0,
             }
         },
         created() {
@@ -195,33 +197,41 @@
 
 
                     this.totaltableData = res.data.records;
-                    this.tableData=this.totaltableData;
                     // for(this.i=0;this.i<this.totaltableData.length;this.i++){
+                    //     this.sleep(1000);
+                    //                       request.get("/group/finddata",{
+                    //         params: {
+                    //             userid:this.user.userid,
+                    //             projectId:this.totaltableData[this.i].projectId,
+                    //         }
+                    //     }).then(res => {
+                    //         // console.log(res);
+                    //         if (res.code === '0') {
+                    //             this.record[this.k]=1;
+                    //             this.$message({
+                    //                 type: "success",
+                    //                 message:"有点快"+this.i,
                     //
-                    //     // var projectid =this.totaltableData[this.i].projectId;
-                    //     // console.log("看看此时的projectid11111111"+projectid);
-                    //     // // var userid=this.user.userid;
-                    //     // console.log("看看此时的projectid2222222"+userid);
-                    //     // // request.get("/group/finddata",{
-                    //     //     params: {
-                    //     //         userid:userid,
-                    //     //         projectId:projectid,
-                    //     //     }
-                    //     // }).then(res => {
-                    //     //     if (res.code === '0') {
-                    //     //         // 说明就是,把这行给j
-                    //     //         this.tableData[this.j]=this.totaltableData[this.i];
-                    //     //         this.j=this.j+1;
-                    //     //         console.log("输出成功的的的333333333333"+this.i);
-                    //     //     } else {
-                    //     //         //说明不是什么也不做
-                    //     //         console.log("输出失败的的333333333333"+this.i);
-                    //     //     }
-                    //     // });
-                    //  }
-                    //  console.log("看看此时的j是多少"+this.j);
-                    // this.tableData.length=this.totaltableData.length-this.j;
-                    // this.total = res.data.total-this.j;
+                    //             });
+                    //             console.log(this.tableData[0]);
+                    //         } else {
+                    //             this.$message({
+                    //                 type: "error",
+                    //                 message: "有点错误"+this.i,
+                    //
+                    //             })
+                    //         }
+                    //                           // this.k++;
+                    //     });
+                    // }
+
+                    // this.totaltableData[0]="";
+                    // this.totaltableData[1]="";
+                    // this.totaltableData[this.j]=this.totaltableData[this.i];
+                    // this.j++;
+                    // this.totaltableData.length=3;
+                    // this.totaltableData[2]="";
+                    this.tableData=this.totaltableData;
                     this.total=res.data.total;
                 })
             },
@@ -232,6 +242,10 @@
             save() {
                 this.dialogVisible = false;//关闭弹窗
                     },
+            sleep(ms) { //sleep延迟方法2
+                var unixtime_ms = new Date().getTime();
+                while(new Date().getTime() < unixtime_ms + ms) {}
+            },
             //编辑权限
             handleEdit(row) {
 
