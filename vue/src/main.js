@@ -5,7 +5,8 @@ import store from './store'
 import ElementPlus from 'element-plus';
 import 'element-plus/dist/index.css';
 import zhCn from 'element-plus/es/locale/lang/zh-cn'
-
+import XLSX from "xlsx"
+import FileSaver from 'file-saver'
 
 import '@/assets/css/global.css'
 import {ArrowDown} from '@element-plus/icons-vue'

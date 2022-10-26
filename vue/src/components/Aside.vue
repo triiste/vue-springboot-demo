@@ -13,13 +13,13 @@
         <!--v-if="this.user.role != 1 && this.user.role != 2"-->
         <!--v-if="this.user.role != 1"-->
         <!--v-if="this.user.role != 1"-->
-        <el-menu-item index="/user" v-if="this.user.role !== 1"  >
-          <span>所有用户</span>
+      <el-menu-item index="/project" v-if="this.user.role !== 1">
+        <span>项目管理</span>
+        <el-icon><Document /></el-icon>
+      </el-menu-item>
+      <el-menu-item index="/user" v-if="this.user.role !== 1"  >
+          <span>用户管理</span>
           <el-icon><User /></el-icon>
-        </el-menu-item>
-        <el-menu-item index="/project" v-if="this.user.role !== 1">
-          <span>所有项目</span>
-          <el-icon><Document /></el-icon>
         </el-menu-item>
         <!--<el-menu-item index="/group" >项目组管理</el-menu-item>-->
         <el-sub-menu index="/group" v-if="this.user.role === 1">

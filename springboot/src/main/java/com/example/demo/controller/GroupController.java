@@ -151,6 +151,7 @@ public class GroupController {
         //Page<Group> groupPage = groupMapper.selectPage(new Page<>(pageNum,pageSize),Wrappers.<Group>lambdaQuery().like(Group::getNickName,search));
 //        如果项目ID和userid都在group表中就打印！！！
         LambdaQueryWrapper<Group> wrapper = Wrappers.<Group>lambdaQuery();
+
         if (StrUtil.isNotBlank(search)) {
             wrapper.like(Group::getUserid, search).or().like(Group::getProjectid,search);
         }
