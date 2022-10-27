@@ -6,29 +6,34 @@ import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.baomidou.mybatisplus.core.toolkit.Wrappers;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.example.demo.common.Result;
-import com.example.demo.entity.Group;
 import com.example.demo.entity.Mark;
 import com.example.demo.entity.Project;
 import com.example.demo.entity.User;
-import com.example.demo.mapper.GroupMapper;
 import com.example.demo.mapper.MarkMapper;
 import com.example.demo.mapper.ProjectMapper;
 import com.example.demo.mapper.UserMapper;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
 import javax.annotation.Resource;
+import java.util.List;
 
 @RestController
 @RequestMapping("/project")
 public class ProjectController {
-
+    @Autowired
     @Resource//引入mapper 但不规范 一般controller引入service service引入mapper
             ProjectMapper projectMapper;
     @Resource
     UserMapper userMapper;
     @Resource
     MarkMapper markMapper;
-
+    @GetMapping("/test")
+    public List<Project> index(@RequestParam Integer userid) {
+        List<Project> all = projectMapper.findAll(userid);
+        System.out.println(all);
+        return all;
+    }
     @PostMapping //新增
     public Result<?> save(@RequestBody Project project) {//把前台json转换为java对象
         User res = userMapper.selectOne(Wrappers.<User>lambdaQuery().eq(User::getUserid, project.getProjectgroupId()));

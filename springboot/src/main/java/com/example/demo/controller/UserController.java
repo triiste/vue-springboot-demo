@@ -19,11 +19,12 @@ import java.util.List;
 @RestController
 @RequestMapping("/user")
 public class UserController {
-
     @Resource//引入mapper 但不规范 一般controller引入service service引入mapper
             UserMapper userMapper;
     @Resource//引入mapper 但不规范 一般controller引入service service引入mapper
             GroupMapper groupMapper;
+
+
 
     @PostMapping("/login")  //登录
     public Result<?> login(@RequestBody User user){//把前台json转换为java对象  //前台和数据库进行比对
