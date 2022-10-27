@@ -49,6 +49,12 @@
 
                 </template>
             </el-table-column>
+            <el-table-column fixed="right" label="项目管理" width="120">
+                <template #default="scope">
+                    <el-button type="primary" size="small" @click="join(scope.row)">参与项目</el-button>
+                    <el-button type="primary" size="small" @click="host(scope.row)">主持项目</el-button>
+                </template>
+            </el-table-column>
         </el-table>
 
         <div style="margin: 10px 0">
@@ -186,6 +192,23 @@
                     this.total = res.data.total
                 });
                 console.log(this.form)
+            },
+            join(row) {
+                this.$router.push({
+                    path:'/joinproject',
+                    query: {
+                        jmessage: row.userid,
+                    }
+                })
+            },
+            host(row) {
+                this.$router.push({
+                    path:'/hostproject',
+                    query: {
+                        userid:row.userid,
+                        // message: row.projectId,
+                    }
+                })
             },
             add() {
                 this.dialogVisible = true;

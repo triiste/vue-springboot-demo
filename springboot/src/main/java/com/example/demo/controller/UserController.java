@@ -79,6 +79,7 @@ public class UserController {
 
     @GetMapping("/{id}") //通过id查询的接口
     public Result<?> getById(@PathVariable long id){//把前台json转换为java对象
+       // System.out.println(id);
         return Result.success(userMapper.selectById(id));
     }
 
