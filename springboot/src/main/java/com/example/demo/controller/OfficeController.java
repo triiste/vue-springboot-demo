@@ -3,23 +3,24 @@ package com.example.demo.controller;
 
 import cn.hutool.core.util.StrUtil;
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
-import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.baomidou.mybatisplus.core.toolkit.Wrappers;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.example.demo.common.Result;
-import com.example.demo.entity.Group;
+import com.example.demo.entity.Office;
 import com.example.demo.entity.User;
 import com.example.demo.mapper.GroupMapper;
+import com.example.demo.mapper.OfficeMapper;
 import com.example.demo.mapper.UserMapper;
 import org.springframework.web.bind.annotation.*;
 
 import javax.annotation.Resource;
-import java.util.List;
 
 @RestController
-@RequestMapping("/user")
-public class UserController {
+@RequestMapping("/office")
+public class OfficeController {
 
+    @Resource//引入mapper 但不规范 一般controller引入service service引入mapper
+            OfficeMapper officeMapper;
     @Resource//引入mapper 但不规范 一般controller引入service service引入mapper
             UserMapper userMapper;
     @Resource//引入mapper 但不规范 一般controller引入service service引入mapper
@@ -53,17 +54,15 @@ public class UserController {
 
 
     @PostMapping //新增，赋初始密码
-    public Result<?> save(@RequestBody User user){//把前台json转换为java对象
-        if(user.getPassword() == null){
-            user.setPassword("123456");
-        }
-        userMapper.insert(user);
+    public Result<?> save(@RequestBody Office office){//把前台json转换为java对象
+        System.out.println(office.getUsername());
+        officeMapper.insert(office);
         return Result.success();
     }
 
     @PutMapping  //更新
-    public Result<?> update(@RequestBody User user){//把前台json转换为java对象
-        userMapper.updateById(user);
+    public Result<?> update(@RequestBody Office office){//把前台json转换为java对象
+        officeMapper.updateById(office);
         return Result.success();
     }
 
@@ -94,16 +93,16 @@ public class UserController {
         userMapper.insert(user);
         return Result.success(); //返回代码code为0
     }
-    @GetMapping //按用户名查找
+    @GetMapping //按室主任id和室内id查找
     public Result<?> findPage(@RequestParam(defaultValue = "1") Integer pageNum,
                               @RequestParam(defaultValue = "10") Integer pageSize,
                               @RequestParam(defaultValue = "") String search){
         //Page<User> userPage = userMapper.selectPage(new Page<>(pageNum,pageSize),Wrappers.<User>lambdaQuery().like(User::getNickName,search));
-        LambdaQueryWrapper<User> wrapper = Wrappers.<User>lambdaQuery();
+        LambdaQueryWrapper<Office> wrapper = Wrappers.<Office>lambdaQuery();
         if (StrUtil.isNotBlank(search)) {
-            wrapper.like(User::getOfficeid, search);
+            wrapper.like(Office::getId, search).or().like(Office::getOfficeuserid,search);
         }
-        Page<User> userPage = userMapper.selectPage(new Page<>(pageNum, pageSize), wrapper);
+        Page<Office> userPage = officeMapper.selectPage(new Page<>(pageNum, pageSize), wrapper);
         return Result.success(userPage);
     }
 }

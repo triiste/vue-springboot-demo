@@ -21,5 +21,6 @@ public class User {
     private String permission;
     private Integer role;
     private Integer mark;
+    private Integer officeid;
 
 }

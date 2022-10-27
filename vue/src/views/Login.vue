@@ -14,6 +14,7 @@
                     <!--lable标签是表示值的-->
                     <el-radio v-model="form.role" :label="1" style="color: white">普通员工</el-radio>
                     <el-radio v-model="form.role" :label="2" style="color: white">总管理</el-radio>
+                    <el-radio v-model="form.role" :label="3" style="color: white">室主任</el-radio>
                     <!--<el-radio v-model="form.role" :label="3" style="color: white">室主任</el-radio>-->
                     <!--<el-radio v-model="form.role" :label="4" style="color: white">科研处</el-radio>-->
                     <!--<el-radio v-model="form.role" :label="5" style="color: white">总后台管理员</el-radio>-->

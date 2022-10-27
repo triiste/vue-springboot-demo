@@ -17,7 +17,7 @@
         <span>项目管理</span>
         <el-icon><Document /></el-icon>
       </el-menu-item>
-      <el-menu-item index="/user" v-if="this.user.role !== 1"  >
+      <el-menu-item index="/officeperson" v-if="this.user.role !== 1"  >
           <span>用户管理</span>
           <el-icon><User /></el-icon>
         </el-menu-item>

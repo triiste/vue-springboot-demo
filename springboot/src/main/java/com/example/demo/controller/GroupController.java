@@ -39,8 +39,6 @@ public class GroupController {
         if (res == null) {
             return Result.error("-1", "该用户不存在!!!");
         }
-        System.out.println(group.getUserid());
-        System.out.println(group.getProjectid());
         Group res2 = groupMapper.selectOne(Wrappers.<Group>lambdaQuery().eq(Group::getUserid, group.getUserid()).eq(Group::getProjectid,group.getProjectid()));
         System.out.println(res2);
         if (res2 != null) {

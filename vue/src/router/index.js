@@ -53,6 +53,16 @@ const routes = [
             name: 'oneitemgroup',
             component: () => import("@/views/Oneitemgroup")
         },
+        {
+            path: 'officeperson',
+            name: 'officeperson',
+            component: () => import("@/views/Officeperson")
+        },
+        {
+            path: 'oneofficegroup',
+            name: 'oneofficegroup',
+            component: () => import("@/views/Oneofficegroup")
+        },
     ]
   },
   {
