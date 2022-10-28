@@ -37,13 +37,14 @@
             <el-table-column prop="secondMark" label="第二阶段积分"></el-table-column>
             <el-table-column prop="threeMark" label="第三阶段积分"></el-table-column>
             <el-table-column prop="projectReward" label="附加分"></el-table-column>
+
             <el-table-column fixed="right" label="操作" width="120" v-if="this.user.role != 1">
                 <template #default="scope">
-                    <el-button type="primary" size="small" @click="details(scope.row)">成员详情</el-button>
-                    <el-button link type="primary" size="small" @click="handleEdit(scope.row)">编辑</el-button>
+                    <el-button type="primary" size="small" @click="details(scope.row)" >成员详情</el-button>
+                    <el-button link type="primary" size="small" @click="handleEdit(scope.row)" v-if="this.user.role === 2">编辑</el-button>
                     <el-popconfirm title="确认删除吗？" @confirm="handleDelete(scope.row.projectId)">
                         <template #reference>
-                            <el-button link type="danger" size="small">删除</el-button>
+                            <el-button link type="danger" size="small" v-if="this.user.role === 2">删除</el-button>
                         </template>
                     </el-popconfirm>
                 </template>

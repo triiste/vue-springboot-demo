@@ -13,7 +13,7 @@
         <!--v-if="this.user.role != 1 && this.user.role != 2"-->
         <!--v-if="this.user.role != 1"-->
         <!--v-if="this.user.role != 1"-->
-      <el-menu-item index="/project" v-if="this.user.role !== 1">
+      <el-menu-item index="/project" v-if="this.user.role === 4 || this.user.role === 2"  >
         <span>项目管理</span>
         <el-icon><Document /></el-icon>
       </el-menu-item>

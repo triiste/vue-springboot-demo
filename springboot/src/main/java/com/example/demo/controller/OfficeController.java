@@ -14,6 +14,7 @@ import com.example.demo.mapper.UserMapper;
 import org.springframework.web.bind.annotation.*;
 
 import javax.annotation.Resource;
+import java.util.List;
 
 @RestController
 @RequestMapping("/office")
@@ -25,6 +26,19 @@ public class OfficeController {
             UserMapper userMapper;
     @Resource//引入mapper 但不规范 一般controller引入service service引入mapper
             GroupMapper groupMapper;
+
+    @GetMapping("/test")
+    public List<Office> findoffice(
+//                                    @RequestParam(defaultValue = "1") Integer pageNum,
+//                                   @RequestParam(defaultValue = "10") Integer pageSize
+                                     ) {
+//        pageNum = (pageNum -1) *pageSize;
+//        pageNum,pageSize
+        List<Office> all = officeMapper.findAll();
+      //  System.out.println(all);
+        return all;
+    }
+
 
     @PostMapping("/login")  //登录
     public Result<?> login(@RequestBody User user){//把前台json转换为java对象  //前台和数据库进行比对

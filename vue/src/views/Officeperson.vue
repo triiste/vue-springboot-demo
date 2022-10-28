@@ -3,7 +3,7 @@
         <!--    功能区域-->
         <!--<div style="margin: 10px 0" v-if="this.user.role != 1 && this.user.role != 2">-->
         <div style="margin: 10px 0">
-            <el-button type="primary" @click="add">新增</el-button>
+            <el-button type="primary" @click="add" v-if="this.user.role === 2 || this.user.role === 4">新增</el-button>
         </div>
         <!--    搜索区域-->
         <!--<div style="margin: 10px 0" v-if="this.user.role != 2 && this.user.role != 1">-->
@@ -122,16 +122,19 @@
         },
         methods: {
             load() {
-                request.get("/office", {
-                    params: {
-                        pageNum: this.currentPage,
-                        pageSize: this.pageSize,
-                        search: this.search
-                    }
+                request.get("/office/test", {
+                     // params: {
+                     //    pageNum: this.currentPage,
+                     //    pageSize: this.pageSize,
+                     //     // search: this.search
+                     // }
                 }).then(res => {
                     console.log(res);
-                    this.tableData = res.data.records;
-                    this.total = res.data.total;
+                    for(var i=0;i<res.length;i++){
+                        this.tableData[i]=res[i];
+                    }
+                    // this.tableData.length=res.length;
+                    this.total = res.length;
                 })
             },
 

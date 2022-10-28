@@ -2,7 +2,8 @@
     <div style="padding: 10px">
         <!--    功能区域-->
         <div style="margin: 10px 0">
-            <el-button type="primary" @click="add">新增</el-button>
+            <el-button type="primary" @click="add" v-if="this.user.role !== 3">新增</el-button>
+            <!--<el-button type="primary" @click="returnhere" v-if="this.user.role === 3">返回上一步</el-button>-->
         </div>
         <el-table :data="tableData" stripe border  style="width: 100%">
             <el-table-column prop="id" label="ID" sortable></el-table-column>
@@ -26,10 +27,10 @@
                 <el-table-column fixed="right" label="操作" width="120" >
                 <template #default="scope">
                     <el-button type="primary" size="small"   @click="perMessage(scope.row)">个人信息</el-button>
-                    <el-button link type="primary" size="small" @click="handleEdit(scope.row) "  >编辑</el-button>
+                    <el-button link type="primary" size="small" @click="handleEdit(scope.row) "  v-if="this.user.role !== 3">编辑</el-button>
                     <el-popconfirm title="确认删除吗？" @confirm="handleDelete(scope.row.id)">
                         <template #reference>
-                            <el-button link type="danger" size="small" >删除</el-button>
+                            <el-button link type="danger" size="small" v-if="this.user.role !== 3" >删除</el-button>
                         </template>
                     </el-popconfirm>
                 </template>
@@ -229,6 +230,15 @@
                     // console.log(projectid.projectid);
                 })
             },
+            // returnhere(){
+            //     this.$router.push({
+            //         path:'/officehostproject',
+            //         query: {
+            //             userid:row.userid,
+            //             // message: row.projectId,
+            //         }
+            //     })
+            // },
             perMessage(row) {
                 console.log(row.userid);
 

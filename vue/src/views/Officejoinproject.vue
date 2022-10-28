@@ -1,20 +1,21 @@
 <template>
     <div style="padding: 10px">
         <!--    功能区域-->
-        <div style="margin: 10px 0" v-if="this.user.role != 1 && this.user.role != 2">
-            <el-button type="primary" @click="add">新增</el-button>
+        <div style="margin: 10px 0" v-if="this.user.role !== 1">
+            <!--<el-button type="primary" @click="add">新增</el-button>-->
+            <el-button type="primary" @click="returnhere"  >返回上一步</el-button>
         </div>
         <!--    搜索区域-->
-        <div style="margin: 10px 0" v-if="this.user.role != 2 && this.user.role != 1">
-            <el-input
-                    style="width: 20%"
-                    v-model="search"
-                    size="large"
-                    placeholder="请输入项目ID或者组长工号"
-                    clearable
-            />
-            <el-button type="primary" style="margin-left: 5px" @click="load" >查询</el-button>
-        </div>
+        <!--<div style="margin: 10px 0" v-if="this.user.role != 2 && this.user.role != 1">-->
+            <!--<el-input-->
+                    <!--style="width: 20%"-->
+                    <!--v-model="search"-->
+                    <!--size="large"-->
+                    <!--placeholder="请输入项目ID或者组长工号"-->
+                    <!--clearable-->
+            <!--/>-->
+            <!--<el-button type="primary" style="margin-left: 5px" @click="load" >查询</el-button>-->
+        <!--</div>-->
         <el-table :data="tableData" stripe border style="width: 100%">
             <!--<template>-->
             <el-table-column prop="projectId" label="ID" sortable/>
@@ -83,8 +84,8 @@
                         <el-input v-model="form.handler" style="width: 70%" disabled/>
                     </el-form-item>
                     <el-form-item label="项目进度">
-                    <el-input v-model="form.projectProgress" style="width: 70%" disabled/>
-                </el-form-item>
+                        <el-input v-model="form.projectProgress" style="width: 70%" disabled/>
+                    </el-form-item>
                     <el-form-item label="第一阶段积分">
                         <el-input v-model="form.firstMark" style="width: 70%"></el-input>
                     </el-form-item>
@@ -100,10 +101,10 @@
 
 
                     <!--<el-form-item label="室主任确认情况">-->
-                        <!--<el-input v-model="form.officeDirector" style="width: 70%" disabled/>-->
+                    <!--<el-input v-model="form.officeDirector" style="width: 70%" disabled/>-->
                     <!--</el-form-item>-->
                     <!--<el-form-item label="科研处确认情况">-->
-                        <!--<el-input v-model="form.scientific" style="width: 70%" disabled/>-->
+                    <!--<el-input v-model="form.scientific" style="width: 70%" disabled/>-->
                     <!--</el-form-item>-->
 
                 </el-form>
@@ -143,6 +144,7 @@
                 j:0,
                 record:[],
                 k:0,
+                message1:0,
             }
         },
         created() {
@@ -166,30 +168,29 @@
             // this.search=this.user.userid;
             //找到项目ID
 
-                //查找当前group中存在的用户ID  put是放过去 get是请求过来
-                // request.get("/group/find",{
-                //     params: {
-                //         userid:this.user.userid,
-                //     }
-                // }).then(res => {
-                //     if (res !== -1) {
-                //         this.search = res;
-                //     }
-                //     console.log(res);
-                //     this.load()
-                // });
+            //查找当前group中存在的用户ID  put是放过去 get是请求过来
+            // request.get("/group/find",{
+            //     params: {
+            //         userid:this.user.userid,
+            //     }
+            // }).then(res => {
+            //     if (res !== -1) {
+            //         this.search = res;
+            //     }
+            //     console.log(res);
+            //     this.load()
+            // });
             // this.search=自己参与的项目的编号 -->查找group表找到自己参与的项目ID，然后拿自己参与的ID取搜索取到自己参与的项目
-            this.load();
-
+                this.load();
 
         },
 
         methods: {
             load() {
-             //   待修改----------------------
+                //   待修改----------------------
                 request.get("/project/test",{
                     params:{
-                        userid: this.user.userid,
+                        userid: this.message1,
                     }
                 }).then(res =>{
                     console.log(res[0]);
@@ -202,25 +203,6 @@
                     console.log(res[0].projectId)
                     // JSON.toJSONString(list)
                 })
-
-
-
-
-                //
-                // request.get("/project", {
-                //     params: {
-                //         pageNum: this.currentPage,
-                //         pageSize: this.pageSize,
-                //         search: this.search
-                //     }
-                // }).then(res => {
-                //     console.log(res);
-                //
-                //
-                //     this.totaltableData = res.data.records;
-                //     this.tableData=this.totaltableData;
-                //     this.total=res.data.total;
-                // })
             },
             add() {
                 this.dialogVisible = true;
@@ -228,20 +210,25 @@
             },
             save() {
                 this.dialogVisible = false;//关闭弹窗
-                    },
+            },
             sleep(ms) { //sleep延迟方法2
                 var unixtime_ms = new Date().getTime();
                 while(new Date().getTime() < unixtime_ms + ms) {}
+            },
+            returnhere(){
+                this.$router.push({
+                    path:'/oneofficegroup',
+                })
             },
             //编辑权限
             handleEdit(row) {
 
                 //用id请求后台数据
-                this.search =this.user.userid;
+                // this.search =this.user.userid;
                 //在用项目组id和本人id请求group，找到所在的这一行
                 request.get("/group/finddata",{
                     params: {
-                        userid:this.user.userid,
+                        userid:this.message1,
                         projectId:row.projectId,
                     }
                 }).then(res => {
@@ -260,11 +247,11 @@
 
                 });
                 //、、、、、、、、、、、、、、、、、、、、、、、、、、
-             //    this.load();
-             //
-             //    this.form = JSON.parse(JSON.stringify(row));
-             // //   this.form.projectLevel="傻逼";
-             //    this.dialogVisible = true
+                //    this.load();
+                //
+                //    this.form = JSON.parse(JSON.stringify(row));
+                // //   this.form.projectLevel="傻逼";
+                //    this.dialogVisible = true
 
 
             },

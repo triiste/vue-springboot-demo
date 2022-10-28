@@ -1,19 +1,20 @@
 <template>
     <div style="padding: 10px">
         <!--    功能区域-->
-        <div style="margin: 10px 0" v-if="this.user.role != 1 && this.user.role != 2">
-            <el-button type="primary" @click="add">新增</el-button>
+        <div style="margin: 10px 0" v-if="this.user.role != 1">
+            <el-button type="primary" @click="add" v-if="this.user.role === 1">新增</el-button>
+            <el-button type="primary" @click="returnhere"  >返回上一步</el-button>
         </div>
         <!--    搜索区域-->
-        <div style="margin: 10px 0" v-if="this.user.role != 2 && this.user.role != 1">
-            <el-input
-                    style="width: 20%"
-                    v-model="search"
-                    size="large"
-                    placeholder="请输入项目ID或者组长工号"
-                    clearable></el-input>
-            <el-button type="primary" style="margin-left: 5px" @click="load" >查询</el-button>
-        </div>
+        <!--<div style="margin: 10px 0" v-if="this.user.role != 2 && this.user.role != 1">-->
+            <!--<el-input-->
+                    <!--style="width: 20%"-->
+                    <!--v-model="search"-->
+                    <!--size="large"-->
+                    <!--placeholder="请输入项目ID或者组长工号"-->
+                    <!--clearable></el-input>-->
+            <!--<el-button type="primary" style="margin-left: 5px" @click="load" >查询</el-button>-->
+        <!--</div>-->
         <el-table :data="tableData" stripe border style="width: 100%">
             <!--<template>-->
             <el-table-column prop="projectId" label="ID" sortable></el-table-column>
@@ -38,7 +39,7 @@
                     <!--v-if="this.user.userid === JSON.parse(JSON.stringify(row)).ProjectgroupId"-->
                     <!--v-if="this.user.userid === form.projectgroupId"-->
                     <el-button  type="primary" size="small"   @click="details(scope.row)">成员详情</el-button>
-                    <el-button link type="primary" size="small" @click="handleEdit(scope.row)">编辑</el-button>
+                    <!--<el-button link type="primary" size="small" @click="handleEdit(scope.row)">编辑</el-button>-->
                 </template>
             </el-table-column>
         </el-table>
@@ -118,7 +119,7 @@
             }
         },
         created() {
-            // this.message1 = this.$route.query.userid; //传来的项目ID
+            this.message1 = this.$route.query.userid; //传来的项目ID
             let userStr = localStorage.getItem("user") || "{}";
             this.user = JSON.parse(userStr);
             //this.role = JSON.parse(localStorage.getItem("user")).role;  //取缓存里面的值
@@ -129,7 +130,7 @@
                     this.user = res.data
                 }
             });
-            this.search=this.user.userid;
+            this.search=this.message1;
             this.load();
             // if(this.user.role === 1 ||this.user.role === 2  ){
             //     //查找当前group中存在的项目ID  put是放过去 get是请求过来
@@ -207,6 +208,11 @@
                     })
                 }
 
+            },
+            returnhere(){
+                this.$router.push({
+                    path:'/oneofficegroup',
+                })
             },
             //编辑权限
             handleEdit(row) {

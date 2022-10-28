@@ -70,7 +70,15 @@
                         //  if(this.form.role === 1)
                         //     this.$router.push("/person");  //登录成功之后进行页面的跳转，跳转到主页
                         // else
-                            this.$router.push("/project") ; //登录成功之后进行页面的跳转，跳转到主页
+                        if(this.form.role === 1)
+                            this.$router.push("/hostproject") ; //登录成功之后进行页面的跳转，跳转到主页
+                        else if(this.form.role ===3)
+                            this.$router.push("/officeperson") ; //登录成功之后进行页面的跳转，跳转到主页
+                        else if(this.form.role ===2)
+                            this.$router.push("/project");
+
+
+
                     } else {
                         this.$message({
                             type: "error",

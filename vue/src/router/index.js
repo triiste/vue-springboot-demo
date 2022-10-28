@@ -63,6 +63,16 @@ const routes = [
             name: 'oneofficegroup',
             component: () => import("@/views/Oneofficegroup")
         },
+        {
+            path: 'officehostproject',
+            name: 'officehostproject',
+            component: () => import("@/views/Officehostproject")
+        },
+        {
+            path: 'officejoinproject',
+            name: 'officejoinproject',
+            component: () => import("@/views/Officejoinproject")
+        },
     ]
   },
   {

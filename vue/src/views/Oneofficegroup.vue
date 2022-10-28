@@ -2,7 +2,8 @@
     <div style="padding: 10px">
         <!--    功能区域-->
         <div style="margin: 10px 0">
-            <el-button type="primary" @click="add">新增</el-button>
+            <el-button type="primary" @click="add" v-if="this.officeid === this.user.userid || this.user.role === 2">新增</el-button>
+            <el-button type="primary" @click="returnhere">返回室列表</el-button>
         </div>
         <!--    搜索区域-->
         <!--<div style="margin: 10px 0">-->
@@ -36,7 +37,7 @@
             <!--</el-table-column>-->
             <el-table-column prop="position" label="职位"/>
             <el-table-column prop="permission" label="部门"/>
-            <el-table-column prop="mark" label="积分"/>
+            <el-table-column prop="mark" label="研究室奖励积分"/>
             <el-table-column fixed="right" label="操作" width="120"  v-if="this.officeid === this.user.userid">
                 <!--v-if="this.user.userid === this.asd1"-->
                 <template #default="scope" >
@@ -51,8 +52,9 @@
             </el-table-column>
             <el-table-column fixed="right" label="项目管理" width="120">
                 <template #default="scope">
-                    <el-button type="primary" size="small" @click="join(scope.row)">参与项目</el-button>
-                    <el-button type="primary" size="small" @click="host(scope.row)">主持项目</el-button>
+                    <el-button type="primary"  @click="join(scope.row)" style="margin-left: 2px;margin-bottom: 2px">参与项目</el-button>
+
+                    <el-button type="primary"  @click="host(scope.row)" style="margin-left: 2px">主持项目</el-button>
                 </template>
             </el-table-column>
         </el-table>
@@ -114,7 +116,10 @@
                         <el-input v-model="form.position" style="width: 70%"/>
                     </el-form-item>
                     <el-form-item label="部门">
-                        <el-input type="textarea" v-model="form.permission" style="width: 70%"/>
+                    <el-input type="textarea" v-model="form.permission" style="width: 70%"/>
+                </el-form-item>
+                    <el-form-item label="研究室奖励积分">
+                        <el-input type="number" v-model="form.mark" style="width: 70%"/>
                     </el-form-item>
                     <!--<el-form-item label="积分">-->
                     <!--<el-input type="number" v-model="form.mark" style="width: 70%"/>-->
@@ -195,15 +200,20 @@
             },
             join(row) {
                 this.$router.push({
-                    path:'/joinproject',
+                    path:'/officejoinproject',
                     query: {
                         jmessage: row.userid,
                     }
                 })
             },
+            returnhere(){
+                this.$router.push({
+                    path:'/officeperson',
+                })
+            },
             host(row) {
                 this.$router.push({
-                    path:'/hostproject',
+                    path:'/officehostproject',
                     query: {
                         userid:row.userid,
                         // message: row.projectId,
