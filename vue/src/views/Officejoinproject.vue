@@ -191,17 +191,14 @@
                 request.get("/project/test",{
                     params:{
                         userid: this.message1,
+                        pageNum: this.currentPage,
+                        pageSize: this.pageSize,
                     }
                 }).then(res =>{
-                    console.log(res[0]);
-                    console.log("我要看看这是什么格式"+res[0]);
-                    // this.totaltableData = JSON.toJSONString(res);
-                    console.log(res.length);
-                    for(var i=0;i<res.length;i++){
-                        this.tableData[i]=res[i];
-                    }
-                    console.log(res[0].projectId)
-                    // JSON.toJSONString(list)
+                    this.tableData=res.data;
+                    console.log(res)
+                    //先全部查出来再去限制共几条是有问题的
+                    this.total = res.total;
                 })
             },
             add() {
