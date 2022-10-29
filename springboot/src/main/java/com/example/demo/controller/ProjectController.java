@@ -16,7 +16,9 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
 import javax.annotation.Resource;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 @RestController
 @RequestMapping("/project")
@@ -29,10 +31,17 @@ public class ProjectController {
     @Resource
     MarkMapper markMapper;
     @GetMapping("/test")
-    public List<Project> index(@RequestParam Integer userid) {
-        List<Project> all = projectMapper.findAll(userid);
-        System.out.println(all);
-        return all;
+    public Map<String, Object> index(@RequestParam Integer userid,
+                               @RequestParam(defaultValue = "1") Integer pageNum,
+                               @RequestParam(defaultValue = "10") Integer pageSize
+                               ) {
+        pageNum = (pageNum -1) *pageSize;
+        List<Project> all = projectMapper.findAll(userid,pageNum,pageSize);
+        Integer total = projectMapper.selectTotal(userid);
+        Map<String, Object> res = new HashMap<>();
+        res.put("data", all);
+        res.put("total", total);
+        return res;
     }
     @PostMapping //新增
     public Result<?> save(@RequestBody Project project) {//把前台json转换为java对象

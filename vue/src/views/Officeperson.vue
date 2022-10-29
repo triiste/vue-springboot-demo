@@ -123,21 +123,17 @@
         methods: {
             load() {
                 request.get("/office/test", {
-                     // params: {
-                     //    pageNum: this.currentPage,
-                     //    pageSize: this.pageSize,
+                     params: {
+                        pageNum: this.currentPage,
+                        pageSize: this.pageSize,
                      //     // search: this.search
-                     // }
+                     }
                 }).then(res => {
-                    console.log(res);
-                    for(var i=0;i<res.length;i++){
-                        this.tableData[i]=res[i];
-                    }
-                    // this.tableData.length=res.length;
-                    this.total = res.length;
+                  this.tableData=res.data;
+                  //先全部查出来再去限制共几条是有问题的
+                  this.total = res.total;
                 })
             },
-
             add() {
                 this.dialogVisible = true;
                 this.form = {}

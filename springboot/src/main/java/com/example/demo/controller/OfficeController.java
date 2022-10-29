@@ -14,7 +14,9 @@ import com.example.demo.mapper.UserMapper;
 import org.springframework.web.bind.annotation.*;
 
 import javax.annotation.Resource;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 @RestController
 @RequestMapping("/office")
@@ -28,15 +30,15 @@ public class OfficeController {
             GroupMapper groupMapper;
 
     @GetMapping("/test")
-    public List<Office> findoffice(
-//                                    @RequestParam(defaultValue = "1") Integer pageNum,
-//                                   @RequestParam(defaultValue = "10") Integer pageSize
-                                     ) {
-//        pageNum = (pageNum -1) *pageSize;
-//        pageNum,pageSize
-        List<Office> all = officeMapper.findAll();
-      //  System.out.println(all);
-        return all;
+    public Map<String, Object> findoffice(@RequestParam(defaultValue = "1") Integer pageNum,
+                                   @RequestParam(defaultValue = "10") Integer pageSize) {
+         pageNum = (pageNum -1) *pageSize;
+        List<Office> all = officeMapper.findAll(pageNum,pageSize);
+        Integer total = officeMapper.selectTotal();
+        Map<String, Object> res = new HashMap<>();
+        res.put("data", all);
+        res.put("total", total);
+        return res;
     }
 
 
