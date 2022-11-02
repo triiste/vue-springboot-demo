@@ -21,6 +21,12 @@
           <span>用户管理</span>
           <el-icon><User /></el-icon>
         </el-menu-item>
+
+        <el-menu-item index="/home">
+            <span>图表数据统计(开发中)</span>
+            <el-icon><PictureFilled /></el-icon>
+        </el-menu-item>
+
         <!--<el-menu-item index="/group" >项目组管理</el-menu-item>-->
         <el-sub-menu index="/group" v-if="this.user.role === 1">
           <template #title>项目管理</template>
@@ -39,12 +45,12 @@
 
 <script>
     import request from "@/utils/request";
-    import {Location, Setting, Menu ,Document,User} from '@element-plus/icons'
+    import {Location, Setting, Menu ,Document,User,PictureFilled} from '@element-plus/icons'
 export default {
 
   name: "Aside",
     components: {
-        Location, Setting, Menu ,Document,User
+        Location, Setting, Menu ,Document,User,PictureFilled
     },
     data(){
       return{

@@ -31,10 +31,13 @@ public class OfficeController {
 
     @GetMapping("/test")
     public Map<String, Object> findoffice(@RequestParam(defaultValue = "1") Integer pageNum,
-                                   @RequestParam(defaultValue = "10") Integer pageSize) {
+                                          @RequestParam(defaultValue = "10") Integer pageSize,
+                                          @RequestParam(defaultValue = "") String search
+                                          ) {
          pageNum = (pageNum -1) *pageSize;
-        List<Office> all = officeMapper.findAll(pageNum,pageSize);
-        Integer total = officeMapper.selectTotal();
+        search = "%" + search + "%";
+        List<Office> all = officeMapper.findAll(pageNum,pageSize,search);
+        Integer total = officeMapper.selectTotal(search);
         Map<String, Object> res = new HashMap<>();
         res.put("data", all);
         res.put("total", total);
@@ -83,11 +86,17 @@ public class OfficeController {
     }
 
     @DeleteMapping("/{id}") //通过id查询的接口
-    public Result<?> delete(@PathVariable long id) {//把前台json转换为java对象
+    public boolean delete(@PathVariable long id) {//把前台json转换为java对象
 
-        userMapper.deleteById(id);
-        return Result.success();
-
+        //先查此id内部有没有人
+        Integer total = userMapper.officeTotal(id);
+        if(total>0){
+           return  false;
+        }
+        else{
+            officeMapper.deleteById(id);
+            return true;
+        }
     }
 
 

@@ -12,7 +12,7 @@
                     style="width: 20%"
                     v-model="search"
                     size="large"
-                    placeholder="请输入本室ID或者室主任工号"
+                    placeholder="请输入本室ID"
                     clearable></el-input>
             <el-button type="primary" style="margin-left: 5px" @click="load">
                 <span>查询</span>
@@ -29,7 +29,7 @@
                 <template #default="scope">
                     <el-button type="primary" size="small" @click="details(scope.row)">成员详情</el-button>
                     <el-button link type="primary" size="small" @click="handleEdit(scope.row)"  v-if="this.user.role ===2 ">编辑</el-button>
-                    <el-popconfirm title="确认删除吗？" @confirm="handleDelete(scope.row.projectId)" >
+                    <el-popconfirm title="确认删除吗？" @confirm="handleDelete(scope.row.id)" >
                         <template #reference>
                             <el-button link type="danger" size="small" v-if="this.user.role ===2 ">删除</el-button>
                         </template>
@@ -67,9 +67,9 @@
                     <el-form-item label="室主任ID" >
                         <el-input v-model="form.officeuserid" style="width: 70%" ></el-input>
                     </el-form-item>
-                    <el-form-item label="室主任名称">
-                        <el-input v-model="form.username" style="width: 70%"></el-input>
-                    </el-form-item>
+                    <!--<el-form-item label="室主任名称">-->
+                        <!--<el-input v-model="form.username" style="width: 70%"></el-input>-->
+                    <!--</el-form-item>-->
                 </el-form>
                 <template #footer>
       <span class="dialog-footer">
@@ -126,11 +126,11 @@
                      params: {
                         pageNum: this.currentPage,
                         pageSize: this.pageSize,
-                     //     // search: this.search
+                         search:this.search,
                      }
                 }).then(res => {
                   this.tableData=res.data;
-                  //先全部查出来再去限制共几条是有问题的
+                  //先全部查出来再去限制共几条是-有问题的
                   this.total = res.total;
                 })
             },
@@ -191,15 +191,15 @@
                     path: '/oneofficegroup',
                     query: {
                         message: row.id,
-                        asd1:row.officeuserid,
+                        asd1:row.officeuserid,//message是室id
                     }
                 })
             },
 
             handleDelete(id) {
-                console.log(id)
-                request.delete("/project/" + id).then(res => {
-                    if (res.code === '0') {
+                console.log(id);
+                request.delete("/office/" + id).then(res => {
+                    if (res === true) {
                         this.$message({
                             type: "success",
                             message: "删除成功！"
@@ -207,7 +207,7 @@
                     } else {
                         this.$message({
                             type: "error",
-                            message: res.msg
+                            message: "本室还有人员，不能删除！"
                         })
                     }
                     this.load()//重新加载

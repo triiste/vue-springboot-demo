@@ -89,10 +89,23 @@ public class ProjectController {
     }
 
 
-    @DeleteMapping("/{id}")
-    public Result<?> delete(@PathVariable long id) {//把前台json转换为java对象
-        projectMapper.deleteById(id);
-        return Result.success();
+//    @DeleteMapping("/{id}")
+//    public Result<?> delete(@PathVariable long id) {//把前台json转换为java对象
+//        projectMapper.deleteById(id);
+//        return Result.success();
+//    }
+    @DeleteMapping("/{id}") //通过id查询的接口
+    public boolean delete(@PathVariable long id) {//把前台json转换为java对象
+
+        //先查此id内部有没有人
+        Integer total = userMapper.ItemTotal(id);
+        if(total>0){
+            return  false;
+        }
+        else{
+            projectMapper.deleteById(id);
+            return true;
+        }
     }
 
 
@@ -106,6 +119,19 @@ public class ProjectController {
 
             wrapper.like(Project::getProjectgroupId, search).or().like(Project::getProjectId, search);
 
+        }
+        Page<Project> projectPage = projectMapper.selectPage(new Page<>(pageNum, pageSize), wrapper);
+        return Result.success(projectPage);
+    }
+
+    @GetMapping("/host") //查找接口
+    public Result<?> findhostPage(@RequestParam(defaultValue = "1") Integer pageNum,
+                              @RequestParam(defaultValue = "10") Integer pageSize,
+                              @RequestParam(defaultValue = "") String search) {
+        //Page<Project> projectPage = projectMapper.selectPage(new Page<>(pageNum,pageSize),Wrappers.<Project>lambdaQuery().like(Project::getNickName,search));
+        LambdaQueryWrapper<Project> wrapper = Wrappers.<Project>lambdaQuery();
+        if (StrUtil.isNotBlank(search)) {
+            wrapper.eq(Project::getProjectgroupId, search);
         }
         Page<Project> projectPage = projectMapper.selectPage(new Page<>(pageNum, pageSize), wrapper);
         return Result.success(projectPage);

@@ -69,6 +69,11 @@ const routes = [
             component: () => import("@/views/Officehostproject")
         },
         {
+            path: 'home',
+            name: 'home',
+            component: () => import("@/views/Home")
+        },
+        {
             path: 'officejoinproject',
             name: 'officejoinproject',
             component: () => import("@/views/Officejoinproject")

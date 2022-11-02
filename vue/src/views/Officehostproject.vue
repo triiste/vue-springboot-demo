@@ -7,13 +7,13 @@
         </div>
         <!--    搜索区域-->
         <!--<div style="margin: 10px 0" v-if="this.user.role != 2 && this.user.role != 1">-->
-            <!--<el-input-->
-                    <!--style="width: 20%"-->
-                    <!--v-model="search"-->
-                    <!--size="large"-->
-                    <!--placeholder="请输入项目ID或者组长工号"-->
-                    <!--clearable></el-input>-->
-            <!--<el-button type="primary" style="margin-left: 5px" @click="load" >查询</el-button>-->
+        <!--<el-input-->
+        <!--style="width: 20%"-->
+        <!--v-model="search"-->
+        <!--size="large"-->
+        <!--placeholder="请输入项目ID或者组长工号"-->
+        <!--clearable></el-input>-->
+        <!--<el-button type="primary" style="margin-left: 5px" @click="load" >查询</el-button>-->
         <!--</div>-->
         <el-table :data="tableData" stripe border style="width: 100%">
             <!--<template>-->
@@ -120,6 +120,7 @@
         },
         created() {
             this.message1 = this.$route.query.userid; //传来的项目ID
+            this.message2 = this.$route.query.message;
             let userStr = localStorage.getItem("user") || "{}";
             this.user = JSON.parse(userStr);
             //this.role = JSON.parse(localStorage.getItem("user")).role;  //取缓存里面的值
@@ -154,7 +155,7 @@
 
         methods: {
             load() {
-                request.get("/project", {
+                request.get("/project/host", {
                     params: {
                         pageNum: this.currentPage,
                         pageSize: this.pageSize,
@@ -212,6 +213,9 @@
             returnhere(){
                 this.$router.push({
                     path:'/oneofficegroup',
+                    query: {
+                        message: this.message2,
+                    }
                 })
             },
             //编辑权限

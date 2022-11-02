@@ -42,10 +42,20 @@
 			<artifactId>mybatis-plus-boot-starter</artifactId>
 			<version>3.5.2</version>
 		</dependency>
+		<!--<dependency>-->
+			<!--<groupId>cn.hutool</groupId>-->
+			<!--<artifactId>hutool-all</artifactId>-->
+			<!--<version>5.8.8</version>-->
+		<!--</dependency>-->
 		<dependency>
 			<groupId>cn.hutool</groupId>
 			<artifactId>hutool-all</artifactId>
-			<version>5.8.8</version>
+			<version>5.7.20</version>
+		</dependency>
+		<dependency>
+			<groupId>org.apache.poi</groupId>
+			<artifactId>poi-ooxml</artifactId>
+			<version>4.1.2</version>
 		</dependency>
 
 		<!--<dependency>-->

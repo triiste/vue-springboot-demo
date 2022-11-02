@@ -2,21 +2,45 @@
     <div style="padding: 10px">
         <!--    功能区域-->
         <div style="margin: 10px 0">
-            <el-button type="primary" @click="add" v-if="this.officeid === this.user.userid || this.user.role === 2">新增</el-button>
-            <el-button type="primary" @click="returnhere">返回室列表</el-button>
+            <el-button type="primary" @click="add" v-if="this.officeid === this.user.userid || this.user.role === 2"  class="ml-5" style="margin-right: 0px">新增</el-button>
+
+            <!--<el-popconfirm-->
+                    <!--class="ml-5"-->
+                    <!--confirm-button-text='确定'-->
+                    <!--cancel-button-text='我再想想'-->
+                    <!--icon="el-icon-info"-->
+                    <!--icon-color="red"-->
+                    <!--title="您确定批量删除这些数据吗？"-->
+                    <!--@confirm="delBatch"-->
+            <!--&gt;-->
+                <!--<el-button type="danger" slot="reference"  style="margin-right: 5px" >批量删除 <i class="el-icon-remove-outline"></i></el-button>-->
+
+            <!--</el-popconfirm>-->
+            <el-popconfirm title="确认删除吗？" @confirm="delBatch">
+                <template #reference>
+                    <el-button type="danger" slot="reference"  style="margin-right: 5px" >批量删除</el-button>
+                </template>
+            </el-popconfirm>
+
+            <el-upload action="http://182.92.125.156:9096/user/import" :show-file-list="false" accept="xlsx" :on-success="handleExcelImportSuccess" style="display: inline-block">
+                <el-button type="primary" class="ml-5" style="margin-right: 5px">导入 <i class="el-icon-bottom"></i></el-button>
+            </el-upload>
+            <el-button type="primary" @click="exp" class="ml-5" style="margin-right: 5px">导出 <i class="el-icon-top"></i></el-button>
+            <el-button type="primary" @click="returnhere"  class="ml-5" style="margin-right: 5px">返回室列表</el-button>
         </div>
         <!--    搜索区域-->
         <!--<div style="margin: 10px 0">-->
-            <!--<el-input-->
-                    <!--style="width: 20%"-->
-                    <!--v-model="search"-->
-                    <!--size="large"-->
-                    <!--placeholder="请输入姓名"-->
-                    <!--clearable-->
-            <!--/>-->
-            <!--<el-button type="primary" style="margin-left: 5px" @click="load">查询</el-button>-->
+        <!--<el-input-->
+        <!--style="width: 20%"-->
+        <!--v-model="search"-->
+        <!--size="large"-->
+        <!--placeholder="请输入姓名"-->
+        <!--clearable-->
+        <!--/>-->
+        <!--<el-button type="primary" style="margin-left: 5px" @click="load">查询</el-button>-->
         <!--</div>-->
-        <el-table :data="tableData" stripe border style="width: 100%">
+        <el-table :data="tableData" border stripe :header-cell-class-name="headerBg"  @selection-change="handleSelectionChange">
+            <el-table-column type="selection" width="55"></el-table-column>
             <el-table-column prop="userid" label="ID" sortable/>
             <el-table-column prop="userjobid" label="工号" sortable/>
             <el-table-column prop="username" label="用户名"/>
@@ -41,10 +65,10 @@
             <el-table-column fixed="right" label="操作" width="120"  v-if="this.officeid === this.user.userid">
                 <!--v-if="this.user.userid === this.asd1"-->
                 <template #default="scope" >
-                    <el-button link type="primary" size="small" @click="handleEdit(scope.row)" >编辑</el-button>
+                    <el-button link type="primary" size="small" @click="handleEdit(scope.row)" v-if="this.officeid === this.user.userid || this.user.role === 2">编辑</el-button>
                     <el-popconfirm title="确认删除吗？" @confirm="handleDelete(scope.row.userid)">
                         <template #reference>
-                            <el-button link type="danger" size="small">删除</el-button>
+                            <el-button link type="danger" size="small" v-if="this.officeid === this.user.userid || this.user.role === 2">删除</el-button>
                         </template>
                     </el-popconfirm>
 
@@ -116,8 +140,8 @@
                         <el-input v-model="form.position" style="width: 70%"/>
                     </el-form-item>
                     <el-form-item label="部门">
-                    <el-input type="textarea" v-model="form.permission" style="width: 70%"/>
-                </el-form-item>
+                        <el-input type="textarea" v-model="form.permission" style="width: 70%"/>
+                    </el-form-item>
                     <el-form-item label="研究室奖励积分">
                         <el-input type="number" v-model="form.mark" style="width: 70%"/>
                     </el-form-item>
@@ -153,11 +177,15 @@
                 dialogVisible: false,
                 search:'',
                 user:{},
+                importaddress:"",
                 currentPage: 1,
                 pageSize: 10,
                 total: 0,
+                headerBg: 'headerBg',
                 tableData: [],
                 officeid:0,
+                exportaddress:"",
+                multipleSelection:[],
             }
         },
         created() {
@@ -167,15 +195,16 @@
             //请求服务端，确认当前登录用户的合法信息，服务器传不过来
             //下面这是一种交互方式，传来后台的form表单
             //传值来的数据是字符串类型，切记切记！！！！！！！
-            this.message1 = this.$route.query.message; //传来的项目ID
+            this.message1 = this.$route.query.message; //传来的室内id
             this.asd1 = this.$route.query.asd1;
+            // this.importaddress="http://localhost:9090/user/import?officeid="+this.message1;
             request.get("/user/" + this.user.userid).then(res => {
                 if (res.code === '0') {
                     this.user = res.data
                 }
             });
 
-             console.log("我倒要看看此时的asd1"+this.asd1+"看看此数据的类型"+typeof(this.asd1));
+            console.log("我倒要看看此时的asd1"+this.asd1+"看看此数据的类型"+typeof(this.asd1));
             this.officeid = this.asd1 * 1;
             console.log(typeof(this.officeid));
             this.search = this.message1;
@@ -183,6 +212,10 @@
 
         },
         methods: {
+            exp() {
+                this.exportaddress= "http://182.92.125.156:9096/user/export?userid="+ this.message1;
+                window.open(this.exportaddress)
+            },
             load() {
                 request.get("/user", {
                     params: {
@@ -203,6 +236,7 @@
                     path:'/officejoinproject',
                     query: {
                         jmessage: row.userid,
+                        message:this.message1,
                     }
                 })
             },
@@ -211,12 +245,29 @@
                     path:'/officeperson',
                 })
             },
+            delBatch() {
+
+                let ids = this.multipleSelection.map(v => v.userid);  // [{}, {}, {}] => [1,2,3]
+                console.log("看看选中的id"+ids);
+                request.post("/user/del/batch", ids).then(res => {
+                    if (res) {
+                        this.$message.success("批量删除成功")
+                        this.load()
+                    } else {
+                        this.$message.error("批量删除失败")
+                    }
+                })
+            },
+            handleExcelImportSuccess() {
+                this.$message.success("导入成功");
+                this.load()
+            },
             host(row) {
                 this.$router.push({
                     path:'/officehostproject',
                     query: {
-                        userid:row.userid,
-                        // message: row.projectId,
+                          userid:row.userid,
+                         message: this.message1,
                     }
                 })
             },
@@ -266,6 +317,10 @@
             handleEdit(row) {
                 this.form = JSON.parse(JSON.stringify(row))
                 this.dialogVisible = true
+            },
+            handleSelectionChange(val) {
+                // console.log(val);
+                this.multipleSelection = val
             },
             handleDelete(id) {
                 console.log(id);

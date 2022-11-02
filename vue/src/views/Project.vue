@@ -319,7 +319,7 @@
             handleDelete(id) {
                 console.log(id)
                 request.delete("/project/" + id).then(res => {
-                    if (res.code === '0') {
+                    if (res === true) {
                         this.$message({
                             type: "success",
                             message: "删除成功！"
@@ -327,7 +327,7 @@
                     } else {
                         this.$message({
                             type: "error",
-                            message: res.msg
+                            message: "本项目还有人员，不能删除！"
                         })
                     }
                     this.load()//重新加载

@@ -15,6 +15,7 @@
                     <el-radio v-model="form.role" :label="1" style="color: white">普通员工</el-radio>
                     <el-radio v-model="form.role" :label="2" style="color: white">总管理</el-radio>
                     <el-radio v-model="form.role" :label="3" style="color: white">室主任</el-radio>
+                    <el-radio v-model="form.role" :label="4" style="color: white">所领导</el-radio>
                     <!--<el-radio v-model="form.role" :label="3" style="color: white">室主任</el-radio>-->
                     <!--<el-radio v-model="form.role" :label="4" style="color: white">科研处</el-radio>-->
                     <!--<el-radio v-model="form.role" :label="5" style="color: white">总后台管理员</el-radio>-->
@@ -59,7 +60,7 @@
         methods: {
             login() {
                 request.post("/user/login", this.form).then(res => {
-                    console.log("/user/login");
+                    // console.log("/user/login");
                     if (res.code === '0') {
                         this.$message({
                             type: "success",
@@ -70,14 +71,14 @@
                         //  if(this.form.role === 1)
                         //     this.$router.push("/person");  //登录成功之后进行页面的跳转，跳转到主页
                         // else
-                        if(this.form.role === 1)
+                        if(this.form.role === 1)  //普通员工项目组长
                             this.$router.push("/hostproject") ; //登录成功之后进行页面的跳转，跳转到主页
-                        else if(this.form.role ===3)
+                        else if(this.form.role ===3)  //室主任
                             this.$router.push("/officeperson") ; //登录成功之后进行页面的跳转，跳转到主页
-                        else if(this.form.role ===2)
+                        else if(this.form.role ===2)  //科研处
                             this.$router.push("/project");
-
-
+                        else if(this.form.role ===4)  //所长
+                            this.$router.push("/project");
 
                     } else {
                         this.$message({
