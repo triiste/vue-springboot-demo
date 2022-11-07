@@ -62,18 +62,34 @@
             <el-table-column prop="position" label="职位"/>
             <el-table-column prop="permission" label="部门"/>
             <el-table-column prop="mark" label="研究室奖励积分"/>
-            <el-table-column fixed="right" label="操作" width="120"  v-if="this.officeid === this.user.userid">
+            <el-table-column prop="placeMark" label="所领导奖励积分"/>
+            <el-table-column fixed="right" label="操作" width="120"  v-if="this.officeid === this.user.userid || this.user.role === 4">
                 <!--v-if="this.user.userid === this.asd1"-->
                 <template #default="scope" >
-                    <el-button link type="primary" size="small" @click="handleEdit(scope.row)" v-if="this.officeid === this.user.userid || this.user.role === 2">编辑</el-button>
+                    <el-button link type="primary" size="small" @click="handleEdit(scope.row)" v-if="this.officeid === this.user.userid || this.user.role === 4 ">编辑</el-button>
                     <el-popconfirm title="确认删除吗？" @confirm="handleDelete(scope.row.userid)">
                         <template #reference>
-                            <el-button link type="danger" size="small" v-if="this.officeid === this.user.userid || this.user.role === 2">删除</el-button>
+                            <el-button link type="danger" size="small" v-if="this.officeid === this.user.userid || this.user.role === 4">删除</el-button>
                         </template>
                     </el-popconfirm>
 
                 </template>
             </el-table-column>
+
+            <!--//所领导
+            <el-table-column fixed="right" label="操作" width="120">
+                &lt;!&ndash;v-if="this.user.userid === this.asd1"&ndash;&gt;
+                <template #default="scope" >
+                    <el-button link type="primary" size="small" @click="handleEdit(scope.row)" v-if="this.user.role === 4">编辑</el-button>
+                    <el-popconfirm title="确认删除吗？" @confirm="handleDelete(scope.row.userid)">
+                        <template #reference>
+                            <el-button link type="danger" size="small" v-if="this.user.role === 4">删除</el-button>
+                        </template>
+                    </el-popconfirm>
+
+                </template>
+            </el-table-column>-->
+
             <el-table-column fixed="right" label="项目管理" width="120">
                 <template #default="scope">
                     <el-button type="primary"  @click="join(scope.row)" style="margin-left: 2px;margin-bottom: 2px">参与项目</el-button>
@@ -95,7 +111,7 @@
                     @current-change="handleCurrentChange"
             />
 
-            <!--      弹窗-->
+            <!--      编辑弹窗-->
             <el-dialog
                     v-model="dialogVisible"
                     title="提示"
@@ -142,12 +158,12 @@
                     <el-form-item label="部门">
                         <el-input type="textarea" v-model="form.permission" style="width: 70%"/>
                     </el-form-item>
-                    <el-form-item label="研究室奖励积分">
-                        <el-input type="number" v-model="form.mark" style="width: 70%"/>
+                    <el-form-item label="研究室奖励积分" v-if="this.user.role === 2 || this.user.role === 3">
+                        <el-input type="number" v-model="form.mark" style="width: 70%" ></el-input>
                     </el-form-item>
-                    <!--<el-form-item label="积分">-->
-                    <!--<el-input type="number" v-model="form.mark" style="width: 70%"/>-->
-                    <!--</el-form-item>-->
+                    <el-form-item label="所领导奖励积分" v-if="this.user.role === 2 || this.user.role === 4">
+                    <el-input type="number" v-model="form.placeMark" style="width: 70%"></el-input>
+                    </el-form-item>
 
                 </el-form>
 

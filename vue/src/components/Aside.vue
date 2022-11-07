@@ -28,7 +28,7 @@
         </el-menu-item>
 
         <!--<el-menu-item index="/group" >项目组管理</el-menu-item>-->
-        <el-sub-menu index="/group" v-if="this.user.role === 1">
+        <el-sub-menu index="/group" v-if="this.user.role === 1 || this.user.role === 3">
           <template #title>项目管理</template>
           <el-menu-item index="/joinproject" >参与项目</el-menu-item>
           <el-menu-item index="/hostproject">主持项目</el-menu-item>

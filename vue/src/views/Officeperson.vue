@@ -2,22 +2,22 @@
     <div style="padding: 10px">
         <!--    功能区域-->
         <!--<div style="margin: 10px 0" v-if="this.user.role != 1 && this.user.role != 2">-->
-        <div style="margin: 10px 0">
-            <el-button type="primary" @click="add" v-if="this.user.role === 2 || this.user.role === 4">新增</el-button>
-        </div>
+        <!--<div style="margin: 10px 0">-->
+            <!--<el-button type="primary" @click="add" v-if="this.user.role === 2 || this.user.role === 4">新增</el-button>-->
+        <!--</div>-->
         <!--    搜索区域-->
         <!--<div style="margin: 10px 0" v-if="this.user.role != 2 && this.user.role != 1">-->
-        <div style="margin: 10px 0">
-            <el-input
-                    style="width: 20%"
-                    v-model="search"
-                    size="large"
-                    placeholder="请输入本室ID"
-                    clearable></el-input>
-            <el-button type="primary" style="margin-left: 5px" @click="load">
-                <span>查询</span>
-            </el-button>
-        </div>
+        <!--<div style="margin: 10px 0">-->
+            <!--<el-input-->
+                    <!--style="width: 20%"-->
+                    <!--v-model="search"-->
+                    <!--size="large"-->
+                    <!--placeholder="请输入本室ID"-->
+                    <!--clearable></el-input>-->
+            <!--<el-button type="primary" style="margin-left: 5px" @click="load">-->
+                <!--<span>查询</span>-->
+            <!--</el-button>-->
+        <!--</div>-->
         <el-table :data="tableData" stripe border style="width: 100%">
             <!--<template>-->
             <el-table-column prop="id" label="ID" sortable></el-table-column>
@@ -28,12 +28,12 @@
             <el-table-column fixed="right" label="操作" width="120"  >
                 <template #default="scope">
                     <el-button type="primary" size="small" @click="details(scope.row)">成员详情</el-button>
-                    <el-button link type="primary" size="small" @click="handleEdit(scope.row)"  v-if="this.user.role ===2 ">编辑</el-button>
-                    <el-popconfirm title="确认删除吗？" @confirm="handleDelete(scope.row.id)" >
-                        <template #reference>
-                            <el-button link type="danger" size="small" v-if="this.user.role ===2 ">删除</el-button>
-                        </template>
-                    </el-popconfirm>
+                    <!--<el-button link type="primary" size="small" @click="handleEdit(scope.row)"  v-if="this.user.role ===2 ">编辑</el-button>-->
+                    <!--<el-popconfirm title="确认删除吗？" @confirm="handleDelete(scope.row.id)" >-->
+                        <!--<template #reference>-->
+                            <!--<el-button link type="danger" size="small" v-if="this.user.role ===2 ">删除</el-button>-->
+                        <!--</template>-->
+                    <!--</el-popconfirm>-->
                 </template>
             </el-table-column>
         </el-table>

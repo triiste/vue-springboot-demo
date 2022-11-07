@@ -1,11 +1,11 @@
 <template>
     <div style="padding: 10px">
         <!--    功能区域-->
-        <div style="margin: 10px 0" v-if="this.user.role != 1 && this.user.role != 2">
+        <div style="margin: 10px 0" v-if="this.user.role !== 1 && this.user.role !== 3">
             <el-button type="primary" @click="add">新增</el-button>
         </div>
         <!--    搜索区域-->
-        <div style="margin: 10px 0" v-if="this.user.role != 2 && this.user.role != 1">
+        <div style="margin: 10px 0" v-if="this.user.role !== 3 && this.user.role !== 1">
             <el-input
                     style="width: 20%"
                     v-model="search"
