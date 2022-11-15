@@ -1,8 +1,8 @@
 <template>
     <div style="padding: 10px">
         <!--    功能区域-->
-        <div style="margin: 10px 0">
-            <el-button type="primary" @click="add" v-if="this.officeid === this.user.userid || this.user.role === 2"  class="ml-5" style="margin-right: 0px">新增</el-button>
+        <div style="margin: 10px 0"  v-if="this.officeid === this.user.userid || this.user.role === 2" >
+            <el-button type="primary" @click="add"   class="ml-5" style="margin-right: 0px">新增</el-button>
 
             <!--<el-popconfirm-->
                     <!--class="ml-5"-->
@@ -40,7 +40,7 @@
         <!--<el-button type="primary" style="margin-left: 5px" @click="load">查询</el-button>-->
         <!--</div>-->
         <el-table :data="tableData" border stripe :header-cell-class-name="headerBg"  @selection-change="handleSelectionChange">
-            <el-table-column type="selection" width="55"></el-table-column>
+            <el-table-column v-if="this.officeid === this.user.userid || this.user.role === 2" type="selection" width="55"></el-table-column>
             <el-table-column prop="userid" label="ID" sortable/>
             <el-table-column prop="userjobid" label="工号" sortable/>
             <el-table-column prop="username" label="用户名"/>
@@ -63,13 +63,13 @@
             <el-table-column prop="permission" label="部门"/>
             <el-table-column prop="mark" label="研究室奖励积分"/>
             <el-table-column prop="placeMark" label="所领导奖励积分"/>
-            <el-table-column fixed="right" label="操作" width="120"  v-if="this.officeid === this.user.userid || this.user.role === 4">
+            <el-table-column fixed="right" label="操作" width="120"  v-if="this.officeid === this.user.userid || this.user.role === 2  ">
                 <!--v-if="this.user.userid === this.asd1"-->
                 <template #default="scope" >
-                    <el-button link type="primary" size="small" @click="handleEdit(scope.row)" v-if="this.officeid === this.user.userid || this.user.role === 4 ">编辑</el-button>
+                    <el-button link type="primary" size="small" @click="handleEdit(scope.row)">编辑</el-button>
                     <el-popconfirm title="确认删除吗？" @confirm="handleDelete(scope.row.userid)">
                         <template #reference>
-                            <el-button link type="danger" size="small" v-if="this.officeid === this.user.userid || this.user.role === 4">删除</el-button>
+                            <el-button link type="danger" size="small" >删除</el-button>
                         </template>
                     </el-popconfirm>
 

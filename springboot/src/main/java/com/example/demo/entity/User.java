@@ -24,5 +24,5 @@ public class User {
     private Integer role;
     private Integer mark;
     private Integer officeid;
-
+    private Integer PlaceMark;
 }

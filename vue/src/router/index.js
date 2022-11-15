@@ -78,6 +78,31 @@ const routes = [
             name: 'officejoinproject',
             component: () => import("@/views/Officejoinproject")
         },
+        {
+            path: 'project1',
+            name: 'project1',
+            component: () => import("@/views/Project1")
+        },
+        {
+            path: 'project2',
+            name: 'project2',
+            component: () => import("@/views/Project2")
+        },
+        {
+            path: 'project3',
+            name: 'project3',
+            component: () => import("@/views/Project3")
+        },
+        {
+            path: 'project4',
+            name: 'project4',
+            component: () => import("@/views/Project4")
+        },
+        {
+            path: 'personEcharts',
+            name: 'personEcharts',
+            component: () => import("@/views/PersonEcharts")
+        },
     ]
   },
   {

@@ -6,7 +6,6 @@ import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.baomidou.mybatisplus.core.toolkit.Wrappers;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.example.demo.common.Result;
-import com.example.demo.entity.Mark;
 import com.example.demo.entity.Project;
 import com.example.demo.entity.User;
 import com.example.demo.mapper.MarkMapper;
@@ -50,12 +49,21 @@ public class ProjectController {
         if (res == null) {
             return Result.error("-1", "该用户不存在!!!");
         }
-        Mark reb = markMapper.selectOne(Wrappers.<Mark>lambdaQuery().eq(Mark::getProjectType,project.getProjectType()).eq(Mark::getProjectLevel,project.getProjectLevel()));
-        if(reb == null){
-            return Result.error("-3","未选择项目类别/项目级别");
-        }
+//        Mark reb = markMapper.selectOne(Wrappers.<Mark>lambdaQuery().eq(Mark::getProjectType,project.getProjectType()).eq(Mark::getProjectLevel,project.getProjectLevel()));
+//        if(reb == null){
+//            return Result.error("-3","未选择项目类别/项目级别");
+//        }
 //        System.out.println(reb);
-        project.setProjectMark(reb.getProjectMark());
+//        project.setProjectMark(reb.getProjectMark());
+//        if(project.getProjectType() == null)   return Result.error("-3","未选择项目类别/项目级别");
+//          System.out.println("看看传来的东西"+project.getProjectType());
+         String projectkind= projectMapper.findkind(project.getProjectType());
+         Integer projectmark=projectMapper.findmark(project.getProjectType());
+//              System.out.println("看看查询的东西"+projectkind);
+//               System.out.println("看看查询的东西"+projectmark);
+                project.setProjectkind(project.getProjectType());
+               project.setProjectMark(projectmark);
+               project.setProjectType(projectkind);
         projectMapper.insert(project);
         return Result.success();
     }
@@ -63,13 +71,18 @@ public class ProjectController {
     @PutMapping  //编辑放数据回数据库
     public Result<?> update(@RequestBody Project project) {//把前台json转换为java对象
         //在User表中查找有没有该组长
-//        User res = userMapper.selectOne(Wrappers.<User>lambdaQuery().eq(User::getUserid, project.getProjectgroupId()));
-//
-//        if (res == null) {
-//            return Result.error("-1", "该用户不存在!!!");
+        User res = userMapper.selectOne(Wrappers.<User>lambdaQuery().eq(User::getUserid, project.getProjectgroupId()));
+
+        if (res == null) {
+            return Result.error("-1", "该用户不存在!!!");
+        }
+//        Mark reb = markMapper.selectOne(Wrappers.<Mark>lambdaQuery().eq(Mark::getProjectType,project.getProjectType()).eq(Mark::getProjectLevel,project.getProjectLevel()));
+//        if(reb == null){
+//            return Result.error("-3","未选择项目类别/项目级别");
 //        }
-        float res = project.getFirst() + project.getSecond() + project.getThree();
-        if(res >100 || res < 0){
+//        project.setProjectMark(reb.getProjectMark());
+        float res1 = project.getFirst() + project.getSecond() + project.getThree();
+        if(res1 >100 || res1 < 0){
             return  Result.error("-1","分配比例总和不能超过100%");
         }
         projectMapper.updateById(project);
@@ -88,6 +101,17 @@ public class ProjectController {
 
     }
 
+    @GetMapping("/finddetail") //project 引用
+    public Map<String, String> finddetail(@RequestParam String projectkind) {//把前台json转换为java对象
+               String res = projectMapper.findsingle(projectkind);
+               System.out.println(res);
+        Map<String, String> res1 = new HashMap<>();
+        res1.put("title", "data");
+        res1.put("data", res);
+        return res1;
+//    return res1;
+    }
+
 
 //    @DeleteMapping("/{id}")
 //    public Result<?> delete(@PathVariable long id) {//把前台json转换为java对象
@@ -103,6 +127,7 @@ public class ProjectController {
             return  false;
         }
         else{
+            System.out.println(id);
             projectMapper.deleteById(id);
             return true;
         }
@@ -117,13 +142,77 @@ public class ProjectController {
         LambdaQueryWrapper<Project> wrapper = Wrappers.<Project>lambdaQuery();
         if (StrUtil.isNotBlank(search)) {
 
-            wrapper.like(Project::getProjectgroupId, search).or().like(Project::getProjectId, search);
+            wrapper.eq(Project::getProjectgroupId, search).or().eq(Project::getProjectId, search);
 
         }
         Page<Project> projectPage = projectMapper.selectPage(new Page<>(pageNum, pageSize), wrapper);
         return Result.success(projectPage);
     }
 
+    @GetMapping("/p1") //第一种项目的加载
+    public Result<?> findPage1(@RequestParam(defaultValue = "1") Integer pageNum,
+                              @RequestParam(defaultValue = "10") Integer pageSize,
+                              @RequestParam(defaultValue = "") String search) {
+        //Page<Project> projectPage = projectMapper.selectPage(new Page<>(pageNum,pageSize),Wrappers.<Project>lambdaQuery().like(Project::getNickName,search));
+
+        LambdaQueryWrapper<Project> wrapper = Wrappers.<Project>lambdaQuery();
+        wrapper.eq(Project::getProjectType,"计划科研项目");
+        if (StrUtil.isNotBlank(search)) {
+
+            wrapper.eq(Project::getProjectType,"计划科研项目").eq(Project::getProjectgroupId, search).or().eq(Project::getProjectId, search);
+
+        }
+        Page<Project> projectPage = projectMapper.selectPage(new Page<>(pageNum, pageSize), wrapper);
+        return Result.success(projectPage);
+    }
+    @GetMapping("/p2") //第一种项目的加载
+    public Result<?> findPage2(@RequestParam(defaultValue = "1") Integer pageNum,
+                               @RequestParam(defaultValue = "10") Integer pageSize,
+                               @RequestParam(defaultValue = "") String search) {
+        //Page<Project> projectPage = projectMapper.selectPage(new Page<>(pageNum,pageSize),Wrappers.<Project>lambdaQuery().like(Project::getNickName,search));
+
+        LambdaQueryWrapper<Project> wrapper = Wrappers.<Project>lambdaQuery();
+        wrapper.eq(Project::getProjectType,"专项任务");
+        if (StrUtil.isNotBlank(search)) {
+
+            wrapper.eq(Project::getProjectType,"专项任务").eq(Project::getProjectgroupId, search).or().eq(Project::getProjectId, search);
+
+        }
+        Page<Project> projectPage = projectMapper.selectPage(new Page<>(pageNum, pageSize), wrapper);
+        return Result.success(projectPage);
+    }
+    @GetMapping("/p3") //第一种项目的加载
+    public Result<?> findPage3(@RequestParam(defaultValue = "1") Integer pageNum,
+                               @RequestParam(defaultValue = "10") Integer pageSize,
+                               @RequestParam(defaultValue = "") String search) {
+        //Page<Project> projectPage = projectMapper.selectPage(new Page<>(pageNum,pageSize),Wrappers.<Project>lambdaQuery().like(Project::getNickName,search));
+
+        LambdaQueryWrapper<Project> wrapper = Wrappers.<Project>lambdaQuery();
+        wrapper.eq(Project::getProjectType,"临时性研究任务");
+        if (StrUtil.isNotBlank(search)) {
+
+            wrapper.eq(Project::getProjectType,"临时性研究任务").eq(Project::getProjectgroupId, search).or().eq(Project::getProjectId, search);
+
+        }
+        Page<Project> projectPage = projectMapper.selectPage(new Page<>(pageNum, pageSize), wrapper);
+        return Result.success(projectPage);
+    }
+    @GetMapping("/p4") //第一种项目的加载
+    public Result<?> findPage4(@RequestParam(defaultValue = "1") Integer pageNum,
+                               @RequestParam(defaultValue = "10") Integer pageSize,
+                               @RequestParam(defaultValue = "") String search) {
+        //Page<Project> projectPage = projectMapper.selectPage(new Page<>(pageNum,pageSize),Wrappers.<Project>lambdaQuery().like(Project::getNickName,search));
+
+        LambdaQueryWrapper<Project> wrapper = Wrappers.<Project>lambdaQuery();
+        wrapper.eq(Project::getProjectType,"支撑机关，服务部队任务");
+        if (StrUtil.isNotBlank(search)) {
+
+            wrapper.eq(Project::getProjectType,"支撑机关，服务部队任务").eq(Project::getProjectgroupId, search).or().eq(Project::getProjectId, search);
+
+        }
+        Page<Project> projectPage = projectMapper.selectPage(new Page<>(pageNum, pageSize), wrapper);
+        return Result.success(projectPage);
+    }
     @GetMapping("/host") //查找接口
     public Result<?> findhostPage(@RequestParam(defaultValue = "1") Integer pageNum,
                               @RequestParam(defaultValue = "10") Integer pageSize,

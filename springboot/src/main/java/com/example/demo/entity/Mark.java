@@ -12,6 +12,9 @@ public class Mark {
     @TableId(value = "id",type = IdType.AUTO)
     private Integer id;
     private String ProjectType;
-    private String ProjectLevel;
+//    private String ProjectLevel;
+    private String ProjectSeq;
+    private String ProjectDetails;
     private float ProjectMark;
+
 }

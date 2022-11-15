@@ -4,7 +4,9 @@ package com.example.demo.controller;
 import cn.hutool.core.collection.CollUtil;
 import com.example.demo.common.Result;
 import com.example.demo.entity.Group;
+import com.example.demo.entity.Project;
 import com.example.demo.mapper.GroupMapper;
+import com.example.demo.mapper.ProjectMapper;
 import com.example.demo.services.GroupService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -28,6 +30,8 @@ public class EchartsController {
     //       return Result.success(map);
     @Resource//引入mapper 但不规范 一般controller引入service service引入mapper
             GroupMapper groupMapper;
+    @Resource
+    ProjectMapper projectMapper;
     //每一个人三个阶段的总得分 也就是每年得年收入
         //个人查看的 不同项目不同的积分和
         @GetMapping("/mark")
@@ -36,7 +40,35 @@ public class EchartsController {
             List<Group> all = groupMapper.finditem(userid);
 
             return all;
-    }
+          }
+
+         @GetMapping("/projectkind")
+        public int[] number(){
+             List<Project> project1=projectMapper.find1();
+             List<Project> project2=projectMapper.find2();
+             List<Project> project3=projectMapper.find3();
+             List<Project> project4=projectMapper.find4();
+             int [] projectkind = new int [4];
+//             project1.get(0).getProjectMark();
+             int sum1=0,sum2=0,sum3=0,sum4=0;
+             for(int i=0;i<project1.size();i++){
+                 sum1+=project1.get(i).getProjectMark();
+             }
+             for(int i=0;i<project2.size();i++){
+                 sum2+=project2.get(i).getProjectMark();
+             }
+             for(int i=0;i<project3.size();i++){
+                 sum3+=project3.get(i).getProjectMark();
+             }
+             for(int i=0;i<project4.size();i++){
+                 sum4+=project4.get(i).getProjectMark();
+             }
+             projectkind [0] = sum1;
+             projectkind [1] = sum2;
+             projectkind [2] = sum3;
+             projectkind [3] = sum4;
+            return projectkind;
+        }
 //    @GetMapping("/members")
 //    public Result members() {
 //        List<User> list = userService.list();

@@ -33,7 +33,7 @@
             <el-table-column prop="firstMark" label="第一阶段积分"></el-table-column>
             <el-table-column prop="secondMark" label="第二阶段积分"></el-table-column>
             <el-table-column prop="threeMark" label="第三阶段积分"></el-table-column>
-            <el-table-column prop="projectReward" label="奖励积分"/>
+            <!--<el-table-column prop="projectReward" label="奖励积分"/>-->
 
             <el-table-column fixed="right" label="操作" width="120" >
                 <template #default="scope">
@@ -79,9 +79,9 @@
                     <el-form-item label="用户积分">
                         <el-input v-model="form.mark" style="width: 70%" disabled/>
                     </el-form-item>
-                    <el-form-item label="操作员">
-                        <el-input v-model="form.handler" style="width: 70%" disabled/>
-                    </el-form-item>
+                    <!--<el-form-item label="操作员">-->
+                        <!--<el-input v-model="form.handler" style="width: 70%" disabled/>-->
+                    <!--</el-form-item>-->
                     <el-form-item label="项目进度">
                     <el-input v-model="form.projectProgress" style="width: 70%" disabled/>
                 </el-form-item>
@@ -94,9 +94,9 @@
                     <el-form-item label="第三阶段积分">
                         <el-input v-model="form.threeMark" style="width: 70%"></el-input>
                     </el-form-item>
-                    <el-form-item label="附加分">
-                        <el-input v-model="form.groupReward" style="width: 70%"></el-input>
-                    </el-form-item>
+                    <!--<el-form-item label="附加分">-->
+                        <!--<el-input v-model="form.groupReward" style="width: 70%"></el-input>-->
+                    <!--</el-form-item>-->
 
 
                     <!--<el-form-item label="室主任确认情况">-->
@@ -228,6 +228,7 @@
 
                     if (res.code === '0') {
                         this.form=res.data;
+                        this.form.mark=this.form.firstMark+this.form.secondMark+this.form.threeMark;
                         this.dialogVisible = true
                     } else {
                         this.$message({

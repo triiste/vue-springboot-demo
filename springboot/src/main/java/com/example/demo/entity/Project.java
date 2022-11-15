@@ -20,6 +20,7 @@ public class Project {
     private String ProjectProduct;
     private String ProjectType;
     private String ProjectLevel;
+    private String Projectkind;
     private float ProjectMark;
     private float FirstMark;
     private float SecondMark;
@@ -28,4 +29,5 @@ public class Project {
     private float second;
     private float three;
     private Integer ProjectReward;
+
 }

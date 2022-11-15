@@ -34,7 +34,7 @@
             <el-table-column prop="firstMark" label="第一阶段积分"></el-table-column>
             <el-table-column prop="secondMark" label="第二阶段积分"></el-table-column>
             <el-table-column prop="threeMark" label="第三阶段积分"></el-table-column>
-            <el-table-column prop="projectReward" label="奖励积分"/>
+            <!--<el-table-column prop="projectReward" label="奖励积分"/>-->
 
             <el-table-column fixed="right" label="操作" width="120" >
                 <template #default="scope">

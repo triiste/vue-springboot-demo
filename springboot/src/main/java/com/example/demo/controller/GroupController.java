@@ -151,7 +151,7 @@ public class GroupController {
         LambdaQueryWrapper<Group> wrapper = Wrappers.<Group>lambdaQuery();
 
         if (StrUtil.isNotBlank(search)) {
-            wrapper.like(Group::getUserid, search).or().like(Group::getProjectid,search);
+            wrapper.eq(Group::getUserid, search).or().eq(Group::getProjectid,search);
         }
 
         Page<Group> groupPage = groupMapper.selectPage(new Page<>(pageNum, pageSize), wrapper);

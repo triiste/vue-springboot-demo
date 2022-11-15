@@ -92,6 +92,7 @@ public class UserController {
                         user.setPosition(row.get(7).toString());
                         user.setPermission(row.get(8).toString());
                         user.setMark(Integer.parseInt(row.get(9).toString()));
+                        user.setPlaceMark(Integer.parseInt(row.get(10).toString()));
                         users.add(user);
                     }
                      userService.saveBatch(users);
@@ -118,7 +119,8 @@ public class UserController {
         writer.addHeaderAlias("address", "地址");
         writer.addHeaderAlias("position", "职位");
         writer.addHeaderAlias("permission", "部门");
-        writer.addHeaderAlias("mark", "个人积分");
+        writer.addHeaderAlias("mark", "个人室奖励积分");
+        writer.addHeaderAlias("PlaceMark", "个人所奖励积分");
         writer.write(list, true);
         // 设置浏览器响应的格式
         response.setContentType("application/vnd.openxmlformats-officedocument.spreadsheetml.sheet;charset=utf-8");

@@ -2,7 +2,8 @@
     <div style="padding: 10px">
         <!--    功能区域-->
         <div style="margin: 10px 0">
-            <el-button type="primary" @click="add" v-if="this.user.role !== 3">新增</el-button>
+            <!--<el-button type="primary" @click="add" v-if="this.user.role !== 3 && this.user.role !== 4">-->
+            <el-button type="primary" @click="add" v-if=" this.user.role !== 4">新增</el-button>
             <!--<el-button type="primary" @click="returnhere" v-if="this.user.role === 3">返回上一步</el-button>-->
         </div>
         <el-table :data="tableData" stripe border  style="width: 100%">
@@ -16,7 +17,7 @@
             <el-table-column prop="firstMark" label="第一阶段积分"></el-table-column>
             <el-table-column prop="secondMark" label="第二阶段积分"></el-table-column>
             <el-table-column prop="threeMark" label="第三阶段积分"></el-table-column>
-            <el-table-column prop="groupReward" label="附加分"></el-table-column>
+            <!--<el-table-column prop="groupReward" label="附加分"></el-table-column>-->
             <!--<el-table-column prop="scientific" label="科研处确认情况">-->
                 <!--&lt;!&ndash;prop是该变量显示的内容&ndash;&gt;-->
                 <!--<template #default="scope">-->
@@ -27,10 +28,10 @@
                 <el-table-column fixed="right" label="操作" width="120" >
                 <template #default="scope">
                     <el-button type="primary" size="small"   @click="perMessage(scope.row)">个人信息</el-button>
-                    <el-button link type="primary" size="small" @click="handleEdit(scope.row) "  v-if="this.user.role !== 3">编辑</el-button>
+                    <el-button link type="primary" size="small" @click="handleEdit(scope.row) "  v-if="this.user.role !== 4">编辑</el-button>
                     <el-popconfirm title="确认删除吗？" @confirm="handleDelete(scope.row.id)">
                         <template #reference>
-                            <el-button link type="danger" size="small" v-if="this.user.role !== 3" >删除</el-button>
+                            <el-button link type="danger" size="small" v-if="this.user.role !== 4" >删除</el-button>
                         </template>
                     </el-popconfirm>
                 </template>
@@ -99,9 +100,9 @@
                     <el-form-item label="第三阶段积分比">
                         <el-input v-model="form.three" style="width: 70%"></el-input>%
                     </el-form-item>
-                    <el-form-item label="附加分">
-                        <el-input v-model="form.groupReward" style="width: 70%"></el-input>
-                    </el-form-item>
+                    <!--<el-form-item label="附加分">-->
+                        <!--<el-input v-model="form.groupReward" style="width: 70%"></el-input>-->
+                    <!--</el-form-item>-->
                 </el-form>
                 <template #footer>
       <span class="dialog-footer">
@@ -149,9 +150,9 @@
                     <el-form-item label="所属室">
                         <el-input v-model="form.officeid" style="width: 70%" disabled></el-input>
                     </el-form-item>
-                    <el-form-item label="个人积分">
-                        <el-input v-model="form.mark" style="width: 70%" disabled></el-input>
-                    </el-form-item>
+                    <!--<el-form-item label="个人积分">-->
+                        <!--<el-input v-model="form.mark" style="width: 70%" disabled></el-input>-->
+                    <!--</el-form-item>-->
                 </el-form>
                 <template #footer>
       <span class="dialog-footer">
@@ -188,7 +189,10 @@
                 message1:"",
                 asd1:"",
                 asd2:"",
-                asd3:""
+                asd3:"",
+                sum:0,
+                sum1:0,
+                sum2:0,
             }
         },
         created() {
@@ -264,23 +268,35 @@
                     this.form.firstMark=this.form.first*this.asd1*0.01;
                     this.form.secondMark=this.form.second*this.asd2*0.01;
                     this.form.threeMark=this.form.three*this.asd3*0.01;
-                    request.put("/group",this.form).then(res =>{//.then是es6里的语法
-                        console.log(res);
-                        if(res.code === '0'){
-                            this.$message({
-                                type:"success",
-                                message:"更新成功！"
-                            })
-                        }else{
-                            this.$message({
-                                type:"error",
-                                message: res.msg
-                            })
-                        }
-                        this.dialog = false;//关闭编辑弹窗
-                        this.load();//刷新表格数据
-                    })
-                }else{//插入
+                    this.sum=(parseFloat( this.form.first) + parseFloat(this.sum)).toFixed(2);
+                    this.sum1=(parseFloat( this.form.second) + parseFloat(this.sum1)).toFixed(2);
+                    this.sum2=(parseFloat( this.form.three) + parseFloat(this.sum2)).toFixed(2);
+                    if(parseFloat(this.sum) <= parseFloat(100) && parseFloat(this.sum1) <= parseFloat(100) && parseFloat(this.sum2) <= parseFloat(100)){
+                        request.put("/group",this.form).then(res =>{//.then是es6里的语法
+                            console.log(res);
+                            if(res.code === '0'){
+                                this.$message({
+                                    type:"success",
+                                    message:"更新成功！"
+                                })
+                            }else{
+                                this.$message({
+                                    type:"error",
+                                    message: res.msg
+                                })
+                            }
+                            // this.dialog = false;//关闭编辑弹窗
+                            this.load();//刷新表格数据
+                        })
+                    }else{
+                        this.$message({
+                            type:"error",
+                            message:"项目分配总占比已经大于100%了！！！",
+                        });
+                        //   this.load();//刷新表格数据
+                    }
+                    this.dialog = false;//关闭编辑弹窗
+                } else{//插入
                     request.post("/group",this.form).then(res =>{//.then是es6里的语法
                         if(res.code === '0'){
                             this.$message({
@@ -299,8 +315,27 @@
                 }
 
             },
-            handleEdit(row){
 
+            handleEdit(row){
+                this.sum=0;
+                //将第一阶段总积分计算出来始终是总分
+                for( var i = 0 ; i < this.tableData.length ; i++) {
+                    this.sum +=this.tableData[i].first;
+                }
+                this.sum1=0;
+                //将第二阶段总积分计算出来始终是总分
+                for( var j = 0 ; j < this.tableData.length ; j++) {
+                    this.sum1 +=this.tableData[j].second;
+                }
+                this.sum2=0;
+                //将第三阶段总积分计算出来始终是总分
+                for( var k = 0 ; k < this.tableData.length ; k++) {
+                    this.sum2 +=this.tableData[k].three;
+                }
+                // console.log("我要看看sum2"+this.sum2);
+                this.sum=(this.sum-row.first).toFixed(2);
+                this.sum1=(this.sum1-row.second).toFixed(2);
+                this.sum2=(this.sum2-row.three).toFixed(2);
                 this.form = JSON.parse(JSON.stringify(row));
 
                 this.dialog = true
