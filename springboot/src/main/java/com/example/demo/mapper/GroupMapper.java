@@ -11,4 +11,6 @@ public interface GroupMapper extends BaseMapper<Group> {
 
     @Select("select * from projectgroup where projectgroup.userid =#{param1};")
     List<Group> finditem(Integer userid);
+    @Select("select count(*) from projectgroup where projectgroup.userid = #{param1}")
+    int findcount(long id);
 }

@@ -124,6 +124,7 @@ public class GroupController {
 
 
     @GetMapping("/finddata")
+    //2082 103错误 因为数据库在group弄了多个字段出错
     public Result<?> finddata(@RequestParam Integer userid,@RequestParam Integer projectId ){//把前台json转换为java对象
         //在group表中查找本项目ID
         Group res = groupMapper.selectOne(Wrappers.<Group>lambdaQuery().eq(Group::getUserid,userid).eq(Group::getProjectid,projectId));
@@ -156,5 +157,30 @@ public class GroupController {
 
         Page<Group> groupPage = groupMapper.selectPage(new Page<>(pageNum, pageSize), wrapper);
         return Result.success(groupPage);
+    }
+    @GetMapping("master") //带组长的分页查询
+    public Result<?> finditem(@RequestParam(defaultValue = "1") Integer pageNum,
+                              @RequestParam(defaultValue = "10") Integer pageSize,
+                              @RequestParam(defaultValue = "") String search){
+        //Page<Group> groupPage = groupMapper.selectPage(new Page<>(pageNum,pageSize),Wrappers.<Group>lambdaQuery().like(Group::getNickName,search));
+//        如果项目ID和userid都在group表中就打印！！！
+        LambdaQueryWrapper<Group> wrapper = Wrappers.<Group>lambdaQuery();
+
+        if (StrUtil.isNotBlank(search)) {
+            wrapper.eq(Group::getUserid, search).or().eq(Group::getProjectid,search);
+        }
+
+        Page<Group> groupPage = groupMapper.selectPage(new Page<>(pageNum, pageSize), wrapper);
+        //search
+        //找组长
+        Object[] arrayObjects = new Object[2];
+        int x=projectMapper.finduserid(search);
+//        System.out.println(x);
+//        传值可以直接用object类型
+        arrayObjects [0] = groupPage;
+        arrayObjects [1] = x;
+
+
+        return Result.success(arrayObjects);
     }
 }

@@ -14,9 +14,8 @@
                     clearable
             />
             <el-button type="primary" style="margin-left: 5px" @click="load">查询</el-button>
-            <el-select v-model="value" class="m-2" placeholder="Select" size="Select" style="margin-left: 5px" >
+            <el-select v-model="value" disabled class="m-2" placeholder="Select" size="Select" style="margin-left: 5px" >
                 <el-option
-                        @click="office"
                         v-for="item in options"
                         :key="item.value"
                         :label="item.label"
@@ -185,7 +184,7 @@
             }
         },
         created() {
-            this.load();
+
            // search = '迟';
             let userStr = localStorage.getItem("user") || "{}"
             this.user = JSON.parse(userStr)
@@ -197,11 +196,16 @@
                     this.user = res.data
                 }
             })
+            this.value=this.user.officeid;
+            this.load();
         },
         methods: {
 
             load() {
-                console.log(this.value);
+
+
+                console.log("看看此时的this."+this.user.officeid);
+                console.log("看看此时的this.valuse"+this.value);
                 request.get("/user/test", {
                     params: {
                         pageNum: this.currentPage,

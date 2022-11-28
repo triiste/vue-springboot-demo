@@ -1,4 +1,5 @@
 <template>
+
     <div style="padding: 10px">
         <!--    功能区域-->
         <div style="margin: 10px 0">
@@ -6,10 +7,10 @@
             <el-button type="primary" @click="add" v-if=" this.user.role !== 4">新增</el-button>
             <!--<el-button type="primary" @click="returnhere" v-if="this.user.role === 3">返回上一步</el-button>-->
         </div>
-        <el-table :data="tableData" stripe border  style="width: 100%">
-            <el-table-column prop="id" label="ID" sortable></el-table-column>
+        <el-table :data="tableData" stripe border  :row-class-name="tableRowClassName" style="width: 100%">
+            <!--<el-table-column prop="id" label="ID" sortable></el-table-column>-->
             <el-table-column prop="projectid" label="项目ID" sortable></el-table-column>
-            <el-table-column prop="userid" label="用户ID"></el-table-column>
+            <el-table-column prop="userid" label="用户工号" sortable></el-table-column>
             <!--      数据库里是下划线 对应前台代码会转成驼峰 mybatisplus这个框架帮做的-->
 <!--            <el-table-column prop="mark" label="积分"  />-->
 <!--            <el-table-column prop="handler" label="操作员"  />-->
@@ -17,6 +18,7 @@
             <el-table-column prop="firstMark" label="第一阶段积分"></el-table-column>
             <el-table-column prop="secondMark" label="第二阶段积分"></el-table-column>
             <el-table-column prop="threeMark" label="第三阶段积分"></el-table-column>
+            <el-table-column prop="totalMark" label="项目积分和" sortable></el-table-column>
             <!--<el-table-column prop="groupReward" label="附加分"></el-table-column>-->
             <!--<el-table-column prop="scientific" label="科研处确认情况">-->
                 <!--&lt;!&ndash;prop是该变量显示的内容&ndash;&gt;-->
@@ -56,10 +58,10 @@
                     width="30%"
             >
                 <el-form :model="form" label-width="120px">
-                    <el-form-item label="项目ID" >
+                    <el-form-item label="项目编号" >
                         <el-input v-model="form.projectid" style="width: 70%" disabled></el-input>
                     </el-form-item>
-                    <el-form-item label="用户ID">
+                    <el-form-item label="用户工号">
                         <el-input v-model="form.userid" style="width: 70%"></el-input>
                     </el-form-item>
                     <el-form-item label="项目进度">
@@ -92,13 +94,13 @@
                         <el-input v-model="form.projectProgress" style="width: 70%"></el-input>
                     </el-form-item>
                     <el-form-item label="第一阶段积分比">
-                        <el-input v-model="form.first" style="width: 70%"></el-input>%
+                        <el-input-number v-model="form.first"  :min="0" :max="100" style="width: 70%"></el-input-number>%
                     </el-form-item>
                     <el-form-item label="第二阶段积分比">
-                        <el-input v-model="form.second" style="width: 70%"></el-input>%
+                        <el-input-number v-model="form.second" :min="0" :max="100"  style="width: 70%"></el-input-number>%
                     </el-form-item>
                     <el-form-item label="第三阶段积分比">
-                        <el-input v-model="form.three" style="width: 70%"></el-input>%
+                        <el-input-number v-model="form.three"  :min="0" :max="100" style="width: 70%"></el-input-number>%
                     </el-form-item>
                     <!--<el-form-item label="附加分">-->
                         <!--<el-input v-model="form.groupReward" style="width: 70%"></el-input>-->
@@ -120,11 +122,8 @@
                     width="30%"
             >
                 <el-form :model="form" label-width="120px">
-                    <el-form-item label="ID">
+                    <el-form-item label="用户工号">
                         <el-input v-model="form.userid" style="width: 70%" disabled></el-input>
-                    </el-form-item>
-                    <el-form-item label="工号">
-                        <el-input v-model="form.userjobid" style="width: 70%" disabled></el-input>
                     </el-form-item>
                     <el-form-item label="用户名">
                         <el-input v-model="form.username" style="width: 70%" disabled></el-input>
@@ -141,11 +140,14 @@
                     <el-form-item label="地址">
                         <el-input v-model="form.address" style="width: 70%" disabled></el-input>
                     </el-form-item>
-                    <el-form-item label="职位">
+                    <el-form-item label="职称">
                         <el-input v-model="form.position" style="width: 70%" disabled></el-input>
                     </el-form-item>
-                    <el-form-item label="部门">
+                    <el-form-item label="单位">
                         <el-input v-model="form.permission" style="width: 70%" disabled></el-input>
+                    </el-form-item>
+                    <el-form-item label="军衔">
+                        <el-input  v-model="form.martialStatus" style="width: 70%" disabled/>
                     </el-form-item>
                     <el-form-item label="所属室">
                         <el-input v-model="form.officeid" style="width: 70%" disabled></el-input>
@@ -163,6 +165,7 @@
             </el-dialog>
         </div>
     </div>
+
 </template>
 <script>
 
@@ -174,6 +177,7 @@
         components: {
         },
         data(){
+
             return{
                 form:{},
                 dialogVisible:false,
@@ -186,6 +190,7 @@
                 pageSize:10,
                 total:0,
                 tableData:[],
+                table:[],
                 message1:"",
                 asd1:"",
                 asd2:"",
@@ -193,6 +198,7 @@
                 sum:0,
                 sum1:0,
                 sum2:0,
+
             }
         },
         created() {
@@ -217,7 +223,7 @@
 
         methods:{
             load(){
-                request.get("/group",{
+                request.get("/group/master",{
                     params:{
                         pageNum: this.currentPage,
                         pageSize: this.pageSize,
@@ -225,15 +231,34 @@
                     }
                 }).then(res =>{
                     console.log(res);
-                    this.tableData = res.data.records;
+
+
+                    this.tableData = res.data[0].records;
+                    for(var i=0;i<this.tableData.length;i++){
+                        if(this.tableData[i].userid === res.data[1]){
+                            // this.tableData[i].userid= this.tableData[i].userid+" (项目组长)"
+                            this.table[0]= this.tableData[i];
+                            this.tableData[i]=this.tableData[0];
+                            this.tableData[0]= this.table[0];
+                            break;
+                        }
+                    }
+                    for(var i=0;i<this.tableData.length;i++){
+                        this.tableData[i].totalMark=this.tableData[i].firstMark+this.tableData[i].secondMark+this.tableData[i].threeMark;
+                    }
+
+                    console.log(res.data[1]);
                     this.total = res.data.total;
+
+
                     //  this.projectid1 = res.data.records[0].projectid;
                     // console.log(this.projectid1);
 
-                    //   this.projectid1 = JSON.parse(JSON.stringify(res.data.records.row))
+                        //   this.projectid1 = JSON.parse(JSON.stringify(res.data.records.row))
                     // console.log(projectid.projectid);
                 })
             },
+
             // returnhere(){
             //     this.$router.push({
             //         path:'/officehostproject',
@@ -364,7 +389,9 @@
             handleCurrentChange(pageNum){ // 改变当前页码触发
                 this.currentPage = pageNum;
                 this.load()
-            }
+            },
+
         }
     }
+
 </script>

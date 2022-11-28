@@ -2,16 +2,16 @@
     <div>
         <el-card style="width: 40%; margin: 10px">
 
-            <el-form ref="form" :model="form" label-width="80px"  disabled>
+            <el-form ref="form" :model="form" label-width="100px"  disabled>
                 <el-form-item style="text-align: center" label-width="0"  >
 
                 </el-form-item>
-                <el-form-item label="ID">
+                <el-form-item label="用户工号">
                     <el-input v-model="form.userid" ></el-input>
                 </el-form-item>
-                <el-form-item label="工号">
-                    <el-input v-model="form.userjobid" ></el-input>
-                </el-form-item>
+                <!--<el-form-item label="工号">-->
+                    <!--<el-input v-model="form.userjobid" ></el-input>-->
+                <!--</el-form-item>-->
                 <el-form-item label="用户名">
                     <el-input v-model="form.username" ></el-input>
                 </el-form-item>
@@ -27,18 +27,33 @@
                 <el-form-item label="地址">
                     <el-input v-model="form.address" ></el-input>
                 </el-form-item>
-                <el-form-item label="职位">
+                <el-form-item label="职称">
                     <el-input v-model="form.position" ></el-input>
                 </el-form-item>
-                <el-form-item label="部门">
+                <el-form-item label="单位">
                     <el-input v-model="form.permission" ></el-input>
                 </el-form-item>
+                <el-form-item label="军衔">
+                    <el-input  v-model="form.martialStatus" />
+                </el-form-item>
+                <el-form-item label="室奖励积分">
+                    <el-input  v-model="form.mark" />
+                </el-form-item>
+                <el-form-item label="所奖励积分">
+                <el-input  v-model="form.placeMark"></el-input>
+                </el-form-item>
+                <!--<el-form-item label="研究室奖励积分" v-if="this.user.role === 3">-->
+                    <!--<el-input v-model="form.mark" style="width: 70%" ></el-input>-->
+                <!--</el-form-item>-->
+                <!--<el-form-item label="所领导奖励积分" v-if="this.user.role === 4">-->
+                    <!--<el-input  v-model="form.placeMark" style="width: 70%"></el-input>-->
+                <!--</el-form-item>-->
                 <!--<el-form-item label="积分">-->
                 <!--<el-input v-model="form.mark" ></el-input>-->
             <!--</el-form-item>-->
 
             </el-form>
-            <el-button type="primary" @click="Edit" style="margin-left: 550px">修改密码</el-button>
+            <el-button type="primary" @click="Edit" style="margin-left: 350px">修改密码</el-button>
         </el-card>
 
         <el-dialog
@@ -132,6 +147,7 @@
             request.get("/user/" + this.form.userid).then(res => {
                 if(res.code === '0'){
                     this.form = res.data
+                    console.log(this.form)
                 }
             })
 
@@ -159,7 +175,7 @@
                 else{
                     request.get("/user/edit",{
                         params: {
-                            userjobid:this.form.userjobid,
+                            userjobid:this.form.userid,
                             password0:this.form1.password0,
                             password1:this.form1.password1,
 

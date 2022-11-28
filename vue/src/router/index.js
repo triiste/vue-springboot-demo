@@ -103,6 +103,11 @@ const routes = [
             name: 'personEcharts',
             component: () => import("@/views/PersonEcharts")
         },
+        {
+            path: 'officeuser',
+            name: 'officeuser',
+            component: () => import("@/views/Officeuser")
+        },
     ]
   },
   {

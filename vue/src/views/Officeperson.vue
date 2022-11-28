@@ -20,7 +20,7 @@
         <!--</div>-->
         <el-table :data="tableData" stripe border style="width: 100%">
             <!--<template>-->
-            <el-table-column prop="id" label="ID" sortable></el-table-column>
+            <!--<el-table-column prop="id" label="ID" sortable></el-table-column>-->
             <!--<el-table-column prop="officeID" label="本室编号" sortable></el-table-column>-->
             <el-table-column prop="officename" label="本室名称" sortable></el-table-column>
             <el-table-column prop="officeuserid" label="室主任id"></el-table-column>

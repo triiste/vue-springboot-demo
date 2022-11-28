@@ -6,11 +6,13 @@ import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.baomidou.mybatisplus.core.toolkit.Wrappers;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.example.demo.common.Result;
+import com.example.demo.entity.Group;
 import com.example.demo.entity.Project;
 import com.example.demo.entity.User;
 import com.example.demo.mapper.MarkMapper;
 import com.example.demo.mapper.ProjectMapper;
 import com.example.demo.mapper.UserMapper;
+import com.example.demo.mapper.GroupMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
@@ -29,6 +31,8 @@ public class ProjectController {
     UserMapper userMapper;
     @Resource
     MarkMapper markMapper;
+    @Resource
+    GroupMapper groupMapper;
     @GetMapping("/test")
     public Map<String, Object> index(@RequestParam Integer userid,
                                @RequestParam(defaultValue = "1") Integer pageNum,
@@ -64,7 +68,12 @@ public class ProjectController {
                 project.setProjectkind(project.getProjectType());
                project.setProjectMark(projectmark);
                project.setProjectType(projectkind);
+        Group group =new Group();
+        group.setProjectid(project.getProjectId());
+        group.setUserid(project.getProjectgroupId());
+//        System.out.println(project.getFirstMark());
         projectMapper.insert(project);
+        groupMapper.insert(group);
         return Result.success();
     }
 
@@ -133,6 +142,28 @@ public class ProjectController {
         }
     }
 
+    @GetMapping("/findnamePage")//按项目名称查询
+    public Result<?> findnamePage(@RequestParam(defaultValue = "1") Integer pageNum,
+                                  @RequestParam(defaultValue = "10") Integer pageSize,
+                                  @RequestParam(defaultValue = "") String search){
+        LambdaQueryWrapper<Project> wrapper = Wrappers.<Project>lambdaQuery();
+        if (StrUtil.isNotBlank(search)) {
+            wrapper.like(Project::getProjectName, search);
+        }
+        Page<Project> projectPage = projectMapper.selectPage(new Page<>(pageNum, pageSize), wrapper);
+        return Result.success(projectPage);
+    }
+    @GetMapping("/findproPage")////按项目进度查询
+    public Result<?> findproPage(@RequestParam(defaultValue = "1") Integer pageNum,
+                                 @RequestParam(defaultValue = "10") Integer pageSize,
+                                 @RequestParam(defaultValue = "") String search){
+        LambdaQueryWrapper<Project> wrapper = Wrappers.<Project>lambdaQuery();
+        if (StrUtil.isNotBlank(search)) {
+            wrapper.like(Project::getProjectProgress,search);
+        }
+        Page<Project> projectPage = projectMapper.selectPage(new Page<>(pageNum, pageSize), wrapper);
+        return Result.success(projectPage);
+    }
 
     @GetMapping //查找接口
     public Result<?> findPage(@RequestParam(defaultValue = "1") Integer pageNum,
@@ -142,12 +173,18 @@ public class ProjectController {
         LambdaQueryWrapper<Project> wrapper = Wrappers.<Project>lambdaQuery();
         if (StrUtil.isNotBlank(search)) {
 
-            wrapper.eq(Project::getProjectgroupId, search).or().eq(Project::getProjectId, search);
+            wrapper.eq(Project::getProjectgroupId, search);
 
         }
         Page<Project> projectPage = projectMapper.selectPage(new Page<>(pageNum, pageSize), wrapper);
         return Result.success(projectPage);
     }
+    @GetMapping("/{id}") //通过id查询的接口
+    public Result<?> getById(@PathVariable long id){//把前台json转换为java对象
+        // System.out.println(id);
+        return Result.success(projectMapper.selectById(id));
+    }
+
 
     @GetMapping("/p1") //第一种项目的加载
     public Result<?> findPage1(@RequestParam(defaultValue = "1") Integer pageNum,
@@ -204,15 +241,16 @@ public class ProjectController {
         //Page<Project> projectPage = projectMapper.selectPage(new Page<>(pageNum,pageSize),Wrappers.<Project>lambdaQuery().like(Project::getNickName,search));
 
         LambdaQueryWrapper<Project> wrapper = Wrappers.<Project>lambdaQuery();
-        wrapper.eq(Project::getProjectType,"支撑机关，服务部队任务");
+        wrapper.eq(Project::getProjectType,"服务支撑业务");
         if (StrUtil.isNotBlank(search)) {
 
-            wrapper.eq(Project::getProjectType,"支撑机关，服务部队任务").eq(Project::getProjectgroupId, search).or().eq(Project::getProjectId, search);
+            wrapper.eq(Project::getProjectType,"服务支撑业务").eq(Project::getProjectgroupId, search).or().eq(Project::getProjectId, search);
 
         }
         Page<Project> projectPage = projectMapper.selectPage(new Page<>(pageNum, pageSize), wrapper);
         return Result.success(projectPage);
     }
+    //这是主持项目调用的接口，可以查找有多少个主持项目
     @GetMapping("/host") //查找接口
     public Result<?> findhostPage(@RequestParam(defaultValue = "1") Integer pageNum,
                               @RequestParam(defaultValue = "10") Integer pageSize,

@@ -21,8 +21,15 @@ public class User {
     private String address;
     private String position;
     private String permission;
+    private String MartialStatus;
     private Integer role;
     private Integer mark;
     private Integer officeid;
     private Integer PlaceMark;
+    private Integer totalMark;
+    private Integer joincount; //参与个数
+    private Integer joinmark; //参与积分和
+    private Integer hostcount; //主持个数
+    private Integer hostmark; //主持积分和
+    private Integer projectmark; //项目积分
 }

@@ -22,7 +22,7 @@
                 </template>
             </el-popconfirm>
 
-            <el-upload action="http://182.92.125.156:9096/user/import" :show-file-list="false" accept="xlsx" :on-success="handleExcelImportSuccess" style="display: inline-block">
+            <el-upload action="http://127.0.0.1:9090/user/import" :show-file-list="false" accept="xlsx" :on-success="handleExcelImportSuccess" style="display: inline-block">
                 <el-button type="primary" class="ml-5" style="margin-right: 5px">导入 <i class="el-icon-bottom"></i></el-button>
             </el-upload>
             <el-button type="primary" @click="exp" class="ml-5" style="margin-right: 5px">导出 <i class="el-icon-top"></i></el-button>
@@ -41,8 +41,8 @@
         <!--</div>-->
         <el-table :data="tableData" border stripe :header-cell-class-name="headerBg"  @selection-change="handleSelectionChange">
             <el-table-column v-if="this.officeid === this.user.userid || this.user.role === 2" type="selection" width="55"></el-table-column>
-            <el-table-column prop="userid" label="ID" sortable/>
-            <el-table-column prop="userjobid" label="工号" sortable/>
+            <el-table-column prop="userid" label="工号" sortable/>
+            <!--<el-table-column prop="userjobid" label="工号" sortable/>-->
             <el-table-column prop="username" label="用户名"/>
             <!--      数据库里是下划线 对应前台代码会转成驼峰 mybatisplus这个框架帮做的-->
             <el-table-column prop="telephone" label="电话"/>
@@ -59,17 +59,20 @@
             <!--<span v-if="scope.row.role === 5">总后台管理员</span>-->
             <!--</template>-->
             <!--</el-table-column>-->
-            <el-table-column prop="position" label="职位"/>
-            <el-table-column prop="permission" label="部门"/>
+            <el-table-column prop="position" label="职称"/>
+            <!--MartialStatus-->
+            <el-table-column prop="martialStatus" label="军衔"/>
+            <el-table-column prop="permission" label="单位"/>
             <el-table-column prop="mark" label="研究室奖励积分"/>
             <el-table-column prop="placeMark" label="所领导奖励积分"/>
-            <el-table-column fixed="right" label="操作" width="120"  v-if="this.officeid === this.user.userid || this.user.role === 2  ">
+            <!--v-if="this.officeid === this.user.userid || this.user.role === 2"-->
+            <el-table-column fixed="right" label="操作" width="120" v-if="this.officeid === this.user.userid || this.user.role === 2 ||this.user.role === 4">
                 <!--v-if="this.user.userid === this.asd1"-->
                 <template #default="scope" >
                     <el-button link type="primary" size="small" @click="handleEdit(scope.row)">编辑</el-button>
                     <el-popconfirm title="确认删除吗？" @confirm="handleDelete(scope.row.userid)">
                         <template #reference>
-                            <el-button link type="danger" size="small" >删除</el-button>
+                            <el-button link type="danger" size="small"  v-if="this.user.role!=4">删除</el-button>
                         </template>
                     </el-popconfirm>
 
@@ -90,11 +93,11 @@
                 </template>
             </el-table-column>-->
 
-            <el-table-column fixed="right" label="项目管理" width="120">
+            <el-table-column fixed="right" label="项目管理" width="120" >
                 <template #default="scope">
-                    <el-button type="primary"  @click="join(scope.row)" style="margin-left: 2px;margin-bottom: 2px">参与项目</el-button>
+                    <el-button type="primary"  @click="join(scope.row)" style="margin-left: 2px;margin-bottom: 2px">相关项目</el-button>
 
-                    <el-button type="primary"  @click="host(scope.row)" style="margin-left: 2px">主持项目</el-button>
+                    <el-button type="primary"  @click="host(scope.row)" style="margin-left: 2px"  v-if="this.user.role === 2">主持项目</el-button>
                 </template>
             </el-table-column>
         </el-table>
@@ -122,8 +125,82 @@
                         <el-input v-model="form.officeid" style="width: 70%" disabled/>
                     </el-form-item>
                     <el-form-item label="工号">
-                        <el-input v-model="form.userjobid" style="width: 70%" />
+                        <el-input v-model="form.userid" style="width: 70%" disabled/>
                     </el-form-item>
+                    <!--<el-form-item label="工号">-->
+                        <!--<el-input v-model="form.userjobid" style="width: 70%" />-->
+                    <!--</el-form-item>-->
+                    <el-form-item label="用户名" v-if="this.user.role !== 4">
+                        <el-input v-model="form.username" style="width: 70%" />
+                    </el-form-item>
+                    <el-form-item label="电话" v-if="this.user.role !== 4">
+                        <el-input v-model="form.telephone" style="width: 70%"/>
+                    </el-form-item>
+                    <el-form-item label="年龄" v-if="this.user.role !== 4">
+                        <el-input v-model="form.age" style="width: 70%"/>
+                    </el-form-item>
+                    <el-form-item label="性别" v-if="this.user.role !== 4">
+                        <el-radio-group v-model="form.sex">
+                            <el-radio label="男" size="large">男</el-radio>
+                            <el-radio label="女" size="large">女</el-radio>
+                        </el-radio-group>
+                    </el-form-item>
+                    <el-form-item label="地址" v-if="this.user.role !== 4">
+                        <el-input type="textarea" v-model="form.address" style="width: 70%"/>
+                    </el-form-item>
+                    <!--<el-form-item label="角色">-->
+                    <!--<el-form-item :model="form">-->
+                    <!--&lt;!&ndash;lable标签是表示值的&ndash;&gt;-->
+                    <!--<el-radio v-model="form.role" :label="1" style="color: black">普通员工</el-radio>-->
+                    <!--<el-radio v-model="form.role" :label="2" style="color: black">项目组长</el-radio>-->
+                    <!--<el-radio v-model="form.role" :label="3" style="color: black">室主任</el-radio>-->
+                    <!--<el-radio v-model="form.role" :label="4" style="color: black">科研处</el-radio>-->
+                    <!--<el-radio v-model="form.role" :label="5" style="color: black">总后台管理员</el-radio>-->
+                    <!--</el-form-item>-->
+                    <!--</el-form-item>-->
+                    <el-form-item label="职称" v-if="this.user.role !== 4">
+                        <el-input v-model="form.position" style="width: 70%" />
+                    </el-form-item>
+                    <el-form-item label="单位" v-if="this.user.role !== 4">
+                        <el-input type="textarea" v-model="form.permission" style="width: 70%"/>
+                    </el-form-item>
+                    <el-form-item label="军衔">
+                        <el-input type="textarea" v-model="form.martialStatus" style="width: 70%"/>
+                    </el-form-item>
+                    <el-form-item label="研究室奖励积分" v-if="this.user.role === 3 ">
+                        <el-input type="number" v-model="form.mark" style="width: 70%" ></el-input>
+                    </el-form-item>
+                    <el-form-item label="所领导奖励积分" v-if="this.user.role === 4">
+                    <el-input type="number" v-model="form.placeMark" style="width: 70%"></el-input>
+                    </el-form-item>
+
+                </el-form>
+
+                <template #footer>
+      <span class="dialog-footer">
+        <el-button type="primary" @click="save1">确定</el-button>
+        <el-button @click="dialogVisible = false">取消</el-button>
+      </span>
+                </template>
+            </el-dialog>
+            <!--      新增弹窗-->
+            <el-dialog
+                    v-model="dialog"
+                    title="提示"
+                    width="30%"
+            >
+                <el-form :model="form" label-width="120px" >
+                    <el-form-item label="所属科室">
+                        <el-input v-model="form.officeid" style="width: 70%" disabled/>
+                    </el-form-item>
+                    <el-form-item label="工号">
+                        <el-input v-model="form.userid" style="width: 70%"
+                                  maxlength="9"
+                                  show-word-limit/>
+                    </el-form-item>
+                    <!--<el-form-item label="工号">-->
+                        <!--<el-input v-model="form.userjobid" style="width: 70%" />-->
+                    <!--</el-form-item>-->
                     <el-form-item label="用户名">
                         <el-input v-model="form.username" style="width: 70%"/>
                     </el-form-item>
@@ -152,17 +229,22 @@
                     <!--<el-radio v-model="form.role" :label="5" style="color: black">总后台管理员</el-radio>-->
                     <!--</el-form-item>-->
                     <!--</el-form-item>-->
-                    <el-form-item label="职位">
+                    <el-form-item label="职称">
                         <el-input v-model="form.position" style="width: 70%"/>
                     </el-form-item>
-                    <el-form-item label="部门">
+
+                    <el-form-item label="单位">
                         <el-input type="textarea" v-model="form.permission" style="width: 70%"/>
                     </el-form-item>
-                    <el-form-item label="研究室奖励积分" v-if="this.user.role === 2 || this.user.role === 3">
-                        <el-input type="number" v-model="form.mark" style="width: 70%" ></el-input>
+
+                    <el-form-item label="军衔">
+                        <el-input type="textarea" v-model="form.martialStatus" style="width: 70%"/>
                     </el-form-item>
-                    <el-form-item label="所领导奖励积分" v-if="this.user.role === 2 || this.user.role === 4">
-                    <el-input type="number" v-model="form.placeMark" style="width: 70%"></el-input>
+                    <el-form-item label="研究室奖励积分" v-if="this.user.role === 3">
+                    <el-input type="number" v-model="form.mark" style="width: 70%" ></el-input>
+                </el-form-item>
+                    <el-form-item label="所领导奖励积分" v-if="this.user.role === 4">
+                        <el-input type="number" v-model="form.placeMark" style="width: 70%"></el-input>
                     </el-form-item>
 
                 </el-form>
@@ -170,7 +252,7 @@
                 <template #footer>
       <span class="dialog-footer">
         <el-button type="primary" @click="save">确定</el-button>
-        <el-button @click="dialogVisible = false">取消</el-button>
+        <el-button @click="dialog = false">取消</el-button>
       </span>
                 </template>
             </el-dialog>
@@ -191,6 +273,7 @@
                 form: {},
                 asd1:0,
                 dialogVisible: false,
+                dialog: false,
                 search:'',
                 user:{},
                 importaddress:"",
@@ -220,7 +303,6 @@
                 }
             });
 
-            console.log("我倒要看看此时的asd1"+this.asd1+"看看此数据的类型"+typeof(this.asd1));
             this.officeid = this.asd1 * 1;
             console.log(typeof(this.officeid));
             this.search = this.message1;
@@ -229,7 +311,7 @@
         },
         methods: {
             exp() {
-                this.exportaddress= "http://182.92.125.156:9096/user/export?userid="+ this.message1;
+                this.exportaddress= "http://127.0.0.1:9090/user/export?userid="+ this.message1;
                 window.open(this.exportaddress)
             },
             load() {
@@ -253,6 +335,7 @@
                     query: {
                         jmessage: row.userid,
                         message:this.message1,
+                        mee:this.officeid ,
                     }
                 })
             },
@@ -270,7 +353,7 @@
                         this.$message.success("批量删除成功")
                         this.load()
                     } else {
-                        this.$message.error("批量删除失败")
+                        this.$message.error("批量删除失败,请检查选中的人是否还有参与项目！！！")
                     }
                 })
             },
@@ -288,46 +371,60 @@
                 })
             },
             add() {
-                this.dialogVisible = true;
+                this.dialog = true;
                 this.form = {};
                 this.form.officeid =this.message1;
             },
+            save1(){
+                request.put("/user", this.form).then(res => {//.then是es6里的语法
+                    console.log(res);
+                    if (res.code === '0') {
+                        this.$message({
+                            type: "success",
+                            message: "更新成功！"
+                        })
+                    } else {
+                        this.$message({
+                            type: "error",
+                            message: res.msg
+                        })
+                    }
+                    this.load();//刷新表格数据
+                    this.dialogVisible = false;//关闭弹窗
+                })
+            },
             save() {
-                if (this.form.userid) {//更新
-                    request.put("/user", this.form).then(res => {//.then是es6里的语法
-                        console.log(res);
-                        if (res.code === '0') {
-                            this.$message({
-                                type: "success",
-                                message: "更新成功！"
-                            })
-                        } else {
-                            this.$message({
-                                type: "error",
-                                message: res.msg
-                            })
-                        }
-                        this.load();//刷新表格数据
-                        this.dialogVisible = false;//关闭弹窗
-                    })
-                } else {//插入
-                    request.post("/user", this.form).then(res => {//.then是es6里的语法
-                        console.log(res)
-                        if (res.code === '0') {
-                            this.$message({
-                                type: "success",
-                                message: "新增成功！"
-                            })
-                        } else {
-                            this.$message({
-                                type: "error",
-                                message: res.msg
+
+                //先看id是否存在
+                request.get("/user/" + this.form.userid).then(res => {
+                    if (res.data === null) {
+                        console.log("不存在")
+                        {//插入
+                            request.post("/user", this.form).then(res => {//.then是es6里的语法
+                                console.log(res)
+                                if (res.code === '0') {
+                                    this.$message({
+                                        type: "success",
+                                        message: "新增成功！"
+                                    })
+                                } else {
+                                    this.$message({
+                                        type: "error",
+                                        message: res.msg
+                                    })
+                                }
+                                this.load();//刷新表格数据
+                                this.dialog = false;//关闭弹窗
                             })
                         }
-                        this.load();//刷新表格数据
-                        this.dialogVisible = false;//关闭弹窗
-                    })
-                }
+                    }else{
+                                this.$message({
+                                    type: "error",
+                                    message: "该工号已存在，请重新输入！！！"
+                                })
+                                  this.dialog = false;//关闭弹窗
+                    }
+                });
 
             },
             handleEdit(row) {

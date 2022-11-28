@@ -5,6 +5,8 @@ import com.baomidou.mybatisplus.annotation.TableId;
 import com.baomidou.mybatisplus.annotation.TableName;
 import lombok.Data;
 
+import java.util.Date;
+
 @TableName("project") //和数据库名一样
 @Data
 public class Project {
@@ -21,6 +23,8 @@ public class Project {
     private String ProjectType;
     private String ProjectLevel;
     private String Projectkind;
+    private Date date;
+
     private float ProjectMark;
     private float FirstMark;
     private float SecondMark;
@@ -29,5 +33,6 @@ public class Project {
     private float second;
     private float three;
     private Integer ProjectReward;
+    private Integer sumTotal;//取目前已经得到的总分
 
 }

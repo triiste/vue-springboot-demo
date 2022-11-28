@@ -17,24 +17,52 @@
         </div>
         <el-table :data="tableData" stripe border style="width: 100%">
             <!--<template>-->
-            <el-table-column prop="projectId" label="ID" sortable/>
-            <el-table-column prop="projectItemid" label="项目编号" sortable/>
-            <el-table-column prop="projectName" label="项目名"/>
+            <el-table-column prop="date" label="立项时间" sortable></el-table-column>
+
+            <el-table-column prop="projectId" label="项目编号" sortable></el-table-column>
+            <!--<el-table-column prop="projectItemid" label="项目编号" sortable></el-table-column>-->
+            <el-table-column prop="projectName" label="项目名"></el-table-column>
             <!--      数据库里是下划线 对应前台代码会转成驼峰 mybatisplus这个框架帮做的-->
-            <el-table-column prop="groupId" label="组号"/>
-            <el-table-column prop="projectgroupId" label="项目组长ID"/>
-            <el-table-column prop="projectDetial" label="研究内容"/>
-            <el-table-column prop="projectCycle" label="研究周期"/>
-            <el-table-column prop="projectProgress" label="项目进度"/>
-            <el-table-column prop="projectProduct" label="成果形式"/>
-            <el-table-column prop="projectType" label="研究类别"/>
-            <el-table-column prop="projectLevel" label="研究级别"/>
-            <el-table-column prop="projectMark" label="项目积分"/>
-            <el-table-column prop="firstMark" label="第一阶段积分"></el-table-column>
+            <!--            <el-table-column prop="groupId" label="组号"/>-->
+            <el-table-column prop="projectgroupId" label="项目组长ID"></el-table-column>
+            <!--            <el-table-column prop="projectDetial" label="研究内容"/>-->
+            <!--            <el-table-column prop="projectCycle" label="研究周期"/>-->
+            <el-table-column prop="projectProgress" label="项目进度"></el-table-column>
+            <!--            <el-table-column prop="projectProduct" label="成果形式"/>-->
+
+            <el-table-column prop="projectType" label="研究类别">  </el-table-column>
+            <!--<el-table-column prop="projectLevel" label="研究级别"></el-table-column>-->
+            <el-table-column prop="projectMark" label="项目积分"></el-table-column>
+            <el-table-column prop="firstMark" label="第一阶段积分" ></el-table-column>
             <el-table-column prop="secondMark" label="第二阶段积分"></el-table-column>
             <el-table-column prop="threeMark" label="第三阶段积分"></el-table-column>
-            <!--<el-table-column prop="projectReward" label="奖励积分"/>-->
+            <el-table-column prop="sumTotal" label="已得积分" sortable></el-table-column>
+            <!--<el-table-column prop="projectReward" label="附加分"></el-table-column>-->
 
+            <el-table-column prop="projectType"  label="项目内容">
+                <template #default="scope">
+
+                    <el-tooltip content="Top center" placement="top">
+                        <!--<el-button>项目具体情况</el-button>-->
+                        <el-popover
+                                placement="bottom"
+                                title=""
+                                :width="400"
+                                trigger="click"
+                                content=this.details
+                        >
+                            <template #reference>
+                                <!--@click="detailsproject(scope.row)"-->
+                                <el-button @click="detailsproject(scope.row)">项目详情</el-button>
+                            </template>
+                            <el-table :data="gridData">
+                                <el-table-column width="300" property="details" label="项目详情" />
+
+                            </el-table>
+                        </el-popover>
+                    </el-tooltip>
+                </template>
+            </el-table-column>
             <el-table-column fixed="right" label="操作" width="120" >
                 <template #default="scope">
                     <!--v-if="this.user.userid === JSON.parse(JSON.stringify(row)).ProjectgroupId"-->
@@ -67,18 +95,18 @@
                     width="30%"
             >
                 <el-form :model="form" label-width="120px" disabled>
-                    <el-form-item label="ID">
-                        <el-input v-model="form.id" style="width: 70%" disabled/>
-                    </el-form-item>
-                    <el-form-item label="项目ID">
+                    <!--<el-form-item label="ID">-->
+                        <!--<el-input v-model="form.id" style="width: 70%" disabled/>-->
+                    <!--</el-form-item>-->
+                    <el-form-item label="项目编号">
                         <el-input v-model="form.projectid" style="width: 70%" disabled/>
                     </el-form-item>
-                    <el-form-item label="用户ID">
+                    <el-form-item label="用户工号">
                         <el-input v-model="form.userid" style="width: 70%" disabled/>
                     </el-form-item>
-                    <el-form-item label="用户积分">
-                        <el-input v-model="form.mark" style="width: 70%" disabled/>
-                    </el-form-item>
+                    <!--<el-form-item label="用户积分">-->
+                        <!--<el-input v-model="form.mark" style="width: 70%" disabled/>-->
+                    <!--</el-form-item>-->
                     <!--<el-form-item label="操作员">-->
                         <!--<el-input v-model="form.handler" style="width: 70%" disabled/>-->
                     <!--</el-form-item>-->
@@ -135,6 +163,11 @@
                 user: {},
                 //  project:{},
                 currentPage: 1,
+                gridData: [
+                    {
+                        details: '',
+                    },
+                ],
                 pageSize: 10,
                 total: 0,
                 tableData: [],
@@ -197,6 +230,11 @@
                     this.tableData=res.data;
                     console.log(res)
                     //先全部查出来再去限制共几条是有问题的
+                    for(var i=0;i<this.tableData.length;i++){
+                        // console.log(this.tableData[i].date.substring(0,10));
+                        this.tableData[i].date=this.tableData[i].date.substring(0,10);
+                        this.tableData[i].sumTotal=this.tableData[i].firstMark+this.tableData[i].secondMark+this.tableData[i].threeMark;
+                    }
                     this.total = res.total;
                 })
             },
@@ -246,6 +284,18 @@
              //    this.dialogVisible = true
 
 
+            },
+            detailsproject(row) {
+                // console.log("看看这是啥呀"+row.projectkind);
+                // console.log("看看这是啥呀"+typeof  row.projectkind);
+                request.get("/project/finddetail",
+                    {params: {projectkind: row.projectkind,}
+                    }
+                ).then(res =>{
+                    // console.log("看看"+res.data);
+                    // console.log(typeof res);
+                    this.gridData[0].details=res.data;
+                })
             },
             handleSizeChange(pageSize) { //改变当前页的个数触发
                 this.pageSize = pageSize;

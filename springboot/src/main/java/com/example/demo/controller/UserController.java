@@ -27,7 +27,9 @@ import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 import java.io.InputStream;
 import java.net.URLEncoder;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 @RestController
 @RequestMapping("/user")
@@ -42,7 +44,9 @@ public class UserController {
 
     @PostMapping("/login")  //登录
     public Result<?> login(@RequestBody User user){//把前台json转换为java对象  //前台和数据库进行比对
-        User res = userMapper.selectOne(Wrappers.<User>lambdaQuery().eq(User::getUserjobid,user.getUserjobid()).eq(User::getPassword,user.getPassword()).eq(User::getRole,user.getRole()));
+//        System.out.println(user.getUserid());
+//        System.out.println(user.getPassword());
+        User res = userMapper.selectOne(Wrappers.<User>lambdaQuery().eq(User::getUserid,user.getUserid()).eq(User::getPassword,user.getPassword()).eq(User::getRole,user.getRole()));
         if (res == null) {
             return Result.error("-1", "用户名或密码错误");
         }
@@ -53,7 +57,7 @@ public class UserController {
     @GetMapping("/edit")  //登录
     public Result<?> find(@RequestParam String userjobid,@RequestParam String password0,@RequestParam String password1) {//把前台json转换为java对象
         //在Project表中查找本项目ID
-        User res = userMapper.selectOne(Wrappers.<User>lambdaQuery().eq(User::getUserjobid,userjobid).eq(User::getPassword,password0));
+        User res = userMapper.selectOne(Wrappers.<User>lambdaQuery().eq(User::getUserid,userjobid).eq(User::getPassword,password0));
         if (res == null) {
             return Result.error("-1", "原密码错误！！！");
         }
@@ -82,17 +86,18 @@ public class UserController {
                     for (List<Object> row : list) {
                         User user = new User();
                         user.setOfficeid(Integer.parseInt(row.get(0).toString()));
-              //         user.setUserid(Integer.parseInt(row.get(9).toString()));
-                        user.setUserjobid(row.get(1).toString());
-                        user.setUsername(row.get(2).toString());
-                        user.setTelephone(row.get(3).toString());
-                        user.setAge(Integer.parseInt(row.get(4).toString()));
-                        user.setSex(row.get(5).toString());
-                        user.setAddress(row.get(6).toString());
-                        user.setPosition(row.get(7).toString());
-                        user.setPermission(row.get(8).toString());
-                        user.setMark(Integer.parseInt(row.get(9).toString()));
-                        user.setPlaceMark(Integer.parseInt(row.get(10).toString()));
+                       user.setUserid(Integer.parseInt(row.get(1).toString()));
+                        user.setUserjobid(row.get(2).toString());
+                        user.setUsername(row.get(3).toString());
+                        user.setTelephone(row.get(4).toString());
+                        user.setAge(Integer.parseInt(row.get(5).toString()));
+                        user.setSex(row.get(6).toString());
+                        user.setAddress(row.get(7).toString());
+                        user.setPosition(row.get(8).toString());
+                        user.setPermission(row.get(9).toString());
+                        user.setMark(Integer.parseInt(row.get(10).toString()));
+                        user.setPlaceMark(Integer.parseInt(row.get(11).toString()));
+                        user.setPassword("123456");
                         users.add(user);
                     }
                      userService.saveBatch(users);
@@ -136,7 +141,12 @@ public class UserController {
     //批量删除
     @PostMapping("/del/batch")
     public boolean deleteBatch(@RequestBody List<Integer> ids) { // [1,2,3]
-
+        for(int i=0;i<ids.size();i++){
+            int res=groupMapper.findcount(ids.get(i));
+            if(res!=0){
+                return false;
+            }
+        }
         return userService.removeByIds(ids);
 
     }
@@ -145,6 +155,15 @@ public class UserController {
         if(user.getPassword() == null){
             user.setPassword("123456");
         }
+        user.setTotalMark(0);
+        user.setPlaceMark(0);
+        user.setMark(0);
+        user.setHostcount(0);
+        user.setJoincount(0);
+        user.setJoinmark(0);
+        user.setHostmark(0);
+        user.setRole(1);
+        user.setProjectmark(0);
         userMapper.insert(user);
         return Result.success();
     }
@@ -158,7 +177,15 @@ public class UserController {
     @DeleteMapping("/{id}") //通过id查询的接口
     public Result<?> delete(@PathVariable long id) {//把前台json转换为java对象
 
+            //  删除之前判断此人是否有参与项目，直接在group表中搜索即可
+            //如果有项目就提示不能删除，否则就提示删除成功
+        int res=groupMapper.findcount(id);
+        if(res != 0){
+            return Result.error("-1", "此人还有项目，不能删除！！！");
+        }
         userMapper.deleteById(id);
+
+
         return Result.success();
 
     }
@@ -182,6 +209,79 @@ public class UserController {
         }
         userMapper.insert(user);
         return Result.success(); //返回代码code为0
+    }
+
+        //新的加载页面
+
+    //
+    @GetMapping("/test")
+    public Map<String, Object> findoffice(@RequestParam(defaultValue = "1") Integer pageNum,
+                                          @RequestParam(defaultValue = "10") Integer pageSize,
+                                          @RequestParam(defaultValue = "") String search,
+                                          @RequestParam(defaultValue = "0") Integer officeid
+
+    ) {
+        pageNum = (pageNum -1) *pageSize;
+        search = "%" + search + "%";
+//        System.out.println("flag1");
+        List<User> all;
+        if(officeid !=0)
+        {
+            all = userMapper.findalluser(pageNum,pageSize,search,officeid);
+        }
+        else{
+            all = userMapper.findalluser1(pageNum,pageSize,search);
+        }
+        for(int i=0;i<all.size();i++){
+//            System.out.println(all.get(0).getUserid());
+
+            int zhuchicount=userMapper.findsumhost(all.get(i).getUserid());         //查找个人主持项目个数
+            int suoyou=userMapper.findsumjoin(all.get(i).getUserid());        //查找个人参与所有项目个数
+            //个人项目积分和有问题不是每个人都有项目积分
+//            System.out.println(userMapper.findpersontotal(all.get(i).getUserid()));
+            int zongjifen=0;//项目积分+奖励积分
+            int jifen=0;//项目积分
+            int zhuchijifen; //主持积分
+            int projectmark; //项目积分和
+            int grouptotal =groupMapper.findcount(all.get(i).getUserid());
+            if(grouptotal ==0){
+                zongjifen=all.get(i).getMark()+all.get(i).getPlaceMark();
+            }else{
+                zongjifen=all.get(i).getMark()+all.get(i).getPlaceMark();
+                jifen=userMapper.findpersontotal(all.get(i).getUserid());  //个人项目积分和
+
+            }
+             zongjifen+=jifen; //个人所有积分和
+//            System.out.println("flag4");
+            int jincanyu=suoyou-zhuchicount;//个人仅仅主持项目
+            all.get(i).setHostcount(zhuchicount);
+            if(zhuchicount ==0 || grouptotal ==0){
+                zhuchijifen=0;
+            }else{
+                zhuchijifen =userMapper.findzhuchi(all.get(i).getUserid());
+            }
+            all.get(i).setJoincount(jincanyu);
+            all.get(i).setTotalMark(zongjifen);
+            //算出项目总分 为 jifen
+            //算出主持的项目总分
+            all.get(i).setHostmark(zhuchijifen);
+            // 光参与项目的总积分=算出项目总分-算出主持的项目总分
+            all.get(i).setJoinmark(jifen-zhuchijifen);
+            all.get(i).setProjectmark(jifen);
+        }
+//        System.out.println("flag2");
+        Integer total;
+        if(officeid !=0)
+        {
+            total = userMapper.selectTotal(search,officeid);
+        }
+        else{
+            total = userMapper.selectTotal1(search);
+        }
+        Map<String, Object> res = new HashMap<>();
+        res.put("data", all);
+        res.put("total", total);
+        return res;
     }
     @GetMapping //按用户名查找
     public Result<?> findPage(@RequestParam(defaultValue = "1") Integer pageNum,

@@ -30,4 +30,8 @@ public interface ProjectMapper extends BaseMapper<Project> {
     Integer findmark(@Param("projectType") String projectType);
     @Select("select mark.Project_details  from mark where mark.Project_seq=#{projectkind}")
     String findsingle(String projectkind);
+
+//    select project.Projectgroup_id from project where project.Project_id =35
+    @Select(" select project.Projectgroup_id from project where project.Project_id = #{param1}")
+    int finduserid(String search);
 }

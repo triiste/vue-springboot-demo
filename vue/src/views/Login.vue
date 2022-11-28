@@ -3,9 +3,9 @@
         <div style="width: 400px; margin: 150px auto">
             <div style="font-size: 30px; text-align: center; padding: 30px 0; color: #cccccc">欢迎登录</div>
             <el-form ref="form" :model="form" size="large" :rules="rules">
-                <el-form-item :model="form" prop="userjobid"
+                <el-form-item :model="form" prop="userid"
                 >
-                    <el-input :prefix-icon="Avatar" v-model="form.userjobid" placeholder="请输入工号"></el-input>
+                    <el-input :prefix-icon="Avatar" v-model="form.userid" placeholder="请输入工号"></el-input>
                 </el-form-item>
                 <el-form-item :model="form" prop="password">
                     <el-input :prefix-icon="Lock" v-model="form.password" show-password placeholder="请输入密码"></el-input>
@@ -81,6 +81,7 @@
                             this.$router.push("/project");
 
                     } else {
+                        console.log(res);
                         this.$message({
                             type: "error",
                             message: res.msg

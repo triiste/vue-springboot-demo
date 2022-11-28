@@ -20,8 +20,10 @@
         </div>
         <el-table :data="tableData" stripe border style="width: 100%">
             <!--<template>-->
-            <el-table-column prop="projectId" label="ID" sortable></el-table-column>
-            <el-table-column prop="projectItemid" label="项目编号" sortable></el-table-column>
+            <el-table-column prop="date" label="立项时间" sortable></el-table-column>
+
+            <el-table-column prop="projectId" label="项目编号" sortable></el-table-column>
+            <!--<el-table-column prop="projectItemid" label="项目编号" sortable></el-table-column>-->
             <el-table-column prop="projectName" label="项目名"></el-table-column>
             <!--      数据库里是下划线 对应前台代码会转成驼峰 mybatisplus这个框架帮做的-->
             <!--            <el-table-column prop="groupId" label="组号"/>-->
@@ -37,6 +39,7 @@
             <el-table-column prop="firstMark" label="第一阶段积分" ></el-table-column>
             <el-table-column prop="secondMark" label="第二阶段积分"></el-table-column>
             <el-table-column prop="threeMark" label="第三阶段积分"></el-table-column>
+            <el-table-column prop="sumTotal" label="已得积分" sortable></el-table-column>
             <!--<el-table-column prop="projectReward" label="附加分"></el-table-column>-->
 
             <el-table-column prop="projectType"  label="项目内容">
@@ -81,7 +84,7 @@
         <div style="margin: 10px 0">
             <el-pagination
                     v-model:currentPage="currentPage"
-                    :page-sizes="[5, 10, 20]"
+                    :page-sizes="[5, 10, 20,total]"
                     :page-size="pageSize"
                     :disabled="disabled"
                     layout="total, sizes, prev, pager, next, jumper"
@@ -96,8 +99,24 @@
                     width="30%"
             >
                 <el-form :model="form" label-width="120px">
+                    <el-form-item label="立项时间">
+                        <div class="demo-date-picker"    style="width: 70%">
+                            <div class="block">
+                                <el-date-picker
+                                        v-model="form.date"
+                                        type="date"
+                                        placeholder="请选择日期"
+                                        :size="size"
+
+                                />
+                            </div>
+                        </div>
+
+                    </el-form-item>
                     <el-form-item label="项目编号">
-                        <el-input v-model="form.projectItemid" style="width: 70%"></el-input>
+                        <el-input v-model="form.projectId"  style="width: 70%"
+                                  maxlength="9"
+                                  show-word-limit></el-input>
                     </el-form-item>
                     <el-form-item label="项目名称">
                         <el-input v-model="form.projectName" style="width: 70%"></el-input>
@@ -105,7 +124,7 @@
                     <!--                    <el-form-item label="项目组号">-->
                     <!--                        <el-input v-model="form.groupId" style="width: 70%"/>-->
                     <!--                    </el-form-item>-->
-                    <el-form-item label="项目组长ID">
+                    <el-form-item label="项目组长工号">
                         <el-input v-model="form.projectgroupId" style="width: 70%"></el-input>
                     </el-form-item>
                     <!--                    <el-form-item label="研究内容">-->
@@ -130,7 +149,7 @@
                 </el-form>
                 <template #footer>
       <span class="dialog-footer">
-        <el-button type="primary" @click="save">确定</el-button>
+        <el-button type="primary" @click="save1">确定</el-button>
         <el-button @click="dialogVisible = false">取消</el-button>
       </span>
                 </template>
@@ -144,13 +163,19 @@
                     width="30%"
             >
                 <el-form :model="form" label-width="120px">
-                    <el-form-item label="项目编号">
-                        <el-input v-model="form.projectItemid"  style="width: 70%" disabled></el-input>
+                    <el-form-item label="立项时间">
+                        <el-input v-model="form.date"  style="width: 70%" disabled></el-input>
                     </el-form-item>
+                    <el-form-item label="项目编号">
+                        <el-input v-model="form.projectId"  style="width: 70%" disabled></el-input>
+                    </el-form-item>
+                    <!--<el-form-item label="项目编号">-->
+                    <!--<el-input v-model="form.projectItemid"  style="width: 70%" disabled></el-input>-->
+                    <!--</el-form-item>-->
                     <el-form-item label="项目名称">
                         <el-input v-model="form.projectName" style="width: 70%" disabled></el-input>
                     </el-form-item>
-                    <el-form-item label="项目组长ID">
+                    <el-form-item label="项目组长工号">
                         <el-input v-model="form.projectgroupId" style="width: 70%" disabled></el-input>
                     </el-form-item>
                     <el-form-item label="项目进度">
@@ -160,13 +185,14 @@
                     <!--<el-input v-model="form.projectMark"  style="width: 70%"></el-input>-->
                     <!--</el-form-item>-->
                     <el-form-item label="第一阶段积分比">
-                        <el-input v-model="form.first" style="width: 70%"></el-input>%
+                        <el-input-number v-model="form.first"  :min="0" :max="100" style="width: 70%" ></el-input-number>%
+                        <!--<el-input v-model="form.first" style="width: 70%" @blur="check(form.first)"></el-input>-->
                     </el-form-item>
                     <el-form-item label="第二阶段积分比">
-                        <el-input v-model="form.second" style="width: 70%"></el-input>%
+                        <el-input-number v-model="form.second"   :min="0" :max="100" style="width: 70%"></el-input-number>%
                     </el-form-item>
                     <el-form-item label="第三阶段积分比">
-                        <el-input v-model="form.three" style="width: 70%"></el-input>%
+                        <el-input-number v-model="form.three"   :min="0" :max="100" style="width: 70%"></el-input-number>%
                     </el-form-item>
                     <!--<el-form-item label="附加分">-->
                     <!--<el-input v-model="form.projectReward" style="width: 70%"></el-input>-->
@@ -288,197 +314,205 @@
                         }
                         ]
                     }, {
-                        label: '支撑机关，服务部队任务',
+                        label: '服务支撑业务',
                         children: [
-                            {
+                            {   label:'支撑机关、服务部队任务',
+                                children:[
+                                    {
+                                        label: '到各级机关和基层部队授课',
+                                        children: [{
+                                            value: '4_1_1',
+                                            label: '战区级及以上'
+                                        },{ value: '4_1_2',
+                                            label: '军级以下'
+                                        }]
+                                    },
 
-                                label: '到各级机关和基层部队授课',
-                                children: [{
-                                    value: '4_1_1',
-                                    label: '战区级及以上'
-                                },{ value: '4_1_2',
-                                    label: '军级以下'
-                                }]
+                                    {
+                                        value: '4_2',
+                                        label: '为部队提供技术服务',
+                                    },{
 
-                            },
-                            {
-                                value: '4_2',
-                                label: '为部队提供技术服务',
-                            },{
-
-                                label: '参加院以上机关集中攻关/帮助工作',
-                                children: [{
-                                    value: '4_3_1',
-                                    label: '1月(含)以内'
-                                },{
-                                    value: '4_3_2',
-                                    label: '1-3个月'
-                                }, {
-                                    value: '4_3_3',
-                                    label: '4-6个月'
-                                },
+                                        label: '参加院以上机关集中攻关/帮助工作',
+                                        children: [{
+                                            value: '4_3_1',
+                                            label: '1月(含)以内'
+                                        },{
+                                            value: '4_3_2',
+                                            label: '1-3个月'
+                                        }, {
+                                            value: '4_3_3',
+                                            label: '4-6个月'
+                                        },
+                                        ]
+                                    },
+                                    { label: '支撑机关职能办公室',
+                                        children: [{
+                                            value: '4_4_1',
+                                            label: '牵头负责人（每年）'
+                                        },{
+                                            value: '4_4_2',
+                                            label: '其他不固定参与人员（每次）'
+                                        }]
+                                    },
+                                    {
+                                        label: '为军事行动、战区级以上重大演训任务和重大活动提供提供技术保障',
+                                        children: [{
+                                            value: '4_5_1',
+                                            label: '单次任务15天以下'
+                                        },{
+                                            value: '4_5_2',
+                                            label: '单次任务16-30天'
+                                        },
+                                            {
+                                                value: '4_5_3',
+                                                label: '单次任务31-60天'
+                                            },
+                                            {
+                                                value: '4_5_4',
+                                                label: '单次任务61-90天'
+                                            },
+                                            {   value: '4_5_5',
+                                                label: '单次任务90天以上'
+                                            },
+                                        ]
+                                    },
                                 ]
                             },
-                            { label: '支撑机关职能办公室',
-                                children: [{
-                                    value: '4_4_1',
-                                    label: '牵头负责人（每年）'
-                                },{
-                                    value: '4_4_2',
-                                    label: '其他不固定参与人员（每次）'
-                                }]
-                            },
                             {
-                                label: '为军事运动、战区级以上重大演训任务和重大活动提供提供技术保障',
-                                children: [{
-                                    value: '4_5_1',
-                                    label: '单次任务15天以下'
-                                },{
-                                    value: '4_5_2',
-                                    label: '单次任务16-30天'
-                                },
+                                label:'支撑研究所建设任务',
+                                children:[
                                     {
-                                        value: '4_5_3',
-                                        label: '单次任务31-60天'
+                                        value: '4_6',
+                                        label: '实验室建设与运维',
                                     },
                                     {
-                                        value: '4_5_4',
-                                        label: '单次任务61-90天'
+                                        label: '导师带教',
+                                        children: [{
+                                            value: '4_7_1',
+                                            label: '博士（后）'
+                                        },{
+                                            value: '4_7_2',
+                                            label: '硕士'
+                                        },
+                                            {
+                                                value: '4_7_3',
+                                                label: '科技英才等青年骨干带教'
+                                            },
+                                            {   value: '4_7_4',
+                                                label: '其他带教'
+                                            }
+                                        ]
                                     },
-                                    {   value: '4_5_5',
-                                        label: '单次任务90天以上'
+                                    {    value: '4_8',
+                                        label: '建设发展规划论证',
                                     },
-                                ]
-                            },
-                            {
-                                value: '4_6',
-                                label: '实验室建设与运维',
-                            },
-                            {
-                                label: '导师带教',
-                                children: [{
-                                    value: '4_7_1',
-                                    label: '博士（后）'
-                                },{
-                                    value: '4_7_2',
-                                    label: '硕士'
-                                },
+                                    {   value: '4_9',
+                                        label: '技术咨询-立项咨询（单次）',
+                                    },
                                     {
-                                        value: '4_7_3',
-                                        label: '科技英才等青年骨干带教'
+                                        label: '技术咨询-成果审查',
+                                        children: [{
+                                            value: '4_10_1',
+                                            label: '重大/重点项目单次审查'
+                                        },{
+                                            value: '4_10_2',
+                                            label: '一般项目成果单次审查'
+                                        },
+                                            {   value: '4_10_3',
+                                                label: '所内合同审查'
+                                            },
+                                        ]
                                     },
-                                    {   value: '4_7_4',
-                                        label: '其他带教'
+                                    {
+                                        label: '技术咨询-项目指导专家',
+                                        children: [
+                                            {
+                                                value: '4_11_1',
+                                                label: '重大项目（专项任务）'
+                                            },
+                                            {
+                                                value: '4_11_2',
+                                                label: '重点项目（专项任务）'
+                                            },
+                                        ]
+                                    },
+                                    {
+                                        label: '所机关锻炼',
+                                        children: [
+                                            {
+                                                value: '4_12_1',
+                                                label: '1月(含)以内'
+                                            },
+                                            {
+                                                value: '4_12_2',
+                                                label: '1-3个月'
+                                            },
+                                            {
+                                                value: '4_12_3',
+                                                label: '4-6个月'
+                                            },
+                                            {
+                                                value: '4_12_4',
+                                                label: '每增加一个月增加'
+                                            },
+                                        ]
+                                    },
+                                    {
+                                        label: '专项报告材料',
+                                        children: [
+                                            {
+                                                value: '4_13_1',
+                                                label: '被所领导采纳'
+                                            },
+                                            {
+                                                value: '4_13_2',
+                                                label: '被所机关采纳'
+                                            },
+                                        ]
+                                    },
+                                    {
+                                        label: '科研保障支撑',
+                                        children: [
+                                            {
+                                                value: '4_14_1',
+                                                label: '重大专项科研活动'
+                                            },
+                                            {
+                                                value: '4_14_2',
+                                                label: '日常科研保障服务'
+                                            },
+                                        ]
+                                    },
+                                    {
+                                        label: '科研管理',
+                                        children: [
+
+                                            {
+                                                value: '4_15_1',
+                                                label: '实验室主任'
+                                            },
+                                            {
+                                                value: '4_15_2',
+                                                label: '研究室主任'
+                                            },
+                                            {
+                                                value: '4_15_3',
+                                                label: '研究室副主任'
+                                            },
+                                            {
+                                                value: '4_15_4',
+                                                label: '专业组长'
+                                            },
+                                        ]
+
+                                    },
+                                    {
+                                        value: '4_16',
+                                        label:"其他"
                                     }
                                 ]
                             },
-                            {    value: '4_8',
-                                label: '建设发展规划论证',
-                            },
-                            {   value: '4_9',
-                                label: '技术咨询-立项咨询（单次）',
-                            },
-                            {
-                                label: '技术咨询-成果审查',
-                                children: [{
-                                    value: '4_10_1',
-                                    label: '重大/重点项目单次审查'
-                                },{
-                                    value: '4_10_2',
-                                    label: '一般项目成果单次审查'
-                                },
-                                    {   value: '4_10_3',
-                                        label: '所内合同审查'
-                                    },
-                                ]
-                            },
-                            {
-                                label: '技术咨询-项目指导专家',
-                                children: [
-                                    {
-                                        value: '4_11_1',
-                                        label: '重大项目（专项任务）'
-                                    },
-                                    {
-                                        value: '4_11_2',
-                                        label: '重点项目（专项任务）'
-                                    },
-                                ]
-                            },
-                            {
-                                label: '所机关锻炼',
-                                children: [
-                                    {
-                                        value: '4_12_1',
-                                        label: '1月(含)以内'
-                                    },
-                                    {
-                                        value: '4_12_2',
-                                        label: '1-3个月'
-                                    },
-                                    {
-                                        value: '4_12_3',
-                                        label: '4-6个月'
-                                    },
-                                    {
-                                        value: '4_12_4',
-                                        label: '每增加一个月增加'
-                                    },
-                                ]
-                            },
-                            {
-                                label: '专项报告材料',
-                                children: [
-                                    {
-                                        value: '4_13_1',
-                                        label: '被所领导采纳'
-                                    },
-                                    {
-                                        value: '4_13_2',
-                                        label: '被所机关采纳'
-                                    },
-                                ]
-                            },
-                            {
-                                label: '科研保障支撑',
-                                children: [
-                                    {
-                                        value: '4_14_1',
-                                        label: '重大专项科研活动'
-                                    },
-                                    {
-                                        value: '4_14_2',
-                                        label: '日常科研保障服务'
-                                    },
-                                ]
-                            },
-                            {
-                                label: '科研管理',
-                                children: [
-
-                                    {
-                                        value: '4_15_1',
-                                        label: '实验室主任'
-                                    },
-                                    {
-                                        value: '4_15_2',
-                                        label: '研究室主任'
-                                    },
-                                    {
-                                        value: '4_15_3',
-                                        label: '研究室副主任'
-                                    },
-                                    {
-                                        value: '4_15_4',
-                                        label: '专业组长'
-                                    },
-                                ]
-
-                            },
-                            {
-                                value: '4_16',
-                                label:"其他"
-                            }
                         ]
 
                     }],
@@ -508,16 +542,27 @@
 
         methods: {
             load() {
-                request.get("/project/p3", {
+                request.get("/project/p1", {
                     params: {
                         pageNum: this.currentPage,
                         pageSize: this.pageSize,
                         search: this.search
                     }
                 }).then(res => {
-                    console.log(res);
+                    // console.log("看看此时的table"+res);
+
                     this.tableData = res.data.records;
                     this.total = res.data.total;
+                    // console.log("看看此时的table"+this.tableData[0].projectId);
+                    for(var i=0;i<this.tableData.length;i++){
+
+                        // this.tableData[i].date = new Date(parseInt(res.data.reccords[i].date)).toLocaleString();
+                        // this.tableData[i].date=this.tableData[i].date.substr(0.10);
+                        console.log(this.tableData[i].date.substring(0,10));
+                        this.tableData[i].date=this.tableData[i].date.substring(0,10);
+                        this.tableData[i].sumTotal=this.tableData[i].firstMark+this.tableData[i].secondMark+this.tableData[i].threeMark;
+                    }
+
                 })
             },
 
@@ -525,70 +570,98 @@
                 this.dialogVisible = true;
                 this.form = {}
             },
-            save() {
-                if (this.form.projectId) {
-                    this.form.firstMark=this.form.first*this.form.projectMark*0.01;
-                    this.form.secondMark=this.form.second*this.form.projectMark*0.01;
-                    this.form.threeMark=this.form.three*this.form.projectMark*0.01;
+            save1(){
+                // console.log(this.form)
+                // console.log("看看新增的啥东西"+this.form.date)
+                if(this.form.date === null || typeof(this.form.date)==="undefined"){
+                    this.$message({
+                        type: "error",
+                        message: "未输入立项时间！！！"
+                    });
+                    this.dialogVisible = false;//关闭新增弹窗
+                }
+                else if(this.form.projectId === null || typeof(this.form.projectId)==="undefined"){
+                    this.$message({
+                        type: "error",
+                        message: "未输入项目编号！！！"
+                    });
+                    this.dialogVisible = false;//关闭新增弹窗
+                }
+                else if (this.form.projectType === null || typeof(this.form.projectType)==="undefined") {
+                    this.$message({
+                        type: "error",
+                        message: "未选择研究类别"
+                    });
+                    this.dialogVisible = false;//关闭新增弹窗
+                }
+                //先看id是否存在
+                else{
+                    console.log(this.form.projectId);
+                    request.get("/project/" + this.form.projectId).then(res => {
+                        if (res.data === null) {
+                            // console.log("不存在")
+                            this.count=0;
+                            for(var i in this.form.projectType){
+                                this.count ++;
+                            }
+                            console.log("看看此时的级别"+this.form.projectType[this.count-1]);
+                            var tmp=this.form.projectType[this.count-1];
+                            this.form.projectType=tmp;
+                            // console.log(typeof this.form.projectType);
+                            // console.log("准备传的东西"+this.form.projectType);
+                            request.post("/project", this.form).then(res => {//.then是es6里的语法
 
-                    request.put("/project", this.form).then(res => {//.then是es6里的语法
-                        console.log(res);
-                        if (res.code === '0') {
-                            this.$message({
-                                type: "success",
-                                message: "更新成功！"
+                                if (res.code === '0') {
+                                    this.$message({
+                                        type: "success",
+                                        message: "新增成功！"
+                                    })
+                                } else {
+                                    this.$message({
+                                        type: "error",
+                                        message: res.msg
+                                    })
+                                }
+                                this.load();//刷新表格数据
+                                this.dialogVisible = false;//关闭新增弹窗
                             })
-                        } else {
+                        }else{
                             this.$message({
                                 type: "error",
-                                message:res.msg
+                                message: "该项目编号已存在，请重新输入！！！"
                             })
+                            this.dialogVisible = false;//关闭弹窗
                         }
-                        this.dialog = false;//关闭编辑弹窗
-                        this.dialog1 = false;
-                        this.load();//刷新表格数据
-                        // this.dialogVisible = false;//关闭新增弹窗
+                    });
+                }
 
-                    })
-                } else {//插入
-                    console.log("看看这是啥"+this.form.projectType);
-                    if (this.form.projectType === null || typeof(this.form.projectType)==="undefined") {
+                //
+
+            },
+            save() {
+                this.form.firstMark=this.form.first*this.form.projectMark*0.01;
+                this.form.secondMark=this.form.second*this.form.projectMark*0.01;
+                this.form.threeMark=this.form.three*this.form.projectMark*0.01;
+
+                request.put("/project/p3", this.form).then(res => {//.then是es6里的语法
+                    console.log(res);
+                    if (res.code === '0') {
+                        this.$message({
+                            type: "success",
+                            message: "更新成功！"
+                        })
+                    } else {
                         this.$message({
                             type: "error",
-                            message: "未选择研究类别"
-                        });
-                        this.dialogVisible = false;//关闭新增弹窗
-
-                    }
-                    else{
-                        this.count=0;
-                        for(var i in this.form.projectType){
-                            this.count ++;
-                        }
-                        console.log("看看此时的级别"+this.form.projectType[this.count-1]);
-                        var tmp=this.form.projectType[this.count-1];
-                        this.form.projectType=tmp;
-                        console.log(typeof this.form.projectType);
-                        console.log("准备传的东西"+this.form.projectType);
-                        request.post("/project", this.form).then(res => {//.then是es6里的语法
-
-                            if (res.code === '0') {
-                                this.$message({
-                                    type: "success",
-                                    message: "新增成功！"
-                                })
-                            } else {
-                                this.$message({
-                                    type: "error",
-                                    message: res.msg
-                                })
-                            }
-                            this.load();//刷新表格数据
-                            this.dialogVisible = false;//关闭新增弹窗
+                            message:res.msg
                         })
                     }
+                    this.dialog = false;//关闭编辑弹窗
+                    this.dialog1 = false;
+                    this.load();//刷新表格数据
+                    // this.dialogVisible = false;//关闭新增弹窗
 
-                }
+                })
 
             },
 
@@ -616,20 +689,20 @@
             },
             //项目细节
             detailsproject(row) {
-                console.log("看看这是啥呀"+row.projectkind);
-                console.log("看看这是啥呀"+typeof  row.projectkind);
+                // console.log("看看这是啥呀"+row.projectkind);
+                // console.log("看看这是啥呀"+typeof  row.projectkind);
                 request.get("/project/finddetail",
                     {params: {projectkind: row.projectkind,}
                     }
                 ).then(res =>{
-                    console.log("看看"+res.data);
-                    console.log(typeof res);
+                    // console.log("看看"+res.data);
+                    // console.log(typeof res);
                     this.gridData[0].details=res.data;
                 })
             },
 
             handleDelete(id) {
-                // console.log(id)
+                console.log(id)
 
                 request.delete("/project/" + id).then(res => {
                     if (res === true) {
