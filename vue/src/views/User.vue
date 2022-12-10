@@ -1,9 +1,10 @@
 <template>
     <div style="padding: 10px">
         <!--    功能区域-->
-        <!--<div style="margin: 10px 0">-->
-            <!--<el-button type="primary" @click="add">新增</el-button>-->
-        <!--</div>-->
+        <!--    功能区域-->
+        <div style="margin: 10px 0"  v-if="this.officeid === this.user.userid || this.user.role === 2" >
+            <el-button type="primary" @click="exp" class="ml-5" style="margin-right: 5px">导出 <i class="el-icon-top"></i></el-button>
+        </div>
         <!--    搜索区域-->
         <div style="margin: 10px 0">
             <el-input
@@ -217,6 +218,12 @@
                     // console.log(this.total)
                 })
             },
+            exp() {
+                //导出接口待修改
+                // console.log(this.value);
+                this.exportaddress= "http://localhost:9090/user/exportStatistics?userid="+ this.value;
+                window.open(this.exportaddress)
+            },
             office(){
                 this.load();
             },
@@ -239,13 +246,13 @@
                                 message: res.msg
                             })
                         }
-                        this.load()//刷新表格数据
+                        this.load();//刷新表格数据
                         this.dialogVisible = false;//关闭弹窗
                     })
                 } else {//插入
                     request.post("/user", this.form).then(res => {//.then是es6里的语法
                         console.log(res)
-                        if (res.code == '0') {
+                        if (res.code === '0') {
                             this.$message({
                                 type: "success",
                                 message: "新增成功！"
@@ -256,7 +263,7 @@
                                 message: res.msg
                             })
                         }
-                        this.load()//刷新表格数据
+                        this.load();//刷新表格数据
                         this.dialogVisible = false;//关闭弹窗
                     })
                 }

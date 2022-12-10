@@ -1,6 +1,7 @@
 package com.example.demo.controller;
 
 
+import cn.hutool.core.io.FileUtil;
 import cn.hutool.core.util.StrUtil;
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.baomidou.mybatisplus.core.toolkit.Wrappers;
@@ -17,6 +18,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
 import javax.annotation.Resource;
+import java.io.File;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -77,6 +79,47 @@ public class ProjectController {
         return Result.success();
     }
 
+     /**
+     * 上传文件
+     * @param projectid 项目ID
+     * @param filename  文件名称
+     * @param url   文件地址
+     * @return
+     */
+    @GetMapping("/files")//按项目名称查询
+    public Result<?> putfiles(@RequestParam Integer projectid,
+                                  @RequestParam String filename,
+                                  @RequestParam String url){
+//        System.out.println(projectid);
+//        System.out.println(filename);
+//        System.out.println(url);
+        //先查出来之前存的，删掉之后再赋值
+        //先查地址就可以了
+        String beforeurl =projectMapper.findprojecturl(projectid);
+        projectMapper.updatefiles(projectid,filename,url);
+//        System.out.println(beforeurl);
+        //查找beforeurl
+        //查找
+//        System.out.println(beforeurl.length());
+//        System.out.println(beforeurl);
+
+//        if(beforeurl != null)
+        if(beforeurl != null){
+            String prefix="http://localhost:9090/files/";
+            String flag=beforeurl.substring(prefix.length());
+            String basePath= System.getProperty("user.dir") + "/springboot/src/main/resources/files/";//定义文件上传的根路径
+            List<String> fileNames = FileUtil.listFileNames(basePath); //获取所有文件的名称
+            String fileName = fileNames.stream().filter(name -> name.contains(flag)).findAny().orElse("");//找到跟参数一致的文件
+//            System.out.println("文件名称"+fileName);
+            //fileName =9b36c446fc724555b11e54ade2f9d8f2_mark.sql
+            File file = new File(basePath+fileName);
+            if (file.exists()) {
+                file.delete();
+            }
+        }
+
+        return Result.success();
+    }
     @PutMapping  //编辑放数据回数据库
     public Result<?> update(@RequestBody Project project) {//把前台json转换为java对象
         //在User表中查找有没有该组长
@@ -113,7 +156,7 @@ public class ProjectController {
     @GetMapping("/finddetail") //project 引用
     public Map<String, String> finddetail(@RequestParam String projectkind) {//把前台json转换为java对象
                String res = projectMapper.findsingle(projectkind);
-               System.out.println(res);
+//               System.out.println(res);
         Map<String, String> res1 = new HashMap<>();
         res1.put("title", "data");
         res1.put("data", res);
@@ -136,7 +179,7 @@ public class ProjectController {
             return  false;
         }
         else{
-            System.out.println(id);
+//            System.out.println(id);
             projectMapper.deleteById(id);
             return true;
         }
@@ -179,6 +222,12 @@ public class ProjectController {
         Page<Project> projectPage = projectMapper.selectPage(new Page<>(pageNum, pageSize), wrapper);
         return Result.success(projectPage);
     }
+
+    /**
+     * 查询项目
+     * @param id 通过项目ID进行查询
+     * @return
+     */
     @GetMapping("/{id}") //通过id查询的接口
     public Result<?> getById(@PathVariable long id){//把前台json转换为java对象
         // System.out.println(id);

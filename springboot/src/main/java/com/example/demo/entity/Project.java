@@ -29,6 +29,8 @@ public class Project {
     private float FirstMark;
     private float SecondMark;
     private float ThreeMark;
+    private String ProjectFile;//文件名称
+    private String ProjectAddress;//文件下载地址
     private float first;
     private float second;
     private float three;

@@ -2,11 +2,33 @@
 
     <div style="padding: 10px">
         <!--    功能区域-->
+        <span v-if="this.val === '未上传附件'   " style="color: #FF0000">{{ val }}</span>
+        <span v-if="this.val !== '未上传附件'   " style="color: blue">附件名称：{{ val }}</span>
         <div style="margin: 10px 0">
             <!--<el-button type="primary" @click="add" v-if="this.user.role !== 3 && this.user.role !== 4">-->
             <el-button type="primary" @click="add" v-if=" this.user.role !== 4">新增</el-button>
             <!--<el-button type="primary" @click="returnhere" v-if="this.user.role === 3">返回上一步</el-button>-->
         </div>
+        <!--<el-upload-->
+                <!--v-model:file-list="fileList"-->
+                <!--class="upload-demo"-->
+                <!--action="http://localhost:9090/files/upload"-->
+                <!--multiple-->
+                <!--:on-preview="handlePreview"-->
+                <!--:on-remove="handleRemove"-->
+                <!--:before-remove="beforeRemove"-->
+                <!--:limit="1"-->
+                <!--:show-file-list="true"-->
+                <!--:on-exceed="handleExceed"-->
+        <!--&gt;-->
+            <!--<el-button type="primary">点击上传附件</el-button>-->
+            <!--&lt;!&ndash;<template #tip>&ndash;&gt;-->
+                <!--&lt;!&ndash;<div class="el-upload__tip">&ndash;&gt;-->
+                    <!--&lt;!&ndash;jpg/png files with a size less than 500KB.&ndash;&gt;-->
+                <!--&lt;!&ndash;</div>&ndash;&gt;-->
+            <!--&lt;!&ndash;</template>&ndash;&gt;-->
+        <!--</el-upload>-->
+
         <el-table :data="tableData" stripe border  :row-class-name="tableRowClassName" style="width: 100%">
             <!--<el-table-column prop="id" label="ID" sortable></el-table-column>-->
             <el-table-column prop="projectid" label="项目ID" sortable></el-table-column>
@@ -180,11 +202,15 @@
 
             return{
                 form:{},
+                formfile:{},
                 dialogVisible:false,
                 dialog:false,
                 perdialog:false,
                 search:'',
                 user:{},
+                project:{},
+                val:"未上传附件",
+                url:'',
                 projectid1 :'',
                 currentPage:1,
                 pageSize:10,
@@ -208,6 +234,8 @@
             this.asd3 = this.$route.query.asd3; //传来项目的第三阶段积分
             let userStr = localStorage.getItem("user") || "{}";
             this.user = JSON.parse(userStr);
+            console.log("看看此时的Id类型"+typeof this.message1);
+            var pids =parseInt(this.message1);
             //this.role = JSON.parse(localStorage.getItem("user")).role;  //取缓存里面的值
             //请求服务端，确认当前登录用户的合法信息，服务器传不过来
             //下面这是一种交互方式，传来后台的form表单
@@ -216,6 +244,23 @@
                     this.user = res.data
                 }
             });
+            //查询
+            request.get("/project/" + pids).then(res => {
+                if (res.code === '0') {
+                    this.project = res.data;
+
+                    // console.log(this.project);
+                    // console.log(this.project.projectAddress);
+                    // console.log(typeof this.project.projectAddress);
+                    // console.log("看看地址的长度"+this.project.projectAddress.length);
+                    if(this.project.projectAddress !=null ){
+                        this.val= this.project.projectFile;
+                        console.log("看看此时的val",this.val);
+                        this.url=this.project.projectAddress;
+                    }
+                }
+            });
+
             this.search = this.message1;
             this.load();
         },
@@ -223,13 +268,15 @@
 
         methods:{
             load(){
-                request.get("/group/master",{
+                request.get("/group/master",
+                    {
                     params:{
                         pageNum: this.currentPage,
                         pageSize: this.pageSize,
                         search: this.search
                     }
-                }).then(res =>{
+                      }
+                ).then(res =>{
                     console.log(res);
 
 
@@ -268,6 +315,55 @@
             //         }
             //     })
             // },
+            exp() {
+                //导出接口待修改
+                // console.log(this.value);
+                //等待调入
+                if(this.val === "未上传附件"){
+                    this.$message({
+                        type:"error",
+                        message:"目前还未上传附件！"
+                    })
+                }else{
+                    this.exportaddress= this.url;
+                    window.open(this.exportaddress)
+                }
+
+            },
+            filesUploadSuccess(res){
+                //上传的时候把文件名称和文件地址保存到数据库
+               var pid =parseInt(this.message1);
+                // this.formfile.projectfile=res[0];
+                // this.formfile.projectaddress=res[1];
+                // console.log(this.message1);
+                // console.log(typeof this.message1);
+                // console.log(this.formfile)
+                this.val=res[0];
+                this.url=res[1];
+               request.get("/project/files",
+                   {
+                       params:{
+                           projectid: pid,
+                           filename: res[0],
+                           url:res[1]
+                       }
+                   }
+               ).then(res => {//.then是es6里的语法
+                    if (res.code === '0') {
+                        this.$message({
+                            type: "success",
+                            message: "添加附件成功！"
+                        })
+                    } else {
+                        this.$message({
+                            type: "error",
+                            message: "添加附件失败！"
+                        })
+                    }
+            })
+
+
+            },
             perMessage(row) {
                 console.log(row.userid);
 
@@ -382,6 +478,7 @@
                     this.load()//重新加载
                 })
             },
+
             handleSizeChange(pageSize){ //改变当前页的个数触发
                 this.pageSize = pageSize;
                 this.load()

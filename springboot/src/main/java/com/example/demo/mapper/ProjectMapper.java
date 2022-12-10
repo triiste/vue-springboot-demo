@@ -3,10 +3,7 @@ package com.example.demo.mapper;
 import com.baomidou.mybatisplus.core.mapper.BaseMapper;
 import com.example.demo.entity.Project;
 import com.example.demo.entity.User;
-import org.apache.ibatis.annotations.Insert;
-import org.apache.ibatis.annotations.Mapper;
-import org.apache.ibatis.annotations.Param;
-import org.apache.ibatis.annotations.Select;
+import org.apache.ibatis.annotations.*;
 
 import java.util.List;
 
@@ -34,4 +31,9 @@ public interface ProjectMapper extends BaseMapper<Project> {
 //    select project.Projectgroup_id from project where project.Project_id =35
     @Select(" select project.Projectgroup_id from project where project.Project_id = #{param1}")
     int finduserid(String search);
+    @Update("UPDATE project set project.Project_file =#{filename},project.Project_address= #{url} where project.Project_id=#{projectid}")
+    void updatefiles(@Param("projectid") Integer projectid,@Param("filename") String filename,@Param("url") String url);
+    //查询url
+    @Select("select project.Project_address FROM project where project.Project_id =#{projectid}")
+    String findprojecturl(@Param("projectid") Integer projectid);
 }

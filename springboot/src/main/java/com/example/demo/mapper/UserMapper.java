@@ -10,7 +10,11 @@ import java.util.List;
 
 public interface UserMapper extends BaseMapper<User> {
     @Select("select * from user where officeid= #{param1};")
+    //导出每个室的成员
     List<User> findAll(Integer officeid);
+    @Select("select * from user;")
+        //导出全所的成员
+    List<User> findAlls();
     @Select("select count(*) from user  where user.officeid= #{param1}")
     Integer officeTotal(long officeid);
     @Select("select count(*) from projectgroup  where projectgroup.projectid = #{param1}")
@@ -39,6 +43,11 @@ public interface UserMapper extends BaseMapper<User> {
     @Select("select * from user where (user.userid like  #{param3} or user.username like #{param3})   LIMIT #{param1} ,#{param2};")
 //    select * from user where  (user.userid like  '%%' or user.username like '%%') AND user.officeid =1;
     List<User> findalluser1(Integer pageNum, Integer pageSize, String search);
+    @Select("select * from user;")
+//    select * from user where  (user.userid like  '%%' or user.username like '%%') AND user.officeid =1;
+    List<User> findalls();
+
+
     @Select("select count(*) from user where (user.userid like  #{param1} or user.username like #{param1}) ;")
     Integer selectTotal1(String search);
     //查找个人参与项目

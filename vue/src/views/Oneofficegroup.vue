@@ -22,7 +22,7 @@
                 </template>
             </el-popconfirm>
 
-            <el-upload action="http://127.0.0.1:9090/user/import" :show-file-list="false" accept="xlsx" :on-success="handleExcelImportSuccess" style="display: inline-block">
+            <el-upload action="http://182.92.125.156:9096/user/import" :show-file-list="false" accept="xlsx" :on-success="handleExcelImportSuccess" style="display: inline-block">
                 <el-button type="primary" class="ml-5" style="margin-right: 5px">导入 <i class="el-icon-bottom"></i></el-button>
             </el-upload>
             <el-button type="primary" @click="exp" class="ml-5" style="margin-right: 5px">导出 <i class="el-icon-top"></i></el-button>
@@ -311,7 +311,7 @@
         },
         methods: {
             exp() {
-                this.exportaddress= "http://127.0.0.1:9090/user/export?userid="+ this.message1;
+                this.exportaddress= "http://182.92.125.156:9096/user/export?userid="+ this.message1;
                 window.open(this.exportaddress)
             },
             load() {
