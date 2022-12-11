@@ -1,6 +1,7 @@
 package com.example.demo.controller;
 
 
+import cn.hutool.core.io.FileUtil;
 import cn.hutool.core.util.StrUtil;
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.baomidou.mybatisplus.core.toolkit.Wrappers;
@@ -14,6 +15,7 @@ import com.example.demo.mapper.UserMapper;
 import org.springframework.web.bind.annotation.*;
 
 import javax.annotation.Resource;
+import java.io.File;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -43,6 +45,93 @@ public class OfficeController {
         res.put("total", total);
         return res;
     }
+
+    /**
+     * 室主任奖励附件
+     * @param officeid
+     * @param filename
+     * @param url
+     * @return
+     */
+    @GetMapping("/files")//按项目名称查询
+    public Result<?> putfiles(@RequestParam Integer officeid,
+                              @RequestParam String filename,
+                              @RequestParam String url){
+//        System.out.println(projectid);
+//        System.out.println(filename);
+//        System.out.println(url);
+        //先查出来之前存的，删掉之后再赋值
+        //先查地址就可以了
+//        两个函数另写
+        String beforeurl =officeMapper.findofficeurl(officeid);
+        officeMapper.updatefiles(officeid,filename,url);
+//        System.out.println(beforeurl);
+        //查找beforeurl
+        //查找
+//        System.out.println(beforeurl.length());
+//        System.out.println(beforeurl);
+
+//        if(beforeurl != null)
+        if(beforeurl != null){
+            String prefix="http://localhost:9090/files/";
+            String flag=beforeurl.substring(prefix.length());
+            String basePath= System.getProperty("user.dir") + "/springboot/src/main/resources/files/";//定义文件上传的根路径
+            List<String> fileNames = FileUtil.listFileNames(basePath); //获取所有文件的名称
+            String fileName = fileNames.stream().filter(name -> name.contains(flag)).findAny().orElse("");//找到跟参数一致的文件
+//            System.out.println("文件名称"+fileName);
+            //fileName =9b36c446fc724555b11e54ade2f9d8f2_mark.sql
+            File file = new File(basePath+fileName);
+            if (file.exists()) {
+                file.delete();
+            }
+        }
+
+        return Result.success();
+    }
+
+    /**
+     * 所领导奖励附件
+     * @param officeid
+     * @param filename
+     * @param url
+     * @return
+     */
+    @GetMapping("/filesplace")//按项目名称查询
+    public Result<?> putfilesplace(@RequestParam Integer officeid,
+                              @RequestParam String filename,
+                              @RequestParam String url){
+//        System.out.println(projectid);
+//        System.out.println(filename);
+//        System.out.println(url);
+        //先查出来之前存的，删掉之后再赋值
+        //先查地址就可以了
+//        两个函数另写
+        String beforeurl =officeMapper.findofficeurl1(officeid);
+        officeMapper.updatefiles1(officeid,filename,url);
+//        System.out.println(beforeurl);
+        //查找beforeurl
+        //查找
+//        System.out.println(beforeurl.length());
+//        System.out.println(beforeurl);
+
+//        if(beforeurl != null)
+        if(beforeurl != null){
+            String prefix="http://localhost:9090/files/";
+            String flag=beforeurl.substring(prefix.length());
+            String basePath= System.getProperty("user.dir") + "/springboot/src/main/resources/files/";//定义文件上传的根路径
+            List<String> fileNames = FileUtil.listFileNames(basePath); //获取所有文件的名称
+            String fileName = fileNames.stream().filter(name -> name.contains(flag)).findAny().orElse("");//找到跟参数一致的文件
+//            System.out.println("文件名称"+fileName);
+            //fileName =9b36c446fc724555b11e54ade2f9d8f2_mark.sql
+            File file = new File(basePath+fileName);
+            if (file.exists()) {
+                file.delete();
+            }
+        }
+
+        return Result.success();
+    }
+
 
 
     @PostMapping("/login")  //登录
@@ -99,11 +188,10 @@ public class OfficeController {
         }
     }
 
-
-
+    //查出整个室
     @GetMapping("/{id}") //通过id查询的接口
     public Result<?> getById(@PathVariable long id){//把前台json转换为java对象
-        return Result.success(userMapper.selectById(id));
+        return Result.success(officeMapper.selectById(id));
     }
 
     @PostMapping("/register") //注册接口

@@ -6,7 +6,17 @@
         <span v-if="this.val !== '未上传附件'   " style="color: blue">附件名称：{{ val }}</span>
         <div style="margin: 10px 0">
             <!--<el-button type="primary" @click="add" v-if="this.user.role !== 3 && this.user.role !== 4">-->
-            <el-button type="primary" @click="add" v-if=" this.user.role !== 4">新增</el-button>
+            <el-button type="primary" @click="add" v-if=" this.user.role !== 4" style="margin-right: 5px">新增</el-button>
+            <!--<el-upload action="http://182.92.125.156:9096/user/import" :show-file-list="false" accept="xlsx" :on-success="handleExcelImportSuccess" style="display: inline-block;">-->
+                <!--<el-button type="primary" class="ml-5" style="margin-right: 5px">导入 <i class="el-icon-bottom"></i></el-button>-->
+            <!--</el-upload>-->
+            <el-upload action="http://localhost:9090/files/upload"  :show-file-list="false"   :on-preview="handlePreview"  :on-success="filesUploadSuccess" style="display: inline-block;margin-right: 5px" >
+                <el-button type="primary" v-if="this.user.role === 2 ||this.project.projectgroupId ===this.user.userid">点击上传</el-button>
+            </el-upload>
+
+
+            <el-button type="primary" @click="exp" class="ml-5" style="margin-right: 5px">下载附件 <i class="el-icon-top"></i></el-button>
+
             <!--<el-button type="primary" @click="returnhere" v-if="this.user.role === 3">返回上一步</el-button>-->
         </div>
         <!--<el-upload-->
@@ -249,7 +259,7 @@
                 if (res.code === '0') {
                     this.project = res.data;
 
-                    // console.log(this.project);
+                    console.log(this.project);
                     // console.log(this.project.projectAddress);
                     // console.log(typeof this.project.projectAddress);
                     // console.log("看看地址的长度"+this.project.projectAddress.length);
@@ -325,6 +335,7 @@
                         message:"目前还未上传附件！"
                     })
                 }else{
+                    // console.log(this.exportaddress);
                     this.exportaddress= this.url;
                     window.open(this.exportaddress)
                 }

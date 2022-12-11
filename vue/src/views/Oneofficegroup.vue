@@ -22,11 +22,30 @@
                 </template>
             </el-popconfirm>
 
-            <el-upload action="http://182.92.125.156:9096/user/import" :show-file-list="false" accept="xlsx" :on-success="handleExcelImportSuccess" style="display: inline-block">
+            <!--网址更换标记-->
+            <el-upload action="http://localhost:9090/user/import" :show-file-list="false" accept="xlsx" :on-success="handleExcelImportSuccess" style="display: inline-block">
                 <el-button type="primary" class="ml-5" style="margin-right: 5px">导入 <i class="el-icon-bottom"></i></el-button>
             </el-upload>
             <el-button type="primary" @click="exp" class="ml-5" style="margin-right: 5px">导出 <i class="el-icon-top"></i></el-button>
-            <el-button type="primary" @click="returnhere"  class="ml-5" style="margin-right: 5px">返回室列表</el-button>
+            <el-button type="primary" @click="returnhere"  class="ml-5" style="margin-right: 100px">返回室列表</el-button>
+
+
+                <el-upload action="http://localhost:9090/files/upload"  :show-file-list="false"   :on-preview="handlePreview"  :on-success="filesUploadSuccess1" style="display: inline-block;margin-right: 5px" >
+                <el-button type="primary" v-if="this.user.role === 2 ||this.project.projectgroupId ===this.user.userid" style="margin-left: 10px">点击上传</el-button>
+            </el-upload>
+            <el-button type="primary" @click="exp1" class="ml-5" style="margin-right: 5px">下载附件 <i class="el-icon-top"></i></el-button>
+                <span v-if="this.val1 === '未上传附件'   " style="color: #FF0000;margin-left: 10px;margin-left: 10px">{{ val1 }}(室主任奖励积分)</span>
+                <span v-if="this.val1 !== '未上传附件'   " style="color: blue;margin-left: 10px;  margin-left: 10px">附件名称：{{ val1 }}(室主任奖励积分)</span>
+
+            <el-upload action="http://localhost:9090/files/upload"  :show-file-list="false"   :on-preview="handlePreview"  :on-success="filesUploadSuccess2" style="display: inline-block;margin-right: 5px" >
+                <el-button type="primary" v-if="this.user.role === 2 ||this.project.projectgroupId ===this.user.userid" style="margin-left: 100px">点击上传</el-button>
+            </el-upload>
+            <el-button type="primary" @click="exp2" class="ml-5" style="margin-right: 5px">下载附件 <i class="el-icon-top"></i></el-button>
+            <span v-if="this.val2 === '未上传附件'   " style="color: #FF0000;margin-left: 10px;margin-right: 250px">{{ val2 }}(所领导奖励积分)</span>
+            <span v-if="this.val2 !== '未上传附件'   " style="color: blue;margin-left: 10px; margin-right: 250px">附件名称：{{ val2 }}(所领导奖励积分)</span>
+
+
+            <el-button type="primary" @click="exp3" class="ml-5" style="margin-right: 5px">下载导入模板 <i class="el-icon-top"></i></el-button>
         </div>
         <!--    搜索区域-->
         <!--<div style="margin: 10px 0">-->
@@ -170,7 +189,7 @@
                     <el-form-item label="研究室奖励积分" v-if="this.user.role === 3 ">
                         <el-input type="number" v-model="form.mark" style="width: 70%" ></el-input>
                     </el-form-item>
-                    <el-form-item label="所领导奖励积分" v-if="this.user.role === 4">
+                    <el-form-item label="所领导奖励积分" v-if="this.user.role === 2">
                     <el-input type="number" v-model="form.placeMark" style="width: 70%"></el-input>
                     </el-form-item>
 
@@ -240,12 +259,13 @@
                     <el-form-item label="军衔">
                         <el-input type="textarea" v-model="form.martialStatus" style="width: 70%"/>
                     </el-form-item>
-                    <el-form-item label="研究室奖励积分" v-if="this.user.role === 3">
-                    <el-input type="number" v-model="form.mark" style="width: 70%" ></el-input>
-                </el-form-item>
-                    <el-form-item label="所领导奖励积分" v-if="this.user.role === 4">
-                        <el-input type="number" v-model="form.placeMark" style="width: 70%"></el-input>
-                    </el-form-item>
+
+                    <!--<el-form-item label="研究室奖励积分" v-if="this.user.role === 3">-->
+                    <!--<el-input type="number" v-model="form.mark" style="width: 70%" ></el-input>-->
+                <!--</el-form-item>-->
+                    <!--<el-form-item label="所领导奖励积分" v-if="this.user.role === 2">-->
+                        <!--<el-input type="number" v-model="form.placeMark" style="width: 70%"></el-input>-->
+                    <!--</el-form-item>-->
 
                 </el-form>
 
@@ -276,6 +296,11 @@
                 dialog: false,
                 search:'',
                 user:{},
+                val1:"未上传附件",
+                url1:'',
+                val2:"未上传附件",
+                url2:'',
+                office:{},
                 importaddress:"",
                 currentPage: 1,
                 pageSize: 10,
@@ -302,16 +327,156 @@
                     this.user = res.data
                 }
             });
-
             this.officeid = this.asd1 * 1;
-            console.log(typeof(this.officeid));
+            var pids =parseInt(this.message1);
+            //查询出整个室内的东西
+            request.get("/office/" + pids).then(res => {
+                if (res.code === '0') {
+                    this.office = res.data;
+                    // console.log(this.office);
+                    // console.log(this.office.officeAddress);
+                    // console.log(typeof this.office.officeAddress);
+                    // console.log("看看地址的长度"+this.office.officeAddress.length);
+                    if(this.office.officeAddress !=null ){
+                        this.val1= this.office.officeFile;
+                        console.log("看看此时的val",this.val1);
+                        this.url1=this.office.officeAddress;
+                    }
+                    if(this.office.placeAddress !=null ){
+                        this.val2= this.office.placeFile;
+                        // console.log("看看此时的val",this.val);
+                        this.url2=this.office.placeAddress;
+                    }
+                }
+            });
+
+
+
+            // console.log(typeof(this.officeid));
             this.search = this.message1;
             this.load();
 
         },
         methods: {
+            /**
+             * 这是室主任（科研处）调用的上传附件
+             * @param res  res是指返回来的下载地址以及文件名称
+             */
+            filesUploadSuccess1(res){
+                //上传的时候把文件名称和文件地址保存到数据库
+                var pid =parseInt(this.message1);
+                // this.formfile.projectfile=res[0];
+                // this.formfile.projectaddress=res[1];
+                // console.log(this.message1);
+                // console.log(typeof this.message1);
+                // console.log(this.formfile)
+                this.val1=res[0];
+                this.url1=res[1];
+                request.get("/office/files",
+                    {
+                        params:{
+                            officeid: pid,
+                            filename: res[0],
+                            url:res[1]
+                        }
+                    }
+                ).then(res => {//.then是es6里的语法
+                    if (res.code === '0') {
+                        this.$message({
+                            type: "success",
+                            message: "添加附件成功！"
+                        })
+                    } else {
+                        this.$message({
+                            type: "error",
+                            message: "添加附件失败！"
+                        })
+                    }
+                })
+
+
+            },
+            /**
+             * 这是所领导调用的上传附件
+             * @param res
+             */
+            filesUploadSuccess2(res){
+                //上传的时候把文件名称和文件地址保存到数据库
+                var pid =parseInt(this.message1);
+                // this.formfile.projectfile=res[0];
+                // this.formfile.projectaddress=res[1];
+                // console.log(this.message1);
+                // console.log(typeof this.message1);
+                // console.log(this.formfile)
+                this.val2=res[0];
+                this.url2=res[1];
+                request.get("/office/filesplace",
+                    {
+                        params:{
+                            officeid: pid,
+                            filename: res[0],
+                            url:res[1]
+                        }
+                    }
+                ).then(res => {//.then是es6里的语法
+                    if (res.code === '0') {
+                        this.$message({
+                            type: "success",
+                            message: "添加附件成功！"
+                        })
+                    } else {
+                        this.$message({
+                            type: "error",
+                            message: "添加附件失败！"
+                        })
+                    }
+                })
+
+                // this.created();
+            },
+            exp1() {
+                //导出接口待修改
+                // console.log(this.value);
+                //等待调入
+                if(this.val1 === "未上传附件"){
+                    this.$message({
+                        type:"error",
+                        message:"目前还未上传附件！"
+                    })
+                }else{
+                    console.log(this.exportaddress);
+                    this.exportaddress= this.url1;
+                    window.open(this.exportaddress)
+                }
+            },
+            exp2() {
+                //导出接口待修改
+                // console.log(this.value);
+                //等待调入
+                if(this.val2 === "未上传附件"){
+                    this.$message({
+                        type:"error",
+                        message:"目前还未上传附件！"
+                    })
+                }else{
+                    // console.log(this.exportaddress);
+                    this.exportaddress= this.url2;
+                    window.open(this.exportaddress)
+                }
+            },
+            exp3() {
+                //导出接口待修改
+                // console.log(this.value);
+                //等待调入
+                    // console.log(this.exportaddress);
+                    this.exportaddress= " http://localhost:9090/files/aaaaaa";
+                    window.open(this.exportaddress);
+
+            },
             exp() {
-                this.exportaddress= "http://182.92.125.156:9096/user/export?userid="+ this.message1;
+                //这是部署上去的网址http://182.92.125.156:9096
+                //本地网址http://localhost:9090/user/export?userid=2
+                this.exportaddress= "http://localhost:9090/user/export?userid="+ this.message1;
                 window.open(this.exportaddress)
             },
             load() {

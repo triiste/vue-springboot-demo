@@ -86,18 +86,17 @@ public class UserController {
                     List<User> users = CollUtil.newArrayList();
                     for (List<Object> row : list) {
                         User user = new User();
-                        user.setOfficeid(Integer.parseInt(row.get(0).toString()));
-                       user.setUserid(Integer.parseInt(row.get(1).toString()));
-                        user.setUserjobid(row.get(2).toString());
-                        user.setUsername(row.get(3).toString());
-                        user.setTelephone(row.get(4).toString());
-                        user.setAge(Integer.parseInt(row.get(5).toString()));
-                        user.setSex(row.get(6).toString());
-                        user.setAddress(row.get(7).toString());
-                        user.setPosition(row.get(8).toString());
-                        user.setPermission(row.get(9).toString());
-                        user.setMark(Integer.parseInt(row.get(10).toString()));
-                        user.setPlaceMark(Integer.parseInt(row.get(11).toString()));
+                        user.setOfficeid(Integer.parseInt(row.get(0).toString()));//所属科室
+                       user.setUserid(Integer.parseInt(row.get(1).toString()));//用户工号
+//                        user.setUserjobid(row.get(2).toString());
+                        user.setUsername(row.get(2).toString());//用户名
+                        user.setTelephone(row.get(3).toString());//手机号
+                        user.setAge(Integer.parseInt(row.get(4).toString()));//年龄
+                        user.setSex(row.get(5).toString()); //性别
+                        user.setAddress(row.get(6).toString());//地址
+                        user.setPosition(row.get(7).toString());//职称
+                        user.setMartialStatus(row.get(8).toString());//军衔
+                        user.setPermission(row.get(9).toString());      //单位
                         user.setPassword("123456");
                         users.add(user);
                     }
@@ -124,16 +123,14 @@ public class UserController {
         writer.addHeaderAlias("age", "年龄");
         writer.addHeaderAlias("sex", "性别");
         writer.addHeaderAlias("address", "地址");
-        writer.addHeaderAlias("position", "职位");
-        writer.addHeaderAlias("permission", "部门");
-        writer.addHeaderAlias("mark", "个人室奖励积分");
-        writer.addHeaderAlias("PlaceMark", "个人所奖励积分");
+        writer.addHeaderAlias("position", "职称");
+        writer.addHeaderAlias("MartialStatus", "军衔");
+        writer.addHeaderAlias("permission", "单位");
         writer.write(list, true);
-        //自动设置列宽
+
         for(int i=0;i<writer.getColumnCount();i++)
             writer.setColumnWidth(i,18);
 
-//        writer.autoSizeColumnAll();
         // 设置浏览器响应的格式
         response.setContentType("application/vnd.openxmlformats-officedocument.spreadsheetml.sheet;charset=utf-8");
         String fileName = URLEncoder.encode("用户信息", "UTF-8");
@@ -182,6 +179,7 @@ public class UserController {
 //        sheet.trackAllColumnsForAutoSizing();
         for(int i=0;i<writer.getColumnCount();i++)
         writer.setColumnWidth(i,18);
+//        writer.setColumnWidth(1,180);
         // 设置浏览器响应的格式
         response.setContentType("application/vnd.openxmlformats-officedocument.spreadsheetml.sheet;charset=utf-8");
         String fileName = URLEncoder.encode("用户项目积分统计", "UTF-8");

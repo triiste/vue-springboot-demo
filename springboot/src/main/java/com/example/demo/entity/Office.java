@@ -14,4 +14,8 @@ public class Office {
 //    private Integer officeID;
     private String username;
     private String officename;
+    private String OfficeFile;//室内领导文件名称
+    private String OfficeAddress;//室内下载地址
+    private String PlaceFile;//所领导文件名称
+    private String PlaceAddress;//所领导文件下载地址
 }
